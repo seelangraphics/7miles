@@ -5,6 +5,7 @@ import { useState } from 'react';
 import TopNavigation from './Componets/Nav/TopNavigation';
 import SearchBar from './Componets/Nav/SearchBar';
 import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
+import PromoBanner from './Componets/PromoBanner/PromoBanner';
 
 export default function App() {
   const [showSearch, setShowSearch] = useState(false);
@@ -50,10 +51,8 @@ export default function App() {
       case 'home':
         return (
           <ScrollView style={styles.content}>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Welcome to 7 Miles</Text>
-              <Text>Your beauty and wellness destination</Text>
-            </View>
+            <PromoBanner />
+
           </ScrollView>
         );
       case 'categories':
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: 0,
   },
   contentText: {
     fontSize: 18,
