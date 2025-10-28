@@ -11,6 +11,7 @@ import TopNavigation from './Componets/Nav/TopNavigation';
 import SearchBar from './Componets/Nav/SearchBar';
 import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
 import CategoriesScreen from './Componets/Categories/CategoriesScreen';
+import PromoBanner from './Componets/PromoBanner/PromoBanner';
 
 const Stack = createNativeStackNavigator();
 
@@ -85,10 +86,8 @@ export default function App() {
         case 'home':
           return (
             <ScrollView style={styles.content}>
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Welcome to 7 Miles</Text>
-                <Text>Your beauty and wellness destination </Text>
-              </View>
+            <PromoBanner/>
+          
             </ScrollView>
           );
         case 'myorders':
