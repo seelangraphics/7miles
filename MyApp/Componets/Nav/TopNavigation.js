@@ -32,7 +32,7 @@ const TopNavigation = ({
             {/* Search Bar */}
             <TouchableOpacity style={styles.searchContainer} onPress={onSearchPress}>
                 <Ionicons name="search" size={18} color="#666" />
-                <Text style={styles.searchPlaceholder}>Search "Jeans"</Text>
+                <Text style={styles.searchPlaceholder}>Search "Powder"</Text>
             </TouchableOpacity>
 
             {/* Main Categories */}

@@ -13,6 +13,11 @@ import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
 import CategoriesScreen from './Componets/Categories/CategoriesScreen';
 import PromoBanner from './Componets/PromoBanner/PromoBanner';
 import ProductDetailsScreen from './Componets/ProductDetails/ProductDetailsScreen';
+import NewProducts from './Componets/NewProducts/NewProducts';
+import ProductsScreen from './Componets/ProductsContainer/ProductsScreen';
+import HeroSection from './Componets/HeroSection/HeroSection';
+import SevenMile from './Componets/SevenMile/SevenMile';
+import ProductSlider from './Componets/ProductSlider/ProductSlider';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,8 +92,13 @@ export default function App() {
         case 'home':
           return (
             <ScrollView style={styles.content}>
-            <PromoBanner/>
-          
+              <PromoBanner />
+              <NewProducts />
+              <ProductsScreen />
+              <HeroSection />
+              <SevenMile />
+              <ProductSlider />
+
             </ScrollView>
           );
         case 'myorders':
@@ -243,7 +253,7 @@ const styles = StyleSheet.create({
   },
 
   mainContent: { flex: 1 },
-  content: { flex: 1, padding: 16 },
+  content: { flex: 1 },
   contentText: {
     fontSize: 18,
     fontWeight: "bold",
