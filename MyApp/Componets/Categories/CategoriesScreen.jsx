@@ -28,7 +28,7 @@ const [selectedFilter, setSelectedFilter] = useState("");
   const categoryImages = {
     "Hair Care": require("../../assets/categories/haircare.png"),
     "Skin Care": require("../../assets/categories/skincare.png"),
-    "Body Care": require("../../assets/categories/bodycare.png"),
+    "Body Care": require("../../assets/categories/skincare.png"),
     "Wellness & Edibles": require("../../assets/categories/edible.png"),
   };
 
@@ -93,7 +93,7 @@ const [selectedFilter, setSelectedFilter] = useState("");
       {/* 🛍 Product Grid */}
       <FlatList
         data={filteredProducts}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         numColumns={2}
         renderItem={({ item }) => (
           <TouchableOpacity

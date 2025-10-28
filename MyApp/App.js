@@ -1,3 +1,4 @@
+
 // App.js
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
@@ -12,15 +13,12 @@ import SearchBar from './Componets/Nav/SearchBar';
 import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
 import CategoriesScreen from './Componets/Categories/CategoriesScreen';
 import PromoBanner from './Componets/PromoBanner/PromoBanner';
-<<<<<<< HEAD
+import ProductDetailsScreen from './Componets/ProductDetails/ProductDetailsScreen';
 import NewProducts from './Componets/NewProducts/NewProducts';
 import ProductsScreen from './Componets/ProductsContainer/ProductsScreen';
 import HeroSection from './Componets/HeroSection/HeroSection';
 import SevenMile from './Componets/SevenMile/SevenMile';
 import ProductSlider from './Componets/ProductSlider/ProductSlider';
-=======
-import ProductDetailsScreen from './Componets/ProductDetails/ProductDetailsScreen';
->>>>>>> origin/7miles_gokul_initial
 
 const Stack = createNativeStackNavigator();
 
@@ -166,61 +164,61 @@ export default function App() {
       </View>
     );
   };
-/* ---------------------------------------------
-   🛍️ Categories Screen — Uses TopBar
---------------------------------------------- */
-const CategoriesScreenWithTopBar = ({ navigation }) => (
-  <View style={styles.container}>
-    <TopBar
-      title="Categories"
-      onSearchPress={() => console.log("🔍 Search in Categories")}
-      onCartPress={onCartPress}
-      onWishlistPress={onWishlistPress}
-    />
-    {/* pass navigation down */}
-    <CategoriesScreen navigation={navigation} />
-  </View>
-);
+  /* ---------------------------------------------
+     🛍️ Categories Screen — Uses TopBar
+  --------------------------------------------- */
+  const CategoriesScreenWithTopBar = ({ navigation }) => (
+    <View style={styles.container}>
+      <TopBar
+        title="Categories"
+        onSearchPress={() => console.log("🔍 Search in Categories")}
+        onCartPress={onCartPress}
+        onWishlistPress={onWishlistPress}
+      />
+      {/* pass navigation down */}
+      <CategoriesScreen navigation={navigation} />
+    </View>
+  );
 
-/* ---------------------------------------------
-   📦 Product Details Screen — Uses TopBar
---------------------------------------------- */
-const ProductDetailsScreenWithTopBar = ({ navigation, route }) => (
-  <View style={styles.container}>
-    <TopBar
-      title="Product Details"
-      onSearchPress={() => console.log("🔍 Search in Product Details")}
-      onCartPress={onCartPress}
-      onWishlistPress={onWishlistPress}
-    />
-    <ProductDetailsScreen navigation={navigation} route={route} />
-  </View>
-);
+  /* ---------------------------------------------
+     📦 Product Details Screen — Uses TopBar
+  --------------------------------------------- */
+  const ProductDetailsScreenWithTopBar = ({ navigation, route }) => (
+    <View style={styles.container}>
+      <TopBar
+        title="Product Details"
+        onSearchPress={() => console.log("🔍 Search in Product Details")}
+        onCartPress={onCartPress}
+        onWishlistPress={onWishlistPress}
+      />
+      <ProductDetailsScreen navigation={navigation} route={route} />
+    </View>
+  );
 
-/* ---------------------------------------------
-   🌐 Navigation Container
---------------------------------------------- */
-return (
-  <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Categories"
-        component={CategoriesScreenWithTopBar}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductDetails"
-        component={ProductDetailsScreenWithTopBar}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  </NavigationContainer>
-);
+  /* ---------------------------------------------
+     🌐 Navigation Container
+  --------------------------------------------- */
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Categories"
+          component={CategoriesScreenWithTopBar}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProductDetails"
+          component={ProductDetailsScreenWithTopBar}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 /* ---------------------------------------------
