@@ -12,11 +12,15 @@ import SearchBar from './Componets/Nav/SearchBar';
 import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
 import CategoriesScreen from './Componets/Categories/CategoriesScreen';
 import PromoBanner from './Componets/PromoBanner/PromoBanner';
+<<<<<<< HEAD
 import NewProducts from './Componets/NewProducts/NewProducts';
 import ProductsScreen from './Componets/ProductsContainer/ProductsScreen';
 import HeroSection from './Componets/HeroSection/HeroSection';
 import SevenMile from './Componets/SevenMile/SevenMile';
 import ProductSlider from './Componets/ProductSlider/ProductSlider';
+=======
+import ProductDetailsScreen from './Componets/ProductDetails/ProductDetailsScreen';
+>>>>>>> origin/7miles_gokul_initial
 
 const Stack = createNativeStackNavigator();
 
@@ -162,69 +166,90 @@ export default function App() {
       </View>
     );
   };
+/* ---------------------------------------------
+   🛍️ Categories Screen — Uses TopBar
+--------------------------------------------- */
+const CategoriesScreenWithTopBar = ({ navigation }) => (
+  <View style={styles.container}>
+    <TopBar
+      title="Categories"
+      onSearchPress={() => console.log("🔍 Search in Categories")}
+      onCartPress={onCartPress}
+      onWishlistPress={onWishlistPress}
+    />
+    {/* pass navigation down */}
+    <CategoriesScreen navigation={navigation} />
+  </View>
+);
 
-  /* ---------------------------------------------
-     🛍️ Categories Screen — Uses TopBar
-  --------------------------------------------- */
-  const CategoriesScreenWithTopBar = ({ navigation }) => (
-    <View style={styles.container}>
-      <TopBar
-        title="Categories"
-        onSearchPress={() => console.log('🔍 Search in Categories')}
-        onCartPress={onCartPress}
-        onWishlistPress={onWishlistPress}
+/* ---------------------------------------------
+   📦 Product Details Screen — Uses TopBar
+--------------------------------------------- */
+const ProductDetailsScreenWithTopBar = ({ navigation, route }) => (
+  <View style={styles.container}>
+    <TopBar
+      title="Product Details"
+      onSearchPress={() => console.log("🔍 Search in Product Details")}
+      onCartPress={onCartPress}
+      onWishlistPress={onWishlistPress}
+    />
+    <ProductDetailsScreen navigation={navigation} route={route} />
+  </View>
+);
+
+/* ---------------------------------------------
+   🌐 Navigation Container
+--------------------------------------------- */
+return (
+  <NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
       />
-      <CategoriesScreen />
-    </View>
-  );
-
-  /* ---------------------------------------------
-     🌐 Navigation Container
-  --------------------------------------------- */
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Categories"
-          component={CategoriesScreenWithTopBar}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+      <Stack.Screen
+        name="Categories"
+        component={CategoriesScreenWithTopBar}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductDetails"
+        component={ProductDetailsScreenWithTopBar}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  </NavigationContainer>
+);
 }
 
 /* ---------------------------------------------
    🎨 Styles
 --------------------------------------------- */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: "#fff" },
 
   // ✅ Common TopBar (for category/product screens)
   topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: 50,
     paddingBottom: 10,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: '#fff',
+    borderBottomColor: "#eee",
+    backgroundColor: "#d0c9c4", // ✅ Updated background color
   },
+
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
+    fontWeight: "600",
+    color: "#000",
   },
   iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   iconButton: {
     marginLeft: 18,
@@ -234,16 +259,16 @@ const styles = StyleSheet.create({
   content: { flex: 1 },
   contentText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 20,
-    color: '#333',
+    color: "#333",
   },
-  section: { marginBottom: 24, alignItems: 'center' },
+  section: { marginBottom: 24, alignItems: "center" },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
-    color: '#333',
+    color: "#333",
   },
 });
