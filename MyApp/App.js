@@ -12,6 +12,11 @@ import SearchBar from './Componets/Nav/SearchBar';
 import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
 import CategoriesScreen from './Componets/Categories/CategoriesScreen';
 import PromoBanner from './Componets/PromoBanner/PromoBanner';
+import NewProducts from './Componets/NewProducts/NewProducts';
+import ProductsScreen from './Componets/ProductsContainer/ProductsScreen';
+import HeroSection from './Componets/HeroSection/HeroSection';
+import SevenMile from './Componets/SevenMile/SevenMile';
+import ProductSlider from './Componets/ProductSlider/ProductSlider';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +92,11 @@ export default function App() {
           return (
             <ScrollView style={styles.content}>
               <PromoBanner />
+              <NewProducts />
+              <ProductsScreen />
+              <HeroSection />
+              <SevenMile />
+              <ProductSlider />
 
             </ScrollView>
           );

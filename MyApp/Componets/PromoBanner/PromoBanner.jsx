@@ -88,10 +88,7 @@ const PromoBanner = () => {
             </View>
           </View>
 
-          {/* Forward Arrow */}
-          <TouchableOpacity style={styles.forwardButton}>
-            <Text style={styles.forwardText}>›</Text>
-          </TouchableOpacity>
+     
         </View>
 
         {/* Image Indicators */}
@@ -121,7 +118,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     paddingHorizontal: 0,
     marginTop: -10,
- 
+    marginRight: 50,
   },
   banner: {
     width: width,
