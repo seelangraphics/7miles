@@ -1,99 +1,86 @@
-import React, { createContext, useContext, useReducer } from 'react';
+// Componets/context/CartContext.js
+import React, { createContext, useState, useContext, useCallback, useMemo } from 'react';
 
 const CartContext = createContext();
 
-const cartReducer = (state, action) => {
-
-  switch (action.type) {
-    case 'ADD_TO_CART':
-      const existingItem = state.items.find(item => item.name === action.payload.name);
-      if (existingItem) {
-        return {
-          ...state,
-          items: state.items.map(item =>
-            item.name === action.payload.name
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
-        };
-      }
-      return {
-        ...state,
-        items: [...state.items, { ...action.payload, quantity: 1 }]
-      };
-
-    case 'REMOVE_FROM_CART':
-      return {
-        ...state,
-        items: state.items.filter(item => item.name !== action.payload)
-      };
-
-    case 'UPDATE_QUANTITY':
-      return {
-        ...state,
-        items: state.items.map(item =>
-          item.name === action.payload.name
-            ? { ...item, quantity: action.payload.quantity }
-            : item
-        )
-      };
-
-    case 'CLEAR_CART':
-      return {
-        ...state,
-        items: []
-      };
-
-    default:
-      return state;
-  }
-};
-
-const initialState = {
-  items: []
-};
-
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
+  const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (product) => {
-    dispatch({ type: 'ADD_TO_CART', payload: product });
-  };
+  const addToCart = useCallback((product) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.name === product.name);
+      if (existingItem) {
+        return prevItems.map(item =>
+          item.name === product.name
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevItems, { ...product, quantity: 1 }];
+    });
+  }, []);
 
-  const removeFromCart = (productName) => {
-    dispatch({ type: 'REMOVE_FROM_CART', payload: productName });
-  };
+  const removeFromCart = useCallback((productName) => {
+    setCartItems(prevItems => prevItems.filter(item => item.name !== productName));
+  }, []);
 
-  const updateQuantity = (productName, quantity) => {
-    if (quantity <= 0) {
+  const updateQuantity = useCallback((productName, newQuantity) => {
+    if (newQuantity < 1) {
       removeFromCart(productName);
-    } else {
-      dispatch({ type: 'UPDATE_QUANTITY', payload: { name: productName, quantity } });
+      return;
     }
-  };
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.name === productName ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  }, [removeFromCart]);
 
-  const clearCart = () => {
-    dispatch({ type: 'CLEAR_CART' });
-  };
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+  }, []);
 
-  const getCartTotal = () => {
-    return state.items.reduce((total, item) => total + (item.sale_price * item.quantity), 0);
-  };
+  const getCartItemsCount = useCallback(() => {
+    return cartItems.reduce((count, item) => count + item.quantity, 0);
+  }, [cartItems]);
 
-  const getCartItemsCount = () => {
-    return state.items.reduce((total, item) => total + item.quantity, 0);
-  };
+  const getCartTotal = useCallback(() => {
+    return cartItems.reduce((total, item) => total + (item.sale_price * item.quantity), 0);
+  }, [cartItems]);
+
+  const isInCart = useCallback((productName) => {
+    return cartItems.some(item => item.name === productName);
+  }, [cartItems]);
+
+  const getItemQuantity = useCallback((productName) => {
+    const item = cartItems.find(item => item.name === productName);
+    return item ? item.quantity : 0;
+  }, [cartItems]);
+
+  const value = useMemo(() => ({
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    getCartItemsCount,
+    getCartTotal,
+    isInCart,
+    getItemQuantity
+  }), [
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    getCartItemsCount,
+    getCartTotal,
+    isInCart,
+    getItemQuantity
+  ]);
 
   return (
-    <CartContext.Provider value={{
-      cart: state,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-      getCartTotal,
-      getCartItemsCount
-    }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

@@ -26,6 +26,7 @@ import SevenMile from './Componets/SevenMile/SevenMile';
 import ProductSlider from './Componets/ProductSlider/ProductSlider';
 import Routineproduct from './Componets/Rotine-product/RotineProducts';
 import Adbanner from './Componets/AddBanner/Adbanner';
+import CartScreen from './Componets/CartScreen/CartScreen';
 
 // ✅ Cart Context
 import { CartProvider, useCart } from './Componets/context/CartContext';
@@ -79,99 +80,21 @@ const TopBar = ({
   </View>
 );
 
-// ✅ Cart Screen Component
-const CartScreen = ({ navigation }) => {
-  const { cart, updateQuantity, removeFromCart, getCartTotal, clearCart, getCartItemsCount } = useCart();
-
-  const handleCheckout = () => {
-    alert('Proceeding to checkout!');
-    clearCart();
-  };
-
-  const handleBackPress = () => {
-    navigation.navigate('Home');
-  };
-
-  if (cart.items.length === 0) {
-    return (
-      <View style={styles.container}>
-        <TopBar
-          title="My Cart"
-          onBackPress={handleBackPress}
-          onSearchPress={() => console.log("Search in Cart")}
-          onCartPress={() => {}}
-          onWishlistPress={() => console.log("Wishlist")}
-          cartItemsCount={0}
-        />
-        <View style={styles.emptyCart}>
-          <Ionicons name="cart-outline" size={80} color="#ccc" />
-          <Text style={styles.emptyCartText}>Your cart is empty</Text>
-          <TouchableOpacity 
-            style={styles.continueShoppingButton}
-            onPress={() => navigation.navigate('Home')}
-          >
-            <Text style={styles.continueShoppingText}>Continue Shopping</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
+// ✅ Cart Screen Wrapper with TopBar
+const CartScreenWithTopBar = ({ navigation }) => {
+  const { getCartItemsCount } = useCart();
 
   return (
     <View style={styles.container}>
       <TopBar
         title="My Cart"
-        onBackPress={handleBackPress}
+        onBackPress={() => navigation.navigate('Home')}
         onSearchPress={() => console.log("Search in Cart")}
         onCartPress={() => {}}
         onWishlistPress={() => console.log("Wishlist")}
         cartItemsCount={getCartItemsCount()}
       />
-      
-      <ScrollView style={styles.cartItems}>
-        {cart.items.map((item, index) => (
-          <View key={item.name + index} style={styles.cartItem}>
-            <Image source={item.image} style={styles.cartItemImage} />
-            <View style={styles.cartItemDetails}>
-              <Text style={styles.cartItemName}>{item.name}</Text>
-              <Text style={styles.cartItemCategory}>{item.category}</Text>
-              <Text style={styles.cartItemPrice}>₹{item.sale_price}</Text>
-            </View>
-            <View style={styles.cartItemActions}>
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity 
-                  style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.name, item.quantity - 1)}
-                >
-                  <Text style={styles.quantityText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{item.quantity}</Text>
-                <TouchableOpacity 
-                  style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.name, item.quantity + 1)}
-                >
-                  <Text style={styles.quantityText}>+</Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity 
-                style={styles.removeButton}
-                onPress={() => removeFromCart(item.name)}
-              >
-                <Ionicons name="trash-outline" size={20} color="#ff4444" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      <View style={styles.cartFooter}>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: ₹{getCartTotal()}</Text>
-        </View>
-        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-          <Text style={styles.checkoutText}>Proceed to Checkout</Text>
-        </TouchableOpacity>
-      </View>
+      <CartScreen navigation={navigation} />
     </View>
   );
 };
@@ -243,13 +166,14 @@ const AccountScreen = ({ navigation }) => {
 };
 
 /* ---------------------------------------------
-   ✅ Main App Component
+   ✅ Main App Component - MOVE useCart INSIDE HomeScreen
 --------------------------------------------- */
 function AppContent() {
   const [showSearch, setShowSearch] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
-  const { getCartItemsCount } = useCart();
+
+  // REMOVE useCart from here - move it inside HomeScreen
 
   // Handlers
   const handleSearchPress = () => setShowSearch(true);
@@ -265,6 +189,9 @@ function AppContent() {
      🏠 Home Screen — Only screen with TopNavigation
   --------------------------------------------- */
   const HomeScreen = ({ navigation }) => {
+    // MOVE useCart INSIDE HomeScreen component
+    const { getCartItemsCount } = useCart();
+
     const handleTabPress = (tab) => {
       if (tab === 'categories') {
         navigation.navigate('Categories');
@@ -401,7 +328,7 @@ function AppContent() {
         />
         <Stack.Screen
           name="Cart"
-          component={CartScreen}
+          component={CartScreenWithTopBar}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -491,121 +418,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 10,
     fontWeight: 'bold',
-  },
-
-  // Cart Screen Styles
-  emptyCart: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyCartText: {
-    fontSize: 18,
-    color: '#666',
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  continueShoppingButton: {
-    backgroundColor: '#000',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  continueShoppingText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  cartItems: {
-    flex: 1,
-    padding: 16,
-  },
-  cartItem: {
-    flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  cartItemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-  },
-  cartItemDetails: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  cartItemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  cartItemCategory: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 4,
-  },
-  cartItemPrice: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#000',
-  },
-  cartItemActions: {
-    alignItems: 'center',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  quantityButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#ddd',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  quantity: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginHorizontal: 12,
-    minWidth: 20,
-    textAlign: 'center',
-  },
-  removeButton: {
-    padding: 4,
-  },
-  cartFooter: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  totalContainer: {
-    marginBottom: 16,
-  },
-  totalText: {
-    fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  checkoutButton: {
-    backgroundColor: '#000',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  checkoutText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 
   mainContent: { flex: 1 },
