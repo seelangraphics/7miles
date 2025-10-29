@@ -13,15 +13,20 @@ import {
   Alert
 } from 'react-native';
 import { products } from "../data/7mils_Products";
+import { useCart } from '../context/CartContext';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 const Routineproduct = () => {
   const [selectedFilter, setSelectedFilter] = useState('all');
-  const [cart, setCart] = useState([]);
   const flatListRefs = useRef({});
   const scrollX = useRef(new Animated.Value(0)).current;
   const currentIndices = useRef({});
+
+  // Cart context and navigation
+  const { addToCart, getItemQuantity, updateQuantity, removeFromCart, getCartItemsCount } = useCart();
+  const navigation = useNavigation();
 
   // Filter products based on selected criteria
   const filteredProducts = useMemo(() => {
@@ -71,21 +76,45 @@ const Routineproduct = () => {
     };
   }, [categoryProducts]);
 
-  // Add to cart function
-  const addToCart = (product) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.name === product.name);
-      if (existingItem) {
-        return prevCart.map(item =>
-          item.name === product.name
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-    Alert.alert('Success', `${product.name} added to cart!`);
+  // Enhanced Add to Cart function with cart context
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    Alert.alert(
+      'Success!',
+      `${product.name} added to cart`,
+      [
+        { 
+          text: 'Continue Shopping', 
+          style: 'cancel' 
+        },
+        { 
+          text: 'Go to Cart', 
+          onPress: () => navigation.navigate('Cart') 
+        }
+      ]
+    );
+  };
+
+  // Handle quantity increase
+  const handleQuantityIncrease = (productName) => {
+    const currentQuantity = getItemQuantity(productName);
+    updateQuantity(productName, currentQuantity + 1);
+  };
+
+  // Handle quantity decrease
+  const handleQuantityDecrease = (productName) => {
+    const currentQuantity = getItemQuantity(productName);
+    if (currentQuantity === 1) {
+      removeFromCart(productName);
+    } else {
+      updateQuantity(productName, currentQuantity - 1);
+    }
+  };
+
+  // Handle Buy Now
+  const handleBuyNow = (product) => {
+    addToCart(product);
+    navigation.navigate('Cart');
   };
 
   // Calculate discount percentage
@@ -93,65 +122,110 @@ const Routineproduct = () => {
     return Math.round(((regular - sale) / regular) * 100);
   };
 
-  // Horizontal Product Card component
-  const HorizontalProductCard = ({ item, category }) => (
-    <View style={styles.horizontalCard}>
-      <View style={styles.horizontalImageContainer}>
-        <Image source={item.image} style={styles.horizontalProductImage} />
-        
-        {/* Category Badge */}
-        <View style={styles.categoryBadge}>
-          <Text style={styles.categoryBadgeText}>
-            {category === 'Facepowder' ? 'Face Powder' : 
-             category === 'nightroutine' ? 'Night Routine' : 'Hair Pack'}
-          </Text>
+  // Horizontal Product Card component with cart functionality
+  const HorizontalProductCard = ({ item, category }) => {
+    const quantity = getItemQuantity(item.name);
+    const isInCart = quantity > 0;
+
+    return (
+      <View style={styles.horizontalCard}>
+        <View style={styles.horizontalImageContainer}>
+          <Image source={item.image} style={styles.horizontalProductImage} />
+          
+          {/* Category Badge */}
+          <View style={styles.categoryBadge}>
+            <Text style={styles.categoryBadgeText}>
+              {category === 'Facepowder' ? 'Face Powder' : 
+               category === 'nightroutine' ? 'Night Routine' : 'Hair Pack'}
+            </Text>
+          </View>
+
+          {/* Discount Badge */}
+          <View style={styles.discountBadge}>
+            <Text style={styles.discountText}>
+              {getDiscountPercentage(item.regular_price, item.sale_price)}% OFF
+            </Text>
+          </View>
         </View>
 
-        {/* Discount Badge */}
-        <View style={styles.discountBadge}>
-          <Text style={styles.discountText}>
-            {getDiscountPercentage(item.regular_price, item.sale_price)}% OFF
+        <View style={styles.horizontalProductInfo}>
+          <Text style={styles.horizontalProductName} numberOfLines={2}>
+            {item.name}
           </Text>
+          
+          <Text style={styles.horizontalCategory}>{item.category}</Text>
+          
+          <View style={styles.horizontalPriceContainer}>
+            <Text style={styles.horizontalSalePrice}>₹{item.sale_price}</Text>
+            <Text style={styles.horizontalRegularPrice}>₹{item.regular_price}</Text>
+          </View>
+
+          {/* Additional Tags */}
+          <View style={styles.horizontalTagsContainer}>
+            {item.Newproducts === "yes" && (
+              <Text style={styles.newTag}>NEW</Text>
+            )}
+            {item.bestSeller === "yes" && (
+              <Text style={styles.bestSellerTag}>BEST SELLER</Text>
+            )}
+            {item.Trending === "yes" && (
+              <Text style={styles.trendingTag}>TRENDING</Text>
+            )}
+          </View>
+
+          {/* Cart Actions */}
+          <View style={styles.actionButtons}>
+            {isInCart ? (
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity 
+                  style={styles.quantityButton}
+                  onPress={() => handleQuantityDecrease(item.name)}
+                >
+                  <Text style={styles.quantityText}>-</Text>
+                </TouchableOpacity>
+                
+                <Text style={styles.quantity}>{quantity}</Text>
+                
+                <TouchableOpacity 
+                  style={styles.quantityButton}
+                  onPress={() => handleQuantityIncrease(item.name)}
+                >
+                  <Text style={styles.quantityText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <TouchableOpacity 
+                style={styles.addToCartButton}
+                onPress={() => handleAddToCart(item)}
+              >
+                <Text style={styles.addToCartText}>Add to Cart</Text>
+              </TouchableOpacity>
+            )}
+            
+            {/* Buy Now Button */}
+            <TouchableOpacity 
+              style={styles.buyNowButton}
+              onPress={() => handleBuyNow(item)}
+            >
+              <Text style={styles.buyNowText}>Buy Now</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-
-      <View style={styles.horizontalProductInfo}>
-        <Text style={styles.horizontalProductName} numberOfLines={2}>
-          {item.name}
-        </Text>
-        
-        <Text style={styles.horizontalCategory}>{item.category}</Text>
-        
-        <View style={styles.horizontalPriceContainer}>
-          <Text style={styles.horizontalSalePrice}>₹{item.sale_price}</Text>
-          <Text style={styles.horizontalRegularPrice}>₹{item.regular_price}</Text>
-        </View>
-
-        {/* Additional Tags */}
-        <View style={styles.horizontalTagsContainer}>
-          {item.Newproducts === "yes" && (
-            <Text style={styles.newTag}>NEW</Text>
-          )}
-          {item.bestSeller === "yes" && (
-            <Text style={styles.bestSellerTag}>BEST SELLER</Text>
-          )}
-          {item.Trending === "yes" && (
-            <Text style={styles.trendingTag}>TRENDING</Text>
-          )}
-        </View>
-
-        {/* Add to Cart Button */}
-        <TouchableOpacity 
-          style={styles.addToCartButton}
-          onPress={() => addToCart(item)}
-        >
-          <Text style={styles.addToCartText}>Add to Cart</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  };
 
   // Cart Icon Component
+  const CartIcon = () => (
+    <TouchableOpacity 
+      style={styles.cartIcon}
+      onPress={() => navigation.navigate('Cart')}
+    >
+      <Text style={styles.cartIconText}>
+        Cart ({getCartItemsCount()})
+      </Text>
+    </TouchableOpacity>
+  );
 
   // Horizontal Slider Section
   const HorizontalSliderSection = ({ category }) => {
@@ -247,7 +321,7 @@ const Routineproduct = () => {
               Specialized Face Powder, Night Routine & Hair Pack Products
             </Text>
           </View>
-         
+          <CartIcon />
         </View>
       </View>
 
@@ -454,17 +528,66 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
+  // Action Buttons
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
+  },
   addToCartButton: {
     backgroundColor: '#000',
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 8,
+    flex: 1,
   },
   addToCartText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  buyNowButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    flex: 1,
+  },
+  buyNowText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    flex: 1,
+  },
+  quantityButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  quantity: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    minWidth: 30,
+    textAlign: 'center',
   },
 });
 
