@@ -96,27 +96,58 @@ const [selectedFilter, setSelectedFilter] = useState("");
         keyExtractor={(item) => item.id}
         numColumns={2}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.productCard}
-            onPress={() =>
-              navigation.navigate("ProductDetails", { product: item })
-            }
-          >
-            <Image source={item.image} style={styles.productImage} />
-            <Text style={styles.productName}>{item.name}</Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.originalPrice}>₹{item.regular_price}</Text>
-              <Text style={styles.discountedPrice}>₹{item.sale_price}</Text>
-            </View>
-            <Text style={styles.offerText}>Save ₹{item.save}</Text>
-            <TouchableOpacity style={styles.addButton}>
-              <Text style={styles.addButtonText}>Add</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+          <View style={styles.cardContainer}>
+            <TouchableOpacity
+              style={styles.productCard}
+              onPress={() =>
+                navigation.navigate("ProductDetails", { product: item })
+              }
+            >
+              {/* Image Container - Covering half the card */}
+              <View style={styles.imageContainer}>
+                <Image source={item.image} style={styles.productImage} />
 
+       
+              </View>
+
+              {/* Content Container */}
+              <View style={styles.contentContainer}>
+                {/* Name and Wishlist Row */}
+                <View style={styles.nameRow}>
+                  <Text style={styles.productName} numberOfLines={2}>
+                    {item.name}
+                  </Text>
+                  <TouchableOpacity style={styles.wishlistIcon}>
+                    <Ionicons name="heart-outline" size={18} color="#666" />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Price Container */}
+                <View style={styles.priceContainer}>
+                  <View style={styles.priceBadge}>
+                    <Text style={styles.discountedPrice}>
+                      ₹{item.sale_price}
+                    </Text>
+                    <Text style={styles.originalPrice}>
+                      ₹{item.regular_price}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Save amount */}
+                <Text style={styles.offerText}>Save ₹{item.save}</Text>
+
+                {/* Add to cart button with icon */}
+                <TouchableOpacity style={styles.addButton}>
+                  <Ionicons name="cart" size={16} color="#fff" />
+                  <Text style={styles.addButtonText}>Add</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+        contentContainerStyle={styles.flatListContent}
+      />
       {/* 🔸 Filter Modal */}
 
       <Modal visible={filterVisible} animationType="slide" transparent>
@@ -251,50 +282,137 @@ const styles = StyleSheet.create({
   activeText: { color: "#007AFF", fontWeight: "bold" },
 
   // Product Cards
-  productCard: {
+
+  flatListContent: {
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+  },
+
+  cardContainer: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 12,
-    padding: 10,
-    margin: 8,
-    marginTop: 30,
+    padding: 6,
+    maxWidth: "50%", // Ensures 2 columns
+  },
+
+  cardContainer: {
+    flex: 1,
+    padding: 6,
+    maxWidth: "50%", // Ensures 2 columns
+  },
+
+  productCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 6,
+    paddingBottom:10,
     alignItems: "center",
-    elevation: 2,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
+    height: 280,
   },
-  productImage: { width: 100, height: 100, borderRadius: 10 },
+
+  imageContainer: {
+    width: "100%",
+    height: 100, // Fixed height for image area
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+    position: "relative",
+  },
+
+  productImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
+    backgroundColor: "#f8f8f8",
+    resizeMode: "cover",
+  },
+ 
+
+  contentContainer: {
+    width: "100%",
+    flex: 1,
+    justifyContent: "space-between",
+    backgroundColor:'#f3eeee',
+   
+  },
+
+  nameRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 8,
+    width: "100%",
+  },
+
   productName: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
-    marginTop: 6,
-    textAlign: "center",
     color: "#333",
+    flex: 1,
+    marginRight: 8,
   },
+
+  wishlistIcon: {
+    padding: 4,
+  },
+
   priceContainer: {
+    marginBottom: 6,
+  },
+
+  priceBadge: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 6,
+    backgroundColor: "#FF6B6B",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 16,
+    gap: 4,
+    alignSelf: "flex-start",
   },
+
   originalPrice: {
-    fontSize: 12,
-    color: "#999",
+    fontSize: 10,
+    color: "rgba(255,255,255,0.8)",
     textDecorationLine: "line-through",
-    marginRight: 6,
   },
+
   discountedPrice: {
     fontSize: 14,
-    color: "#007AFF",
+    color: "#fff",
     fontWeight: "bold",
   },
-  offerText: { fontSize: 12, color: "green", marginTop: 3 },
-  addButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 6,
-    paddingHorizontal: 18,
-    borderRadius: 20,
-    marginTop: 8,
-  },
-  addButtonText: { color: "#fff", fontSize: 13, fontWeight: "bold" },
 
+  offerText: {
+    fontSize: 11,
+    color: "#27ae60",
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+
+  addButton: {
+    backgroundColor: "#000",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+
+    borderRadius: 20,
+    width: "100%",
+    gap: 6,
+  },
+
+  addButtonText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "600",
+  },
   // Modals
   modalContainer: {
     flex: 1,
@@ -348,7 +466,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-
 
   floatingCloseButton: {
     position: "absolute",

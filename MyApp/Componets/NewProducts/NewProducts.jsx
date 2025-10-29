@@ -15,10 +15,12 @@ const { width } = Dimensions.get('window');
 
 // Import from your JavaScript file
 import { products } from '../data/7mils_Products';
+import { useCart } from '../context/CartContext'; // Import the cart context
 
 const NewProducts = ({ onAddToCart, onProductPress }) => {
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
+    const { addToCart, updateQuantity } = useCart(); // Use cart context
 
     // Filter only new products
     const newProducts = products.filter(product => product.Newproducts === "yes");
@@ -26,14 +28,14 @@ const NewProducts = ({ onAddToCart, onProductPress }) => {
     const handleAddToCart = (product) => {
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
         setQuantities(prev => ({ ...prev, [product.name]: 1 }));
-        onAddToCart?.(product);
+        addToCart(product); 
     };
-
     const handleQuantityChange = (product, change) => {
         const currentQty = quantities[product.name] || 0;
         const newQty = Math.max(0, currentQty + change);
         
         setQuantities(prev => ({ ...prev, [product.name]: newQty }));
+        updateQuantity(product.name, newQty); // Update global cart
         
         if (newQty === 0) {
             setAddedItems(prev => ({ ...prev, [product.name]: false }));

@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useCart } from '../context/CartContext'; // Import cart context
 
 const TopNavigation = ({
     onSearchPress,
@@ -9,6 +10,7 @@ const TopNavigation = ({
     onCartPress
 }) => {
     const mainCategories = ['All', 'Hair Care', 'Skin Care', 'Body Care', 'Wellness & Edibles'];
+      const { getCartItemsCount } = useCart(); // Get cart count
 
     return (
         <View style={styles.container}>
@@ -24,9 +26,14 @@ const TopNavigation = ({
                 </View>
 
                 {/* Cart Icon */}
-                <TouchableOpacity style={styles.cartButton} onPress={onCartPress}>
-                    <Ionicons name="cart-outline" size={24} color="black" />
-                </TouchableOpacity>
+            <TouchableOpacity onPress={onCartPress} style={styles.iconButton}>
+        <Ionicons name="cart-outline" size={24} color="#000" />
+        {getCartItemsCount() > 0 && (
+          <View style={styles.cartBadge}>
+            <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
             </View>
 
             {/* Search Bar */}
