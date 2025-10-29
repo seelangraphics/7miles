@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   StyleSheet, 
@@ -88,7 +89,14 @@ const CartScreenWithTopBar = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-
+      <TopBar
+        title="My Cart"
+        onBackPress={() => navigation.navigate('Home')}
+        onSearchPress={() => console.log("Search in Cart")}
+        onCartPress={() => {}}
+        onWishlistPress={() => console.log("Wishlist")}
+        cartItemsCount={getCartItemsCount()}
+      />
       <CartScreen navigation={navigation} />
     </View>
   );

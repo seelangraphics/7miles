@@ -6,8 +6,6 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
   Dimensions,
   Animated,
   Alert
@@ -141,11 +139,13 @@ const Routineproduct = () => {
           </View>
 
           {/* Discount Badge */}
-          <View style={styles.discountBadge}>
-            <Text style={styles.discountText}>
-              {getDiscountPercentage(item.regular_price, item.sale_price)}% OFF
-            </Text>
-          </View>
+          {item.regular_price > item.sale_price && (
+            <View style={styles.discountBadge}>
+              <Text style={styles.discountText}>
+                {getDiscountPercentage(item.regular_price, item.sale_price)}% OFF
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.horizontalProductInfo}>
@@ -309,9 +309,7 @@ const Routineproduct = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#f8f8f8" barStyle="dark-content" />
-      
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerRow}>
@@ -327,7 +325,7 @@ const Routineproduct = () => {
 
       {/* Main Content */}
       {renderMainContent()}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -335,6 +333,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
+    marginVertical: 8, // Add some vertical spacing
   },
   scrollContainer: {
     flex: 1,
@@ -351,13 +350,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 20, // Reduced from 24
     fontWeight: 'bold',
     color: '#000',
     marginBottom: 4,
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
     color: '#000',
     opacity: 0.7,
   },
@@ -372,28 +371,28 @@ const styles = StyleSheet.create({
   cartIconText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
   },
   // Horizontal Slider Styles
   horizontalSection: {
     backgroundColor: '#fff',
-    paddingVertical: 16,
+    paddingVertical: 12, // Reduced padding
     marginBottom: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   sectionHeader: {
     paddingHorizontal: 16,
-    marginBottom: 12,
+    marginBottom: 8, // Reduced margin
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16, // Reduced from 18
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 4,
+    marginBottom: 2, // Reduced margin
   },
   sectionSubtitle: {
-    fontSize: 12,
+    fontSize: 10, // Reduced from 12
     color: '#000',
     opacity: 0.6,
   },
@@ -401,23 +400,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   horizontalCard: {
-    width: width * 0.7,
+    width: width * 0.65, // Slightly smaller cards
     backgroundColor: '#fff',
     borderRadius: 12,
-    marginRight: 16,
+    marginRight: 12, // Reduced margin
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+    marginBottom: 8, // Add bottom margin
   },
   horizontalImageContainer: {
     position: 'relative',
-    padding: 16,
+    padding: 12, // Reduced padding
   },
   horizontalProductImage: {
     width: '100%',
-    height: 150,
+    height: 120, // Reduced height
     borderRadius: 8,
     backgroundColor: '#f8f8f8',
   },
@@ -426,46 +426,46 @@ const styles = StyleSheet.create({
     top: 8,
     left: 8,
     backgroundColor: '#000',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 6, // Reduced padding
+    paddingVertical: 2, // Reduced padding
     borderRadius: 4,
   },
   categoryBadgeText: {
     color: '#f8f8f8',
-    fontSize: 10,
+    fontSize: 8, // Reduced from 10
     fontWeight: 'bold',
   },
   horizontalProductInfo: {
-    padding: 16,
+    padding: 12, // Reduced padding
     paddingTop: 0,
   },
   horizontalProductName: {
-    fontSize: 16,
+    fontSize: 14, // Reduced from 16
     fontWeight: '600',
     color: '#000',
     marginBottom: 4,
-    lineHeight: 20,
+    lineHeight: 18, // Reduced line height
   },
   horizontalCategory: {
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
     color: '#000',
     opacity: 0.6,
-    marginBottom: 8,
+    marginBottom: 6, // Reduced margin
   },
   horizontalPriceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    marginBottom: 8,
+    marginBottom: 6, // Reduced margin
   },
   horizontalSalePrice: {
-    fontSize: 18,
+    fontSize: 16, // Reduced from 18
     fontWeight: 'bold',
     color: '#000',
-    marginRight: 8,
+    marginRight: 6, // Reduced margin
   },
   horizontalRegularPrice: {
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
     color: '#000',
     opacity: 0.5,
     textDecorationLine: 'line-through',
@@ -473,59 +473,59 @@ const styles = StyleSheet.create({
   horizontalTagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 12,
+    marginBottom: 8, // Reduced margin
   },
   newTag: {
-    fontSize: 10,
+    fontSize: 8, // Reduced from 10
     color: '#000',
     fontWeight: 'bold',
     backgroundColor: '#f8f8f8',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 4, // Reduced padding
+    paddingVertical: 1, // Reduced padding
+    borderRadius: 3, // Reduced border radius
     borderWidth: 1,
     borderColor: '#000',
-    marginRight: 4,
-    marginBottom: 4,
+    marginRight: 3, // Reduced margin
+    marginBottom: 3, // Reduced margin
   },
   bestSellerTag: {
-    fontSize: 10,
+    fontSize: 8, // Reduced from 10
     color: '#000',
     fontWeight: 'bold',
     backgroundColor: '#f8f8f8',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 4, // Reduced padding
+    paddingVertical: 1, // Reduced padding
+    borderRadius: 3, // Reduced border radius
     borderWidth: 1,
     borderColor: '#000',
-    marginRight: 4,
-    marginBottom: 4,
+    marginRight: 3, // Reduced margin
+    marginBottom: 3, // Reduced margin
   },
   trendingTag: {
-    fontSize: 10,
+    fontSize: 8, // Reduced from 10
     color: '#000',
     fontWeight: 'bold',
     backgroundColor: '#f8f8f8',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 4, // Reduced padding
+    paddingVertical: 1, // Reduced padding
+    borderRadius: 3, // Reduced border radius
     borderWidth: 1,
     borderColor: '#000',
-    marginRight: 4,
-    marginBottom: 4,
+    marginRight: 3, // Reduced margin
+    marginBottom: 3, // Reduced margin
   },
   discountBadge: {
     position: 'absolute',
     top: 8,
     right: 8,
     backgroundColor: '#000',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 4, // Reduced padding
+    paddingVertical: 1, // Reduced padding
+    borderRadius: 3, // Reduced border radius
   },
   discountText: {
     color: '#f8f8f8',
-    fontSize: 10,
+    fontSize: 8, // Reduced from 10
     fontWeight: 'bold',
   },
   // Action Buttons
@@ -533,60 +533,60 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
+    gap: 6, // Reduced gap
   },
   addToCartButton: {
     backgroundColor: '#000',
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingVertical: 8, // Reduced padding
+    borderRadius: 6, // Reduced border radius
     alignItems: 'center',
     flex: 1,
   },
   addToCartText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
   },
   buyNowButton: {
     backgroundColor: '#FFD700',
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingVertical: 8, // Reduced padding
+    borderRadius: 6, // Reduced border radius
     alignItems: 'center',
     flex: 1,
   },
   buyNowText: {
     color: '#000',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+    borderRadius: 6, // Reduced border radius
+    paddingHorizontal: 6, // Reduced padding
+    paddingVertical: 4, // Reduced padding
     flex: 1,
   },
   quantityButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 24, // Reduced size
+    height: 24, // Reduced size
+    borderRadius: 12, // Reduced border radius
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
   },
   quantityText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14, // Reduced from 16
     fontWeight: 'bold',
   },
   quantity: {
-    fontSize: 16,
+    fontSize: 14, // Reduced from 16
     fontWeight: 'bold',
     color: '#000',
-    minWidth: 30,
+    minWidth: 25, // Reduced width
     textAlign: 'center',
   },
 });
