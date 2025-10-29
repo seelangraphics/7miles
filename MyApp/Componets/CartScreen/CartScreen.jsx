@@ -39,30 +39,7 @@ const CartScreen = ({ navigation }) => {
     return (
       <View style={styles.container}>
         {/* Top Bar for Cart Screen */}
-        <View style={styles.topBar}>
-          <View style={styles.leftSection}>
-            <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.title}>My Cart</Text>
-          </View>
-          <View style={styles.iconContainer}>
-            <TouchableOpacity style={styles.iconButton}>
-              <Ionicons name="search-outline" size={22} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Ionicons name="heart-outline" size={22} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Ionicons name="cart-outline" size={22} color="#000" />
-              {getCartItemsCount() > 0 && (
-                <View style={styles.cartBadge}>
-                  <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
+   
         
         <View style={styles.emptyCart}>
           <Ionicons name="cart-outline" size={80} color="#ccc" />
@@ -81,30 +58,7 @@ const CartScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Top Bar for Cart Screen */}
-      <View style={styles.topBar}>
-        <View style={styles.leftSection}>
-          <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.title}>My Cart</Text>
-        </View>
-        <View style={styles.iconContainer}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="search-outline" size={22} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="heart-outline" size={22} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="cart-outline" size={22} color="#000" />
-            {getCartItemsCount() > 0 && (
-              <View style={styles.cartBadge}>
-                <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
+    
       
       <ScrollView style={styles.cartItems}>
         {/* Map over cartItems */}
