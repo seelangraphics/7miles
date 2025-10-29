@@ -84,7 +84,8 @@ export const products = [
         save: 45,
         category: "Hair Care",
         image: require("../../assets/hair/h10.webp"),
-        powder: "yes"
+        powder: "yes",
+        hairpack:"yes"
     },
     {
         name: "HENNA POWDER",
@@ -93,7 +94,8 @@ export const products = [
         save: 60,
         category: "Hair Care",
         image: require("../../assets/hair/h11.webp"),
-        powder: "yes"
+        powder: "yes",
+         hairpack:"yes"
     },
     {
         name: "AMLA POWDER",
@@ -113,10 +115,20 @@ export const products = [
         save: 30,
         category: "Skin Care",
         image: require("../../assets/skin/s1.webp"),
-        Newproducts: "yes"
+        Newproducts: "yes",
+        nightroutine:"yes"
+    },
+       {
+        name: "ROSE POWDER",
+        sale_price: 190,
+        regular_price: 220,
+        save: 30,
+        category: "Skin Care",
+        image: require("../../assets/skin/s16.avif"),
+        Facepowder:"yes",
     },
     {
-        name: "SKIN BRIGHTENING SOAP",
+        name: "SKIN BRIGHTENING SOAP",  
         sale_price: 160,
         regular_price: 220,
         save: 60,
@@ -205,7 +217,8 @@ export const products = [
         regular_price: 310,
         save: 40,
         category: "Skin Care",
-        image: require("../../assets/skin/s12.webp")
+        image: require("../../assets/skin/s12.webp"),
+         nightroutine:"yes"
     },
     {
         name: "KUMKUMATHI SOAP",
@@ -222,7 +235,8 @@ export const products = [
         regular_price: 115,
         save: 35,
         category: "Skin Care",
-        image: require("../../assets/skin/s14.webp")
+        image: require("../../assets/skin/s14.webp"),
+         Facepowder:"yes",
     },
     {
         name: "MULTANI MITTI POWDER",
@@ -231,7 +245,8 @@ export const products = [
         save: 75,
         category: "Skin Care",
         image: require("../../assets/skin/s15.webp"),
-        powder: "yes"
+        powder: "yes",
+         Facepowder:"yes",
     },
 
     // --- Body Care ---
@@ -259,7 +274,8 @@ export const products = [
         save: 15,
         category: "Body Care",
         image: require("../../assets/body/b3.webp"),
-        Newproducts: "yes"
+        Newproducts: "yes",
+        nightroutine:"yes"
     },
     {
         name: "FLAX SEED",

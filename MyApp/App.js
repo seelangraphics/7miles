@@ -1,7 +1,12 @@
-
-// App.js
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { 
+  StyleSheet, 
+  View, 
+  Text, 
+  ScrollView, 
+  TouchableOpacity, 
+  Image 
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,15 +24,36 @@ import ProductsScreen from './Componets/ProductsContainer/ProductsScreen';
 import HeroSection from './Componets/HeroSection/HeroSection';
 import SevenMile from './Componets/SevenMile/SevenMile';
 import ProductSlider from './Componets/ProductSlider/ProductSlider';
+import Routineproduct from './Componets/Rotine-product/RotineProducts';
+import Adbanner from './Componets/AddBanner/Adbanner';
+
+// ✅ Cart Context
+import { CartProvider, useCart } from './Componets/context/CartContext';
 
 const Stack = createNativeStackNavigator();
 
 /* ---------------------------------------------
-   ✅ Reusable TopBar for Product / Category Pages
+   ✅ Reusable TopBar for ALL Non-Home Pages
 --------------------------------------------- */
-const TopBar = ({ title, onSearchPress, onCartPress, onWishlistPress }) => (
+const TopBar = ({ 
+  title, 
+  onBackPress, 
+  onSearchPress, 
+  onCartPress, 
+  onWishlistPress, 
+  cartItemsCount,
+  showBackButton = true 
+}) => (
   <View style={styles.topBar}>
-    <Text style={styles.title}>{title}</Text>
+    {/* Back Button */}
+    <View style={styles.leftSection}>
+      {showBackButton && (
+        <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+      )}
+      <Text style={styles.title}>{title}</Text>
+    </View>
 
     <View style={styles.iconContainer}>
       {/* Search Icon */}
@@ -40,21 +66,190 @@ const TopBar = ({ title, onSearchPress, onCartPress, onWishlistPress }) => (
         <Ionicons name="heart-outline" size={22} color="#000" />
       </TouchableOpacity>
 
-      {/* Cart Icon */}
+      {/* Cart Icon with Badge */}
       <TouchableOpacity onPress={onCartPress} style={styles.iconButton}>
         <Ionicons name="cart-outline" size={22} color="#000" />
+        {cartItemsCount > 0 && (
+          <View style={styles.cartBadge}>
+            <Text style={styles.cartBadgeText}>{cartItemsCount}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   </View>
 );
 
+// ✅ Cart Screen Component
+const CartScreen = ({ navigation }) => {
+  const { cart, updateQuantity, removeFromCart, getCartTotal, clearCart, getCartItemsCount } = useCart();
+
+  const handleCheckout = () => {
+    alert('Proceeding to checkout!');
+    clearCart();
+  };
+
+  const handleBackPress = () => {
+    navigation.navigate('Home');
+  };
+
+  if (cart.items.length === 0) {
+    return (
+      <View style={styles.container}>
+        <TopBar
+          title="My Cart"
+          onBackPress={handleBackPress}
+          onSearchPress={() => console.log("Search in Cart")}
+          onCartPress={() => {}}
+          onWishlistPress={() => console.log("Wishlist")}
+          cartItemsCount={0}
+        />
+        <View style={styles.emptyCart}>
+          <Ionicons name="cart-outline" size={80} color="#ccc" />
+          <Text style={styles.emptyCartText}>Your cart is empty</Text>
+          <TouchableOpacity 
+            style={styles.continueShoppingButton}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Text style={styles.continueShoppingText}>Continue Shopping</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <TopBar
+        title="My Cart"
+        onBackPress={handleBackPress}
+        onSearchPress={() => console.log("Search in Cart")}
+        onCartPress={() => {}}
+        onWishlistPress={() => console.log("Wishlist")}
+        cartItemsCount={getCartItemsCount()}
+      />
+      
+      <ScrollView style={styles.cartItems}>
+        {cart.items.map((item, index) => (
+          <View key={item.name + index} style={styles.cartItem}>
+            <Image source={item.image} style={styles.cartItemImage} />
+            <View style={styles.cartItemDetails}>
+              <Text style={styles.cartItemName}>{item.name}</Text>
+              <Text style={styles.cartItemCategory}>{item.category}</Text>
+              <Text style={styles.cartItemPrice}>₹{item.sale_price}</Text>
+            </View>
+            <View style={styles.cartItemActions}>
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity 
+                  style={styles.quantityButton}
+                  onPress={() => updateQuantity(item.name, item.quantity - 1)}
+                >
+                  <Text style={styles.quantityText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantity}>{item.quantity}</Text>
+                <TouchableOpacity 
+                  style={styles.quantityButton}
+                  onPress={() => updateQuantity(item.name, item.quantity + 1)}
+                >
+                  <Text style={styles.quantityText}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity 
+                style={styles.removeButton}
+                onPress={() => removeFromCart(item.name)}
+              >
+                <Ionicons name="trash-outline" size={20} color="#ff4444" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+
+      <View style={styles.cartFooter}>
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>Total: ₹{getCartTotal()}</Text>
+        </View>
+        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+          <Text style={styles.checkoutText}>Proceed to Checkout</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+// ✅ My Orders Screen
+const MyOrdersScreen = ({ navigation }) => {
+  const { getCartItemsCount } = useCart();
+
+  return (
+    <View style={styles.container}>
+      <TopBar
+        title="My Orders"
+        onBackPress={() => navigation.navigate('Home')}
+        onSearchPress={() => console.log("Search in Orders")}
+        onCartPress={() => navigation.navigate('Cart')}
+        onWishlistPress={() => console.log("Wishlist")}
+        cartItemsCount={getCartItemsCount()}
+      />
+      <View style={styles.content}>
+        <Text style={styles.contentText}>My Orders Screen</Text>
+        {/* Add your orders content here */}
+      </View>
+    </View>
+  );
+};
+
+// ✅ Help Screen
+const HelpScreen = ({ navigation }) => {
+  const { getCartItemsCount } = useCart();
+
+  return (
+    <View style={styles.container}>
+      <TopBar
+        title="Help & Support"
+        onBackPress={() => navigation.navigate('Home')}
+        onSearchPress={() => console.log("Search in Help")}
+        onCartPress={() => navigation.navigate('Cart')}
+        onWishlistPress={() => console.log("Wishlist")}
+        cartItemsCount={getCartItemsCount()}
+      />
+      <View style={styles.content}>
+        <Text style={styles.contentText}>Help Screen</Text>
+        {/* Add your help content here */}
+      </View>
+    </View>
+  );
+};
+
+// ✅ Account Screen
+const AccountScreen = ({ navigation }) => {
+  const { getCartItemsCount } = useCart();
+
+  return (
+    <View style={styles.container}>
+      <TopBar
+        title="My Account"
+        onBackPress={() => navigation.navigate('Home')}
+        onSearchPress={() => console.log("Search in Account")}
+        onCartPress={() => navigation.navigate('Cart')}
+        onWishlistPress={() => console.log("Wishlist")}
+        cartItemsCount={getCartItemsCount()}
+      />
+      <View style={styles.content}>
+        <Text style={styles.contentText}>Account Screen</Text>
+        {/* Add your account content here */}
+      </View>
+    </View>
+  );
+};
+
 /* ---------------------------------------------
    ✅ Main App Component
 --------------------------------------------- */
-export default function App() {
+function AppContent() {
   const [showSearch, setShowSearch] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
+  const { getCartItemsCount } = useCart();
 
   // Handlers
   const handleSearchPress = () => setShowSearch(true);
@@ -65,22 +260,29 @@ export default function App() {
   const handleSearch = (text) => setSearchQuery(text);
 
   const onWishlistPress = () => console.log('❤️ Wishlist Pressed');
-  const onCartPress = () => console.log('🛒 Cart Pressed');
 
   /* ---------------------------------------------
-     🏠 Home Screen — TopNavigation + Cart Icon
+     🏠 Home Screen — Only screen with TopNavigation
   --------------------------------------------- */
   const HomeScreen = ({ navigation }) => {
     const handleTabPress = (tab) => {
       if (tab === 'categories') {
         navigation.navigate('Categories');
+      } else if (tab === 'cart') {
+        navigation.navigate('Cart');
+      } else if (tab === 'myorders') {
+        navigation.navigate('MyOrders');
+      } else if (tab === 'help') {
+        navigation.navigate('Help');
+      } else if (tab === 'account') {
+        navigation.navigate('Account');
       } else {
         setActiveTab(tab);
       }
     };
 
-    // Content Rendering Logic
-    const renderContent = () => {
+    // Content Rendering Logic - ONLY for home tab content
+    const renderHomeContent = () => {
       if (showSearch) {
         return (
           <View style={styles.content}>
@@ -89,64 +291,31 @@ export default function App() {
         );
       }
 
-      switch (activeTab) {
-        case 'home':
-          return (
-            <ScrollView style={styles.content}>
-              <PromoBanner />
-              <NewProducts />
-              <ProductsScreen />
-              <HeroSection />
-              <SevenMile />
-              <ProductSlider />
-
-            </ScrollView>
-          );
-        case 'myorders':
-          return (
-            <View style={styles.content}>
-              <Text style={styles.contentText}>My Orders Screen</Text>
-            </View>
-          );
-        case 'help':
-          return (
-            <View style={styles.content}>
-              <Text style={styles.contentText}>Help Screen</Text>
-            </View>
-          );
-        case 'account':
-          return (
-            <View style={styles.content}>
-              <Text style={styles.contentText}>Account Screen</Text>
-            </View>
-          );
-        case 'cart':
-          return (
-            <View style={styles.content}>
-              <Text style={styles.contentText}>Cart Screen</Text>
-            </View>
-          );
-        default:
-          return (
-            <ScrollView style={styles.content}>
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Welcome to 7 Miles</Text>
-              </View>
-            </ScrollView>
-          );
-      }
+      return (
+        <ScrollView style={styles.content}>
+          <PromoBanner />
+          <NewProducts />
+          <ProductsScreen />
+          <HeroSection />
+          <SevenMile />
+          <ProductSlider />
+          <Routineproduct/>
+          <Adbanner/>
+        </ScrollView>
+      );
     };
 
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
 
-        {/* ✅ Home TopNavigation (Logo + Cart) */}
+        {/* ✅ ONLY on Home Screen: Show TopNavigation */}
         {!showSearch ? (
           <TopNavigation
             onSearchPress={handleSearchPress}
             onCategoryPress={() => navigation.navigate('Categories')}
-            onCartPress={() => setActiveTab('cart')}
+            onCartPress={() => navigation.navigate('Cart')}
+            cartItemsCount={getCartItemsCount()}
           />
         ) : (
           <SearchBar
@@ -157,43 +326,57 @@ export default function App() {
         )}
 
         {/* Main Content */}
-        <View style={styles.mainContent}>{renderContent()}</View>
+        <View style={styles.mainContent}>
+          {renderHomeContent()}
+        </View>
 
         {/* Bottom Navigation */}
         <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
       </View>
     );
   };
+
   /* ---------------------------------------------
      🛍️ Categories Screen — Uses TopBar
   --------------------------------------------- */
-  const CategoriesScreenWithTopBar = ({ navigation }) => (
-    <View style={styles.container}>
-      <TopBar
-        title="Categories"
-        onSearchPress={() => console.log("🔍 Search in Categories")}
-        onCartPress={onCartPress}
-        onWishlistPress={onWishlistPress}
-      />
-      {/* pass navigation down */}
-      <CategoriesScreen navigation={navigation} />
-    </View>
-  );
+  const CategoriesScreenWithTopBar = ({ navigation }) => {
+    const { getCartItemsCount } = useCart();
+
+    return (
+      <View style={styles.container}>
+        <TopBar
+          title="Categories"
+          onBackPress={() => navigation.navigate('Home')}
+          onSearchPress={() => console.log("🔍 Search in Categories")}
+          onCartPress={() => navigation.navigate('Cart')}
+          onWishlistPress={onWishlistPress}
+          cartItemsCount={getCartItemsCount()}
+        />
+        <CategoriesScreen navigation={navigation} />
+      </View>
+    );
+  };
 
   /* ---------------------------------------------
      📦 Product Details Screen — Uses TopBar
   --------------------------------------------- */
-  const ProductDetailsScreenWithTopBar = ({ navigation, route }) => (
-    <View style={styles.container}>
-      <TopBar
-        title="Product Details"
-        onSearchPress={() => console.log("🔍 Search in Product Details")}
-        onCartPress={onCartPress}
-        onWishlistPress={onWishlistPress}
-      />
-      <ProductDetailsScreen navigation={navigation} route={route} />
-    </View>
-  );
+  const ProductDetailsScreenWithTopBar = ({ navigation, route }) => {
+    const { getCartItemsCount } = useCart();
+
+    return (
+      <View style={styles.container}>
+        <TopBar
+          title="Product Details"
+          onBackPress={() => navigation.goBack()}
+          onSearchPress={() => console.log("🔍 Search in Product Details")}
+          onCartPress={() => navigation.navigate('Cart')}
+          onWishlistPress={onWishlistPress}
+          cartItemsCount={getCartItemsCount()}
+        />
+        <ProductDetailsScreen navigation={navigation} route={route} />
+      </View>
+    );
+  };
 
   /* ---------------------------------------------
      🌐 Navigation Container
@@ -216,18 +399,52 @@ export default function App() {
           component={ProductDetailsScreenWithTopBar}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Cart"
+          component={CartScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MyOrders"
+          component={MyOrdersScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Help"
+          component={HelpScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Account"
+          component={AccountScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 /* ---------------------------------------------
-   🎨 Styles
+   ✅ Main Export with Cart Provider
+--------------------------------------------- */
+export default function App() {
+  return (
+    <CartProvider>
+      <AppContent />
+    </CartProvider>
+  );
+}
+
+/* ---------------------------------------------
+   🎨 Updated Styles
 --------------------------------------------- */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#fff" 
+  },
 
-  // ✅ Common TopBar (for category/product screens)
+  // ✅ TopBar Styles (for all non-home pages)
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -237,9 +454,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
-    backgroundColor: "#d0c9c4", // ✅ Updated background color
+    backgroundColor: "#d0c9c4",
   },
-
+  leftSection: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backButton: {
+    marginRight: 12,
+  },
   title: {
     fontSize: 18,
     fontWeight: "600",
@@ -251,6 +474,138 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     marginLeft: 18,
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#ff4444',
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+
+  // Cart Screen Styles
+  emptyCart: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyCartText: {
+    fontSize: 18,
+    color: '#666',
+    marginTop: 16,
+    marginBottom: 24,
+  },
+  continueShoppingButton: {
+    backgroundColor: '#000',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  continueShoppingText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  cartItems: {
+    flex: 1,
+    padding: 16,
+  },
+  cartItem: {
+    flexDirection: 'row',
+    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  cartItemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+  },
+  cartItemDetails: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  cartItemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  cartItemCategory: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+  },
+  cartItemPrice: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#000',
+  },
+  cartItemActions: {
+    alignItems: 'center',
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  quantityButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#ddd',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  quantity: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginHorizontal: 12,
+    minWidth: 20,
+    textAlign: 'center',
+  },
+  removeButton: {
+    padding: 4,
+  },
+  cartFooter: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  totalContainer: {
+    marginBottom: 16,
+  },
+  totalText: {
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  checkoutButton: {
+    backgroundColor: '#000',
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  checkoutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 
   mainContent: { flex: 1 },
