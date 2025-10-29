@@ -27,6 +27,8 @@ import ProductSlider from './Componets/ProductSlider/ProductSlider';
 import Routineproduct from './Componets/Rotine-product/RotineProducts';
 import Adbanner from './Componets/AddBanner/Adbanner';
 import CartScreen from './Componets/CartScreen/CartScreen';
+import CheckoutScreen from './Componets/Checkout/CheckoutScreen';
+import OrderSuccessScreen from './Componets/Success/OrderSuccessScreen';
 
 // ✅ Cart Context
 import { CartProvider, useCart } from './Componets/context/CartContext';
@@ -346,6 +348,16 @@ function AppContent() {
           component={AccountScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+  name="Checkout"
+  component={CheckoutScreen}
+  options={{ headerShown: false }}
+/>
+<Stack.Screen
+  name="OrderSuccess"
+  component={OrderSuccessScreen}
+  options={{ headerShown: false }}
+/>
       </Stack.Navigator>
     </NavigationContainer>
   );

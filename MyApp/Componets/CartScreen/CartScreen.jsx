@@ -5,7 +5,8 @@ import {
   Text, 
   ScrollView, 
   TouchableOpacity, 
-  Image 
+  Image,
+  Alert // Don't forget to import Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
@@ -13,7 +14,7 @@ import { useCart } from '../context/CartContext';
 const CartScreen = ({ navigation }) => {
   // Use the correct structure from your CartContext
   const { 
-    cartItems, // This is the array of items, not cart.items
+    cartItems, // This should be cartItems from context
     updateQuantity, 
     removeFromCart, 
     getCartTotal, 
@@ -22,19 +23,46 @@ const CartScreen = ({ navigation }) => {
   } = useCart();
 
   const handleCheckout = () => {
-    alert('Proceeding to checkout!');
-    clearCart();
+    if (cartItems.length === 0) { // Fixed: cartItems.length, not cartItems.items.length
+      Alert.alert('Cart Empty', 'Please add items to cart before checkout');
+      return;
+    }
+    navigation.navigate('Checkout');
   };
 
   const handleBackPress = () => {
     navigation.navigate('Home');
   };
 
-  // Check cartItems.length instead of cart.items.length
+  // Check cartItems.length
   if (cartItems.length === 0) {
     return (
       <View style={styles.container}>
-       
+        {/* Top Bar for Cart Screen */}
+        <View style={styles.topBar}>
+          <View style={styles.leftSection}>
+            <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.title}>My Cart</Text>
+          </View>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="search-outline" size={22} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="heart-outline" size={22} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="cart-outline" size={22} color="#000" />
+              {getCartItemsCount() > 0 && (
+                <View style={styles.cartBadge}>
+                  <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
         
         <View style={styles.emptyCart}>
           <Ionicons name="cart-outline" size={80} color="#ccc" />
@@ -52,11 +80,34 @@ const CartScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Top Bar */}
-     
+      {/* Top Bar for Cart Screen */}
+      <View style={styles.topBar}>
+        <View style={styles.leftSection}>
+          <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.title}>My Cart</Text>
+        </View>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="search-outline" size={22} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="heart-outline" size={22} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="cart-outline" size={22} color="#000" />
+            {getCartItemsCount() > 0 && (
+              <View style={styles.cartBadge}>
+                <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
       
       <ScrollView style={styles.cartItems}>
-        {/* Map over cartItems instead of cart.items */}
+        {/* Map over cartItems */}
         {cartItems.map((item, index) => (
           <View key={item.name + index} style={styles.cartItem}>
             <Image source={item.image} style={styles.cartItemImage} />
@@ -94,7 +145,7 @@ const CartScreen = ({ navigation }) => {
 
       <View style={styles.cartFooter}>
         <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: ₹{getCartTotal()}</Text>
+          <Text style={styles.totalText}>Total: ₹{getCartTotal().toFixed(2)}</Text>
         </View>
         <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
           <Text style={styles.checkoutText}>Proceed to Checkout</Text>
@@ -157,7 +208,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  // Rest of your styles...
   emptyCart: {
     flex: 1,
     justifyContent: 'center',
