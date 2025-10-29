@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   StyleSheet, 
@@ -33,6 +32,9 @@ import OrderSuccessScreen from './Componets/Success/OrderSuccessScreen';
 
 // ✅ Cart Context
 import { CartProvider, useCart } from './Componets/context/CartContext';
+
+// ✅ Splash Screen Component
+import SplashScreen from './Componets/SplashScreen/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -169,14 +171,13 @@ const AccountScreen = ({ navigation }) => {
 };
 
 /* ---------------------------------------------
-   ✅ Main App Component - MOVE useCart INSIDE HomeScreen
+   ✅ Main App Component
 --------------------------------------------- */
 function AppContent() {
   const [showSearch, setShowSearch] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
-
-  // REMOVE useCart from here - move it inside HomeScreen
+  const [showSplash, setShowSplash] = useState(true);
 
   // Handlers
   const handleSearchPress = () => setShowSearch(true);
@@ -187,6 +188,15 @@ function AppContent() {
   const handleSearch = (text) => setSearchQuery(text);
 
   const onWishlistPress = () => console.log('❤️ Wishlist Pressed');
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
+  // Show splash screen first
+  if (showSplash) {
+    return <SplashScreen onAnimationComplete={handleSplashComplete} />;
+  }
 
   /* ---------------------------------------------
      🏠 Home Screen — Only screen with TopNavigation
@@ -350,15 +360,15 @@ function AppContent() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-  name="Checkout"
-  component={CheckoutScreen}
-  options={{ headerShown: false }}
-/>
-<Stack.Screen
-  name="OrderSuccess"
-  component={OrderSuccessScreen}
-  options={{ headerShown: false }}
-/>
+          name="Checkout"
+          component={CheckoutScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OrderSuccess"
+          component={OrderSuccessScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
