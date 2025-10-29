@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useCart } from '../context/CartContext'; // Import cart context
+import { useCart } from '../context/CartContext';
 
 const TopNavigation = ({
     onSearchPress,
@@ -10,7 +10,7 @@ const TopNavigation = ({
     onCartPress
 }) => {
     const mainCategories = ['All', 'Hair Care', 'Skin Care', 'Body Care', 'Wellness & Edibles'];
-      const { getCartItemsCount } = useCart(); // Get cart count
+    const { getCartItemsCount } = useCart();
 
     return (
         <View style={styles.container}>
@@ -25,15 +25,22 @@ const TopNavigation = ({
                     />
                 </View>
 
-                {/* Cart Icon */}
-            <TouchableOpacity onPress={onCartPress} style={styles.iconButton}>
-        <Ionicons name="cart-outline" size={24} color="#000" />
-        {getCartItemsCount() > 0 && (
-          <View style={styles.cartBadge}>
-            <Text style={styles.cartBadgeText}>{getCartItemsCount()}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+                {/* Cart Icon with Improved Badge */}
+                <TouchableOpacity onPress={onCartPress} style={styles.cartButton}>
+                    <View style={styles.cartIconContainer}>
+                        <Ionicons name="cart-outline" size={24} color="#000" />
+                        {getCartItemsCount() > 0 && (
+                            <View style={[
+                                styles.cartBadge,
+                                getCartItemsCount() > 99 && styles.cartBadgeLarge
+                            ]}>
+                                <Text style={styles.cartBadgeText}>
+                                    {getCartItemsCount() > 99 ? '99+' : getCartItemsCount()}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                </TouchableOpacity>
             </View>
 
             {/* Search Bar */}
@@ -86,14 +93,52 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         flex: 1,
-        marginLeft: -20 // Added left margin as requested
+        marginLeft: -20
     },
     logo: {
         width: 120,
         height: 40,
     },
     cartButton: {
+        padding: 8,
+        borderRadius: 8,
+    },
+    cartIconContainer: {
+        position: 'relative',
         padding: 4,
+    },
+    cartBadge: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        backgroundColor: '#FF4444',
+        borderRadius: 10,
+        minWidth: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#d0c9c4',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    cartBadgeLarge: {
+        minWidth: 24,
+        height: 20,
+        paddingHorizontal: 4,
+    },
+    cartBadgeText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        includeFontPadding: false,
     },
     searchContainer: {
         flexDirection: 'row',
