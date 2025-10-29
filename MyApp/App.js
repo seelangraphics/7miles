@@ -1,3 +1,4 @@
+
 // App.js
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
@@ -163,61 +164,61 @@ export default function App() {
       </View>
     );
   };
-/* ---------------------------------------------
-   🛍️ Categories Screen — Uses TopBar
---------------------------------------------- */
-const CategoriesScreenWithTopBar = ({ navigation }) => (
-  <View style={styles.container}>
-    <TopBar
-      title="Categories"
-      onSearchPress={() => console.log("🔍 Search in Categories")}
-      onCartPress={onCartPress}
-      onWishlistPress={onWishlistPress}
-    />
-    {/* pass navigation down */}
-    <CategoriesScreen navigation={navigation} />
-  </View>
-);
+  /* ---------------------------------------------
+     🛍️ Categories Screen — Uses TopBar
+  --------------------------------------------- */
+  const CategoriesScreenWithTopBar = ({ navigation }) => (
+    <View style={styles.container}>
+      <TopBar
+        title="Categories"
+        onSearchPress={() => console.log("🔍 Search in Categories")}
+        onCartPress={onCartPress}
+        onWishlistPress={onWishlistPress}
+      />
+      {/* pass navigation down */}
+      <CategoriesScreen navigation={navigation} />
+    </View>
+  );
 
-/* ---------------------------------------------
-   📦 Product Details Screen — Uses TopBar
---------------------------------------------- */
-const ProductDetailsScreenWithTopBar = ({ navigation, route }) => (
-  <View style={styles.container}>
-    <TopBar
-      title="Product Details"
-      onSearchPress={() => console.log("🔍 Search in Product Details")}
-      onCartPress={onCartPress}
-      onWishlistPress={onWishlistPress}
-    />
-    <ProductDetailsScreen navigation={navigation} route={route} />
-  </View>
-);
+  /* ---------------------------------------------
+     📦 Product Details Screen — Uses TopBar
+  --------------------------------------------- */
+  const ProductDetailsScreenWithTopBar = ({ navigation, route }) => (
+    <View style={styles.container}>
+      <TopBar
+        title="Product Details"
+        onSearchPress={() => console.log("🔍 Search in Product Details")}
+        onCartPress={onCartPress}
+        onWishlistPress={onWishlistPress}
+      />
+      <ProductDetailsScreen navigation={navigation} route={route} />
+    </View>
+  );
 
-/* ---------------------------------------------
-   🌐 Navigation Container
---------------------------------------------- */
-return (
-  <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Categories"
-        component={CategoriesScreenWithTopBar}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductDetails"
-        component={ProductDetailsScreenWithTopBar}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  </NavigationContainer>
-);
+  /* ---------------------------------------------
+     🌐 Navigation Container
+  --------------------------------------------- */
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Categories"
+          component={CategoriesScreenWithTopBar}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProductDetails"
+          component={ProductDetailsScreenWithTopBar}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 /* ---------------------------------------------
