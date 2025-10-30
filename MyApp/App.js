@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  Image 
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
@@ -41,14 +41,14 @@ const Stack = createNativeStackNavigator();
 /* ---------------------------------------------
    ✅ Reusable TopBar for ALL Non-Home Pages
 --------------------------------------------- */
-const TopBar = ({ 
-  title, 
-  onBackPress, 
-  onSearchPress, 
-  onCartPress, 
-  onWishlistPress, 
+const TopBar = ({
+  title,
+  onBackPress,
+  onSearchPress,
+  onCartPress,
+  onWishlistPress,
   cartItemsCount,
-  showBackButton = true 
+  showBackButton = true
 }) => (
   <View style={styles.topBar}>
     {/* Back Button */}
@@ -95,7 +95,7 @@ const CartScreenWithTopBar = ({ navigation }) => {
         title="My Cart"
         onBackPress={() => navigation.navigate('Home')}
         onSearchPress={() => console.log("Search in Cart")}
-        onCartPress={() => {}}
+        onCartPress={() => { }}
         onWishlistPress={() => console.log("Wishlist")}
         cartItemsCount={getCartItemsCount()}
       />
@@ -239,8 +239,8 @@ function AppContent() {
           <HeroSection />
           <SevenMile />
           <ProductSlider />
-          <Routineproduct/>
-          <Adbanner/>
+          <Routineproduct />
+          <Adbanner />
         </ScrollView>
       );
     };
@@ -389,9 +389,9 @@ export default function App() {
    🎨 Updated Styles
 --------------------------------------------- */
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#fff" 
+  container: {
+    flex: 1,
+    backgroundColor: "#fff"
   },
 
   // ✅ TopBar Styles (for all non-home pages)
@@ -457,6 +457,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 8,
-    color: "#333",
+    color: "#fff",
   },
 });
