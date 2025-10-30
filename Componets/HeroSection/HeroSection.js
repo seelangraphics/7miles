@@ -11,7 +11,7 @@ const HeroSection = () => {
                 <View style={styles.timelineItem}>
                     <View style={[styles.circle, styles.ancientCircle]}>
                         <Image
-                            source={require('../../assets/Herosection/SS2.avif')}
+                            source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Herosection/SS2.avif" }}
                             style={styles.circleImage}
                             resizeMode="cover"
                         />
@@ -31,7 +31,7 @@ const HeroSection = () => {
                 <View style={styles.timelineItem}>
                     <View style={[styles.circle, styles.modernCircle]}>
                         <Image
-                            source={require('../../assets/Herosection/SS4.avif')}
+                            source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Herosection/SS4.avif" }}
                             style={styles.circleImage}
                             resizeMode="cover"
                         />

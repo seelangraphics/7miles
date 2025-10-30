@@ -21,21 +21,21 @@ export const products = [
         tagline: "Tasty and Natural",
         description: "Made with sun-soaked Damask roses and natural sweeteners, our Gulkand is your daily dose of calm digestion and cooling relief.",
         cta: "Shop Now",
-        image: require("../../assets/glow/G1.webp"),
+        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/glow/G1.webp" },
     },
     {
         title: "Herbal Face Packs",
         tagline: "Glow the Natural Way",
         description: "Pure, herbal face pack powders to nourish, cleanse, and enhance your skin—no chemicals, just results.",
         cta: "Shop Now",
-        image: require("../../assets/glow/G2.webp"),
+        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/glow/G2.webp" },
     },
     {
         title: "Charcoal Soap",
         tagline: "Detox Deep",
         description: "Activated Charcoal Soap that gently removes dirt, oil, and toxins, leaving your skin fresh and rejuvenated.",
         cta: "Shop Now",
-        image: require("../../assets/glow/G3.webp"),
+        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/glow/G3.webp" },
     },
 ];
 

@@ -15,12 +15,12 @@ const { width } = Dimensions.get("window");
 const PromoBanner = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Using local images (replace with your actual image paths)
+  // Using remote images from AWS S3
   const bannerImages = [
-    require("../../assets/banners/bb1.jpg"),
-    require("../../assets/banners/bb2.jpg"),
-    require("../../assets/banners/bb1.jpg"),
-    require("../../assets/banners/bb2.jpg"),
+    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb1.jpg" },
+    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb2.jpg" },
+    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb1.jpg" },
+    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb2.jpg" },
   ];
 
   const bannerData = [
@@ -46,13 +46,13 @@ const PromoBanner = () => {
     },
   ];
 
-  // Auto-change banner every 5 seconds (changed from 32 seconds for testing)
+  // Auto-change banner every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) =>
         prevIndex === bannerImages.length - 1 ? 0 : prevIndex + 1
       );
-    }, 5000); // Changed to 5 seconds for testing
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [bannerImages.length]);
@@ -87,8 +87,6 @@ const PromoBanner = () => {
               <Text style={styles.discountText}>{currentBanner.discount}</Text>
             </View>
           </View>
-
-     
         </View>
 
         {/* Image Indicators */}
@@ -112,6 +110,7 @@ const PromoBanner = () => {
   );
 };
 
+// ... styles remain the same ...
 const styles = StyleSheet.create({
   container: {
     width: width,
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: width,
-    height: 200, // Increased height
+    height: 200,
     position: "relative",
     overflow: "hidden",
   },
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    opacity: 0.6, // Increased opacity
+    opacity: 0.6,
   },
   overlay: {
     flex: 1,
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   offerText: {
-    fontSize: 22, // Increased font size
+    fontSize: 22,
     fontWeight: "900",
     color: "#fff",
     marginBottom: 8,
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 5,
   },
   codeText: {
-    fontSize: 16, // Increased font size
+    fontSize: 16,
     fontWeight: "800",
     color: "#fff",
     backgroundColor: "rgba(255, 255, 255, 0.4)",
@@ -187,33 +186,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   discountText: {
-    fontSize: 18, // Increased font size
+    fontSize: 18,
     fontWeight: "800",
     color: "#fff",
     letterSpacing: 0.5,
     textShadowColor: "rgba(0, 0, 0, 0.5)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
-  },
-  forwardButton: {
-    width: 36, // Increased size
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 6,
-  },
-  forwardText: {
-    fontSize: 20, // Increased font size
-    fontWeight: "bold",
-    color: "#000000FF",
-    marginLeft: 2,
   },
   indicators: {
     position: "absolute",

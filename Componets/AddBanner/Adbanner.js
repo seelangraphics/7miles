@@ -27,7 +27,8 @@ const Adbanner = () => {
       {/* Video Background */}
       <Video
         ref={videoRef}
-        source={require("../../assets/banners/b.mp4")}
+        source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/b.mp4" }}
+
         style={styles.videoBackground}
         resizeMode="cover"
         shouldPlay
@@ -35,10 +36,10 @@ const Adbanner = () => {
         isMuted
         onPlaybackStatusUpdate={status => setStatus(() => status)}
       />
-      
+
       {/* Dark Overlay */}
       <View style={styles.darkOverlay} />
-      
+
       {/* Gradient Overlay for better text readability */}
       <LinearGradient
         colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
@@ -46,27 +47,27 @@ const Adbanner = () => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       />
-      
+
       {/* Content Container */}
       <View style={styles.contentContainer}>
-     
-        
+
+
         {/* Main Heading */}
         <Text style={styles.mainHeading}>
           Glow Naturally with{'\n'}
           <Text style={styles.highlightText}>7Miles Facepack</Text>
         </Text>
-        
+
         {/* Description */}
         <Text style={styles.description}>
           Pure, chemical-free facepack powders made to{'\n'}
           pamper every skin type with natural ingredients
         </Text>
-        
-      
-        
+
+
+
         {/* Shop Now Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.shopNowButton}
           onPress={handleShopNow}
           activeOpacity={0.9}
@@ -81,7 +82,7 @@ const Adbanner = () => {
             <Text style={styles.shopNowText}>Shop Face Powders</Text>
           </LinearGradient>
         </TouchableOpacity>
-        
+
         {/* Features Grid */}
         <View style={styles.featuresContainer}>
           <View style={styles.featureItem}>
@@ -90,21 +91,21 @@ const Adbanner = () => {
             </View>
             <Text style={styles.featureText}>Natural Ingredients</Text>
           </View>
-          
+
           <View style={styles.featureItem}>
             <View style={styles.featureIcon}>
               <Ionicons name="shield-checkmark" size={12} color="#FFD700" />
             </View>
             <Text style={styles.featureText}>Premium Quality</Text>
           </View>
-          
+
           <View style={styles.featureItem}>
             <View style={styles.featureIcon}>
               <Ionicons name="cash" size={12} color="#FFD700" />
             </View>
             <Text style={styles.featureText}>Affordable</Text>
           </View>
-          
+
           <View style={styles.featureItem}>
             <View style={styles.featureIcon}>
               <Ionicons name="earth" size={12} color="#FFD700" />
@@ -112,7 +113,7 @@ const Adbanner = () => {
             <Text style={styles.featureText}>Eco-Friendly</Text>
           </View>
         </View>
-        
+
         {/* Bottom Offer Text */}
         <View style={styles.offerContainer}>
           <Text style={styles.offerText}>
