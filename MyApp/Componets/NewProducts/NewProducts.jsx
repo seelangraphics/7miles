@@ -1,4 +1,3 @@
-// components/NewProducts.js
 import React, { useState } from 'react';
 import { 
     View, 
@@ -10,19 +9,19 @@ import {
     Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get('window');
 
-// Import from your JavaScript file
 import { products } from '../data/7mils_Products';
-import { useCart } from '../context/CartContext'; // Import the cart context
+import { useCart } from '../context/CartContext';
 
-const NewProducts = ({ onAddToCart, onProductPress }) => {
+const NewProducts = () => {
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
-    const { addToCart, updateQuantity } = useCart(); // Use cart context
+    const navigation = useNavigation();
+    const { addToCart, updateQuantity } = useCart();
 
-    // Filter only new products
     const newProducts = products.filter(product => product.Newproducts === "yes");
 
     const handleAddToCart = (product) => {
@@ -30,12 +29,13 @@ const NewProducts = ({ onAddToCart, onProductPress }) => {
         setQuantities(prev => ({ ...prev, [product.name]: 1 }));
         addToCart(product); 
     };
+
     const handleQuantityChange = (product, change) => {
         const currentQty = quantities[product.name] || 0;
         const newQty = Math.max(0, currentQty + change);
         
         setQuantities(prev => ({ ...prev, [product.name]: newQty }));
-        updateQuantity(product.name, newQty); // Update global cart
+        updateQuantity(product.name, newQty);
         
         if (newQty === 0) {
             setAddedItems(prev => ({ ...prev, [product.name]: false }));
@@ -52,15 +52,15 @@ const NewProducts = ({ onAddToCart, onProductPress }) => {
         const isAdded = addedItems[product.name];
 
         return (
-            <View style={[
-                styles.productCard,
-                { backgroundColor: isEven ? '#f3eeea' : '#f3eeea' }
-            ]}>
+            <TouchableOpacity 
+                style={[
+                    styles.productCard,
+                    { backgroundColor: isEven ? '#f3eeea' : '#f3eeea' }
+                ]}
+                onPress={() => navigation.navigate("ProductDetails", { product: product })}
+            >
                 {/* Product Image - Fixed Height */}
-                <TouchableOpacity 
-                    style={styles.imageContainer}
-                    onPress={() => onProductPress?.(product)}
-                >
+                <View style={styles.imageContainer}>
                     <Image 
                         source={product.image}
                         style={styles.productImage}
@@ -73,7 +73,7 @@ const NewProducts = ({ onAddToCart, onProductPress }) => {
                             {calculateDiscount(product.regular_price, product.sale_price)}% OFF
                         </Text>
                     </View>
-                </TouchableOpacity>
+                </View>
 
                 {/* Product Info - Fixed Height Container */}
                 <View style={styles.productInfo}>
@@ -176,7 +176,7 @@ const NewProducts = ({ onAddToCart, onProductPress }) => {
                         </TouchableOpacity>
                     )}
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 
@@ -260,12 +260,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 16,
         elevation: 8,
-        // Fixed height for all cards
-        height: 320, // Adjust this value as needed
+        height: 320,
     },
     imageContainer: {
         position: 'relative',
-        height: 160, // Fixed image height
+        height: 160,
     },
     productImage: {
         width: '100%',
@@ -287,12 +286,11 @@ const styles = StyleSheet.create({
     },
     productInfo: {
         padding: 14,
-        // Fixed height for product info section
-        height: 140, // This ensures consistent height
+        height: 140,
         justifyContent: 'space-between',
     },
     productNameContainer: {
-        height: 40, // Fixed height for product name
+        height: 40,
         justifyContent: 'center',
     },
     productName: {
@@ -300,7 +298,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 18,
         letterSpacing: -0.2,
-        // These ensure text stays within bounds
         flexWrap: 'wrap',
     },
     productCategory: {

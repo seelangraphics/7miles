@@ -1,13 +1,13 @@
 // components/ProductGrid.js
 import React from 'react';
-import { 
-    View, 
-    Text, 
-    StyleSheet, 
-    FlatList, 
-    Image, 
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    Image,
     TouchableOpacity,
-    Alert 
+    Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
@@ -23,13 +23,13 @@ const ProductGrid = ({ products }) => {
             'Success!',
             `${product.name} added to cart`,
             [
-                { 
-                    text: 'Continue Shopping', 
-                    style: 'cancel' 
+                {
+                    text: 'Continue Shopping',
+                    style: 'cancel'
                 },
-                { 
-                    text: 'Go to Cart', 
-                    onPress: () => navigation.navigate('Cart') 
+                {
+                    text: 'Go to Cart',
+                    onPress: () => navigation.navigate('Cart')
                 }
             ]
         );
@@ -49,12 +49,19 @@ const ProductGrid = ({ products }) => {
         }
     };
 
+    const handleProductPress = (product) => {
+        navigation.navigate("ProductDetails", { product: product });
+    };
+
     const renderProductItem = ({ item }) => {
         const quantity = getItemQuantity(item.name);
         const isInCart = quantity > 0;
 
         return (
-            <TouchableOpacity style={styles.productCard}>
+            <TouchableOpacity
+                style={styles.productCard}
+                onPress={() => handleProductPress(item)}
+            >
                 <Image source={item.image} style={styles.productImage} />
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2}>
@@ -85,16 +92,16 @@ const ProductGrid = ({ products }) => {
                     {/* Cart Actions - Only Add to Cart & Quantity Controls */}
                     {isInCart ? (
                         <View style={styles.quantityContainer}>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 style={styles.quantityButton}
                                 onPress={() => handleQuantityDecrease(item)}
                             >
                                 <Text style={styles.quantityText}>-</Text>
                             </TouchableOpacity>
-                            
+
                             <Text style={styles.quantity}>{quantity}</Text>
-                            
-                            <TouchableOpacity 
+
+                            <TouchableOpacity
                                 style={styles.quantityButton}
                                 onPress={() => handleQuantityIncrease(item)}
                             >
@@ -113,7 +120,7 @@ const ProductGrid = ({ products }) => {
                                     color="#fff"
                                 />
                                 <Text style={styles.cartButtonText}>
-                                    {isInCart ? `Added (${quantity})` : 'Add to Cart'}
+                                    {isInCart ? `Added (${quantity})` : 'Add'}
                                 </Text>
                             </View>
                         </TouchableOpacity>

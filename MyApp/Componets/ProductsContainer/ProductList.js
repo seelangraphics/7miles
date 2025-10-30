@@ -1,13 +1,12 @@
-// components/ProductList.js
 import React from 'react';
-import { 
-    View, 
-    Text, 
-    StyleSheet, 
-    FlatList, 
-    Image, 
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    Image,
     TouchableOpacity,
-    Alert 
+    Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
@@ -23,13 +22,13 @@ const ProductList = ({ products }) => {
             'Success!',
             `${product.name} added to cart`,
             [
-                { 
-                    text: 'Continue Shopping', 
-                    style: 'cancel' 
+                {
+                    text: 'Continue Shopping',
+                    style: 'cancel'
                 },
-                { 
-                    text: 'Go to Cart', 
-                    onPress: () => navigation.navigate('Cart') 
+                {
+                    text: 'Go to Cart',
+                    onPress: () => navigation.navigate('Cart')
                 }
             ]
         );
@@ -54,12 +53,19 @@ const ProductList = ({ products }) => {
         navigation.navigate('Cart');
     };
 
+    const handleProductPress = (product) => {
+        navigation.navigate("ProductDetails", { product: product });
+    };
+
     const renderProductItem = ({ item }) => {
         const quantity = getItemQuantity(item.name);
         const isInCart = quantity > 0;
 
         return (
-            <TouchableOpacity style={styles.productCard}>
+            <TouchableOpacity
+                style={styles.productCard}
+                onPress={() => handleProductPress(item)}
+            >
                 <Image source={item.image} style={styles.productImage} />
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2}>
@@ -92,16 +98,16 @@ const ProductList = ({ products }) => {
                     <View style={styles.actionButtons}>
                         {isInCart ? (
                             <View style={styles.quantityContainer}>
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     style={styles.quantityButton}
                                     onPress={() => handleQuantityDecrease(item)}
                                 >
                                     <Text style={styles.quantityText}>-</Text>
                                 </TouchableOpacity>
-                                
+
                                 <Text style={styles.quantity}>{quantity}</Text>
-                                
-                                <TouchableOpacity 
+
+                                <TouchableOpacity
                                     style={styles.quantityButton}
                                     onPress={() => handleQuantityIncrease(item)}
                                 >
@@ -119,11 +125,11 @@ const ProductList = ({ products }) => {
                                         size={16}
                                         color="#fff"
                                     />
-                                    <Text style={styles.cartButtonText}>Add to Cart</Text>
+                                    <Text style={styles.cartButtonText}>Add</Text>
                                 </View>
                             </TouchableOpacity>
                         )}
-                        
+
                         {/* Buy Now Button */}
                         <TouchableOpacity
                             style={styles.buyNowButton}
@@ -148,7 +154,6 @@ const ProductList = ({ products }) => {
         />
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         padding: 10,
