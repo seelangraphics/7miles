@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "7miles",
+    "slug": "7miles",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff",
+       "image": "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sgc.sevenmiles"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.sgc.sevenmiles"
+    },
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "008623e8-d0fd-49f1-9b00-a311259299e8"
+      }
+    },
+    "plugins": []
+  }
+}
