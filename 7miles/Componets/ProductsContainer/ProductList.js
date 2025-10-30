@@ -1,19 +1,18 @@
-// components/ProductGrid.js
 import React from 'react';
-import { 
-    View, 
-    Text, 
-    StyleSheet, 
-    FlatList, 
-    Image, 
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    Image,
     TouchableOpacity,
-    Alert 
+    Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
 import { useNavigation } from '@react-navigation/native';
 
-const ProductGrid = ({ products }) => {
+const ProductList = ({ products }) => {
     const { addToCart, getItemQuantity, updateQuantity, removeFromCart } = useCart();
     const navigation = useNavigation();
 
@@ -23,13 +22,13 @@ const ProductGrid = ({ products }) => {
             'Success!',
             `${product.name} added to cart`,
             [
-                { 
-                    text: 'Continue Shopping', 
-                    style: 'cancel' 
+                {
+                    text: 'Continue Shopping',
+                    style: 'cancel'
                 },
-                { 
-                    text: 'Go to Cart', 
-                    onPress: () => navigation.navigate('Cart') 
+                {
+                    text: 'Go to Cart',
+                    onPress: () => navigation.navigate('Cart')
                 }
             ]
         );
@@ -49,17 +48,30 @@ const ProductGrid = ({ products }) => {
         }
     };
 
+    const handleBuyNow = (product) => {
+        addToCart(product);
+        navigation.navigate('Cart');
+    };
+
+    const handleProductPress = (product) => {
+        navigation.navigate("ProductDetails", { product: product });
+    };
+
     const renderProductItem = ({ item }) => {
         const quantity = getItemQuantity(item.name);
         const isInCart = quantity > 0;
 
         return (
-            <TouchableOpacity style={styles.productCard}>
+            <TouchableOpacity
+                style={styles.productCard}
+                onPress={() => handleProductPress(item)}
+            >
                 <Image source={item.image} style={styles.productImage} />
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2}>
                         {item.name}
                     </Text>
+                    <Text style={styles.productCategory}>{item.category}</Text>
                     <View style={styles.priceContainer}>
                         <Text style={styles.salePrice}>₹{item.sale_price}</Text>
                         <Text style={styles.regularPrice}>₹{item.regular_price}</Text>
@@ -82,42 +94,50 @@ const ProductGrid = ({ products }) => {
                         )}
                     </View>
 
-                    {/* Cart Actions - Only Add to Cart & Quantity Controls */}
-                    {isInCart ? (
-                        <View style={styles.quantityContainer}>
-                            <TouchableOpacity 
-                                style={styles.quantityButton}
-                                onPress={() => handleQuantityDecrease(item)}
-                            >
-                                <Text style={styles.quantityText}>-</Text>
-                            </TouchableOpacity>
-                            
-                            <Text style={styles.quantity}>{quantity}</Text>
-                            
-                            <TouchableOpacity 
-                                style={styles.quantityButton}
-                                onPress={() => handleQuantityIncrease(item)}
-                            >
-                                <Text style={styles.quantityText}>+</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ) : (
-                        <TouchableOpacity
-                            style={styles.cartButton}
-                            onPress={() => handleAddToCart(item)}
-                        >
-                            <View style={styles.cartButtonContent}>
-                                <Ionicons
-                                    name="cart-outline"
-                                    size={16}
-                                    color="#fff"
-                                />
-                                <Text style={styles.cartButtonText}>
-                                    {isInCart ? `Added (${quantity})` : 'Add to Cart'}
-                                </Text>
+                    {/* Cart Actions */}
+                    <View style={styles.actionButtons}>
+                        {isInCart ? (
+                            <View style={styles.quantityContainer}>
+                                <TouchableOpacity
+                                    style={styles.quantityButton}
+                                    onPress={() => handleQuantityDecrease(item)}
+                                >
+                                    <Text style={styles.quantityText}>-</Text>
+                                </TouchableOpacity>
+
+                                <Text style={styles.quantity}>{quantity}</Text>
+
+                                <TouchableOpacity
+                                    style={styles.quantityButton}
+                                    onPress={() => handleQuantityIncrease(item)}
+                                >
+                                    <Text style={styles.quantityText}>+</Text>
+                                </TouchableOpacity>
                             </View>
+                        ) : (
+                            <TouchableOpacity
+                                style={styles.cartButton}
+                                onPress={() => handleAddToCart(item)}
+                            >
+                                <View style={styles.cartButtonContent}>
+                                    <Ionicons
+                                        name="cart-outline"
+                                        size={16}
+                                        color="#fff"
+                                    />
+                                    <Text style={styles.cartButtonText}>Add</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+
+                        {/* Buy Now Button */}
+                        <TouchableOpacity
+                            style={styles.buyNowButton}
+                            onPress={() => handleBuyNow(item)}
+                        >
+                            <Text style={styles.buyNowText}>Buy Now</Text>
                         </TouchableOpacity>
-                    )}
+                    </View>
                 </View>
             </TouchableOpacity>
         );
@@ -128,24 +148,22 @@ const ProductGrid = ({ products }) => {
             data={products}
             renderItem={renderProductItem}
             keyExtractor={(item, index) => `${item.name}-${index}`}
-            numColumns={2}
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
         />
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         padding: 10,
     },
     productCard: {
-        flex: 1,
-        margin: 5,
-        backgroundColor: '#f8f8f8',
+        flexDirection: 'row',
+        backgroundColor: '#fff',
         borderRadius: 10,
         padding: 10,
+        marginBottom: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -153,20 +171,25 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     productImage: {
-        width: '100%',
-        height: 120,
+        width: 80,
+        height: 80,
         resizeMode: 'contain',
-        marginBottom: 8,
+        marginRight: 10,
     },
     productInfo: {
         flex: 1,
+        justifyContent: 'space-between',
     },
     productName: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: '600',
-        marginBottom: 5,
+        marginBottom: 4,
         color: '#333',
-        height: 32,
+    },
+    productCategory: {
+        fontSize: 12,
+        color: '#666',
+        marginBottom: 5,
     },
     priceContainer: {
         flexDirection: 'row',
@@ -174,27 +197,27 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     salePrice: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         color: 'black',
-        marginRight: 5,
+        marginRight: 8,
     },
     regularPrice: {
-        fontSize: 12,
+        fontSize: 14,
         color: '#999',
         textDecorationLine: 'line-through',
     },
     saveBadge: {
         backgroundColor: '#28a745',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
         borderRadius: 4,
         alignSelf: 'flex-start',
         marginBottom: 5,
     },
     saveText: {
         color: '#fff',
-        fontSize: 10,
+        fontSize: 11,
         fontWeight: 'bold',
     },
     badgeContainer: {
@@ -203,11 +226,11 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     badge: {
-        fontSize: 8,
-        paddingHorizontal: 4,
+        fontSize: 10,
+        paddingHorizontal: 6,
         paddingVertical: 2,
         borderRadius: 3,
-        marginRight: 4,
+        marginRight: 6,
         marginBottom: 2,
         overflow: 'hidden',
     },
@@ -227,12 +250,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#6f42c1',
         color: '#fff',
     },
+    actionButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 5,
+    },
     cartButton: {
         backgroundColor: 'black',
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 5,
-        marginTop: 'auto',
+        flex: 1,
+        marginRight: 8,
     },
     cartButtonContent: {
         flexDirection: 'row',
@@ -245,6 +275,19 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginLeft: 6,
     },
+    buyNowButton: {
+        backgroundColor: '#FFD700',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 5,
+        flex: 1,
+    },
+    buyNowText: {
+        color: '#000',
+        fontSize: 12,
+        fontWeight: '600',
+        textAlign: 'center',
+    },
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -253,7 +296,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 8,
         paddingVertical: 6,
-        marginTop: 'auto',
+        flex: 1,
+        marginRight: 8,
     },
     quantityButton: {
         width: 28,
@@ -277,4 +321,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProductGrid;
+export default ProductList;
