@@ -9,7 +9,7 @@
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
-       "image": "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png"
+      "image": "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png"
     },
     "ios": {
       "supportsTablet": true,
@@ -29,6 +29,8 @@
         "projectId": "008623e8-d0fd-49f1-9b00-a311259299e8"
       }
     },
-    "plugins": []
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
