@@ -82,7 +82,7 @@ const TopBar = ({
   </View>
 );
 
-// ✅ Cart Screen Wrapper with TopBar
+
 const CartScreenWithTopBar = ({ navigation }) => {
   const { getCartItemsCount } = useCart();
 
