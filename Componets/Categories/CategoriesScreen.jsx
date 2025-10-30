@@ -54,10 +54,10 @@ const [selectedSort, setSelectedSort] = useState("Best Selling");
 const [selectedFilter, setSelectedFilter] = useState("");
 
   const categoryImages = {
-    "Hair Care": require("../../assets/categories/haircare.png"),
-    "Skin Care": require("../../assets/categories/bodycare.png"),
-    "Body Care": require("../../assets/categories/skincare.png"),
-    "Wellness & Edibles": require("../../assets/categories/edible.png"),
+    "Hair Care": require("../../assets/categories/haircare.jpeg"),
+    "Skin Care": require("../../assets/categories/bodycare.jpeg"),
+    "Body Care": require("../../assets/categories/skincare.jpeg"),
+    "Wellness & Edibles": require("../../assets/categories/edible.jpeg"),
   };
 
  
