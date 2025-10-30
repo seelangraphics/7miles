@@ -19,7 +19,7 @@ const TopNavigation = ({
                 {/* Logo */}
                 <View style={styles.logoContainer}>
                     <Image
-                        source={require("../../assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png")}
+                        source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png" }}
                         style={styles.logo}
                         resizeMode="contain"
                     />

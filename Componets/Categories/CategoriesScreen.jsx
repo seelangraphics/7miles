@@ -53,12 +53,12 @@ const CategoriesScreen = () => {
 const [selectedSort, setSelectedSort] = useState("Best Selling");
 const [selectedFilter, setSelectedFilter] = useState("");
 
-  const categoryImages = {
-    "Hair Care": require("../../assets/categories/haircare.jpeg"),
-    "Skin Care": require("../../assets/categories/bodycare.jpeg"),
-    "Body Care": require("../../assets/categories/skincare.jpeg"),
-    "Wellness & Edibles": require("../../assets/categories/edible.jpeg"),
-  };
+const categoryImages = {
+    "Hair Care": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/haircare.jpeg" },
+    "Skin Care": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/bodycare.jpeg" },
+    "Body Care": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/skincare.jpeg" },
+    "Wellness & Edibles": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/edible.jpeg" },
+};
 
  
   const filteredProducts = allProducts.filter(
