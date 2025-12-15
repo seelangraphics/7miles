@@ -35,6 +35,10 @@ import { CartProvider, useCart } from './Componets/context/CartContext';
 
 // ✅ Splash Screen Component
 import SplashScreen from './Componets/SplashScreen/SplashScreen';
+import BundleComponent from './Componets/BundleComponent/BundleComponent';
+import MarqueeBannerEfficient from './Componets/Facepack_powder/FacepackMarquee';
+import Facepack from './Componets/Facepack_powder/Facepack';
+import { FAQSection } from './Componets/Faq/Faq';
 
 const Stack = createNativeStackNavigator();
 
@@ -238,9 +242,14 @@ function AppContent() {
           <ProductsScreen />
           <HeroSection />
           <SevenMile />
+          <BundleComponent/>
+          <Facepack/>
+         
+       
           <ProductSlider />
           <Routineproduct/>
           <Adbanner/>
+          <FAQSection/>
         </ScrollView>
       );
     };

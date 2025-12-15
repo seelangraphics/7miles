@@ -1,22 +1,65 @@
 // components/TopNavigation.js
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    Image,
+    ScrollView,
+    TextInput
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
+import { useNavigation } from '@react-navigation/native';
+import { products } from '../data/7mils_Products';
+import SearchModal from './Search/SearchModal';
+import CartButton from './Search/CartButton';
 
-const TopNavigation = ({
-    onSearchPress,
-    onCategoryPress,
-    onCartPress
-}) => {
-    const mainCategories = ['All', 'Hair Care', 'Skin Care', 'Body Care', 'Wellness & Edibles'];
+const TopNavigation = ({ onCategoryPress, onCartPress }) => {
+    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeCategory, setActiveCategory] = useState('All');
+    const navigation = useNavigation();
     const { getCartItemsCount } = useCart();
+
+    const mainCategories = ['All', 'Hair Care', 'Skin Care', 'Body Care', 'Wellness & Edibles'];
+
+    // Memoized filtered products for better performance
+    const filteredProducts = useMemo(() => {
+        if (!searchQuery.trim()) return [];
+
+        const query = searchQuery.toLowerCase();
+        return products.filter(product => {
+            const matchesSearch = 
+                product.name.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query) ||
+                (product.benefits?.toLowerCase() || '').includes(query) ||
+                (product.description?.toLowerCase() || '').includes(query) ||
+                (product.quantity?.toLowerCase() || '').includes(query);
+
+            // If a category is selected (other than 'All'), filter by category too
+            if (activeCategory !== 'All') {
+                return matchesSearch && product.category === activeCategory;
+            }
+            
+            return matchesSearch;
+        });
+    }, [searchQuery, activeCategory]);
+
+    const handleSearchPress = () => {
+        setSearchVisible(true);
+    };
+
+    const handleCategorySelect = (category) => {
+        setActiveCategory(category);
+        onCategoryPress?.(category, 'main');
+    };
 
     return (
         <View style={styles.container}>
             {/* Logo and Cart Row */}
             <View style={styles.topRow}>
-                {/* Logo */}
                 <View style={styles.logoContainer}>
                     <Image
                         source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png" }}
@@ -25,26 +68,14 @@ const TopNavigation = ({
                     />
                 </View>
 
-                {/* Cart Icon with Improved Badge */}
-                <TouchableOpacity onPress={onCartPress} style={styles.cartButton}>
-                    <View style={styles.cartIconContainer}>
-                        <Ionicons name="cart-outline" size={24} color="#000" />
-                        {getCartItemsCount() > 0 && (
-                            <View style={[
-                                styles.cartBadge,
-                                getCartItemsCount() > 99 && styles.cartBadgeLarge
-                            ]}>
-                                <Text style={styles.cartBadgeText}>
-                                    {getCartItemsCount() > 99 ? '99+' : getCartItemsCount()}
-                                </Text>
-                            </View>
-                        )}
-                    </View>
-                </TouchableOpacity>
+                <CartButton 
+                    onPress={onCartPress} 
+                    itemCount={getCartItemsCount()} 
+                />
             </View>
 
             {/* Search Bar */}
-            <TouchableOpacity style={styles.searchContainer} onPress={onSearchPress}>
+            <TouchableOpacity style={styles.searchContainer} onPress={handleSearchPress}>
                 <Ionicons name="search" size={18} color="#666" />
                 <Text style={styles.searchPlaceholder}>Search "Powder"</Text>
             </TouchableOpacity>
@@ -62,7 +93,7 @@ const TopNavigation = ({
                             styles.mainCategory,
                             index === 0 && styles.activeMainCategory
                         ]}
-                        onPress={() => onCategoryPress?.(category, 'main')}
+                        onPress={() => handleCategorySelect(category)}
                     >
                         <Text style={[
                             styles.mainCategoryText,
@@ -73,6 +104,19 @@ const TopNavigation = ({
                     </TouchableOpacity>
                 ))}
             </ScrollView>
+
+            {/* Search Modal */}
+            <SearchModal
+                visible={searchVisible}
+                onClose={() => setSearchVisible(false)}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
+                filteredProducts={filteredProducts}
+                onCategoryPress={onCategoryPress}
+                categories={mainCategories}
+            />
         </View>
     );
 };
@@ -98,47 +142,6 @@ const styles = StyleSheet.create({
     logo: {
         width: 120,
         height: 40,
-    },
-    cartButton: {
-        padding: 8,
-        borderRadius: 8,
-    },
-    cartIconContainer: {
-        position: 'relative',
-        padding: 4,
-    },
-    cartBadge: {
-        position: 'absolute',
-        top: -5,
-        right: -5,
-        backgroundColor: '#FF4444',
-        borderRadius: 10,
-        minWidth: 20,
-        height: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#d0c9c4',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    cartBadgeLarge: {
-        minWidth: 24,
-        height: 20,
-        paddingHorizontal: 4,
-    },
-    cartBadgeText: {
-        color: '#fff',
-        fontSize: 10,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        includeFontPadding: false,
     },
     searchContainer: {
         flexDirection: 'row',

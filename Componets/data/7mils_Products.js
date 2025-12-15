@@ -170,7 +170,8 @@ export const products = [
         nightroutine: "yes",
         quantity: "120ml",
         benefits: "Tones skin and tightens pores",
-        description: "Natural toner made from fresh rose petals."
+        description: "Natural toner made from fresh rose petals.",
+        Bundle_save:"Yes"
     },
     {
         id: 14,
@@ -320,7 +321,8 @@ export const products = [
         nightroutine: "yes",
         quantity: "50ml",
         benefits: "Improves skin texture overnight",
-        description: "Ayurvedic night routine oil for radiant skin."
+        description: "Ayurvedic night routine oil for radiant skin.",
+        Bundle_save:"Yes"
     },
     {
         id: 26,
@@ -401,7 +403,8 @@ export const products = [
         nightroutine: "yes",
         quantity: "100gm",
         benefits: "Soothes and hydrates dry skin",
-        description: "Cooling aloe gel for everyday freshness."
+        description: "Cooling aloe gel for everyday freshness.",
+        Bundle_save:"Yes",
     },
     {
         id: 32,
@@ -527,5 +530,7 @@ export const products = [
         quantity: "150gm",
         benefits: "Freshens breath and aids digestion",
         description: "Herbal mouth freshener made from amla and spices."
-    }
+    },
+
 ];
+
