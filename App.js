@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  Image 
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
@@ -39,20 +39,21 @@ import BundleComponent from './Componets/BundleComponent/BundleComponent';
 import MarqueeBannerEfficient from './Componets/Facepack_powder/FacepackMarquee';
 import Facepack from './Componets/Facepack_powder/Facepack';
 import { FAQSection } from './Componets/Faq/Faq';
+import GoldenDrop from './Componets/ProductDetails/GoldenDrop';
 
 const Stack = createNativeStackNavigator();
 
 /* ---------------------------------------------
    ✅ Reusable TopBar for ALL Non-Home Pages
 --------------------------------------------- */
-const TopBar = ({ 
-  title, 
-  onBackPress, 
-  onSearchPress, 
-  onCartPress, 
-  onWishlistPress, 
+const TopBar = ({
+  title,
+  onBackPress,
+  onSearchPress,
+  onCartPress,
+  onWishlistPress,
   cartItemsCount,
-  showBackButton = true 
+  showBackButton = true
 }) => (
   <View style={styles.topBar}>
     {/* Back Button */}
@@ -99,7 +100,7 @@ const CartScreenWithTopBar = ({ navigation }) => {
         title="My Cart"
         onBackPress={() => navigation.navigate('Home')}
         onSearchPress={() => console.log("Search in Cart")}
-        onCartPress={() => {}}
+        onCartPress={() => { }}
         onWishlistPress={() => console.log("Wishlist")}
         cartItemsCount={getCartItemsCount()}
       />
@@ -242,14 +243,15 @@ function AppContent() {
           <ProductsScreen />
           <HeroSection />
           <SevenMile />
-          <BundleComponent/>
-          <Facepack/>
-         
-       
+          <BundleComponent />
+          <Facepack />
+
+
           <ProductSlider />
-          <Routineproduct/>
-          <Adbanner/>
-          <FAQSection/>
+          <Routineproduct />
+          <Adbanner />
+          <FAQSection />
+
         </ScrollView>
       );
     };
@@ -398,9 +400,9 @@ export default function App() {
    🎨 Updated Styles
 --------------------------------------------- */
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#fff" 
+  container: {
+    flex: 1,
+    backgroundColor: "#fff"
   },
 
   // ✅ TopBar Styles (for all non-home pages)

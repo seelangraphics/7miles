@@ -9,12 +9,41 @@ export const products = [
         regular_price: 395,
         save: 75,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h1.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h1.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-01.webp"),
+            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-02.webp"),
+
+        ],
         Newproducts: "yes",
         quantity: "200ml",
-        benefits: "Removes dandruff and keeps scalp clean",
-        description: "Natural formula that reduces dandruff and strengthens roots."
+        benefits: [
+            "Fights dandruff effectively by targeting flakes at the root",
+            "Soothes itchy and irritated scalp with natural botanicals",
+            "Purifies and cleanses scalp by removing excess oil and buildup",
+            "Strengthens hair by nourishing follicles",
+            "Gentle, non-drying formula that maintains natural moisture"
+        ],
+        short_benefit: "Removes dandruff and keeps scalp clean",
+        description: "Natural formula that reduces dandruff and strengthens roots.",
+        detailed_description: "Our Anti-Dandruff Shampoo is a powerful yet gentle herbal blend designed to combat dandruff, soothe scalp irritation, and restore scalp health. Infused with Tea Tree Oil, Neem, and Aloe Vera, it helps eliminate flakes, reduce itchiness, and leave your scalp feeling clean, refreshed, and balanced. Free from sulfates, parabens, and artificial fragrances, this shampoo is ideal for regular use and suitable for all hair types seeking a healthy, flake-free scalp.",
+        key_ingredients: [
+            "Tea Tree Oil",
+            "Neem",
+            "Aloe Vera"
+        ],
+        free_from: [
+            "Sulfates",
+            "Parabens",
+            "Artificial fragrances"
+        ],
+        hair_type: [
+            "All Hair Types"
+        ]
     },
+
     {
         id: 2,
         name: "ANTI HAIRFALL SHAMPOO",
@@ -22,12 +51,41 @@ export const products = [
         regular_price: 410,
         save: 90,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h2.webp" },
-        bestSeller: 'yes',
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h2.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-01.webp"),
+            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-02.webp"),
+
+        ],
+        bestSeller: "yes",
         quantity: "200ml",
-        benefits: "Prevents hair fall and promotes growth",
-        description: "Nourishing shampoo enriched with herbal extracts for strong hair."
+        benefits: [
+            "Reduces hair fall by strengthening hair from the roots",
+            "Promotes healthy hair growth with biotin and herbal extracts",
+            "Gently cleanses scalp without stripping natural oils",
+            "Improves hair texture, making it soft, shiny, and manageable",
+            "Chemical-free formula suitable for daily use"
+        ],
+        short_benefit: "Prevents hair fall and promotes growth",
+        description: "Nourishing shampoo enriched with herbal extracts for strong hair.",
+        detailed_description: "Say goodbye to hair fall and hello to stronger, fuller strands with our Anti-Hairfall Shampoo. Infused with biotin, keratin, and natural plant extracts, this powerful yet gentle formula helps reduce breakage, nourish the scalp, and promote healthy hair growth. Gentle on the scalp yet tough on hair fall, it’s ideal for daily use and suitable for all hair types.",
+        key_ingredients: [
+            "Biotin",
+            "Keratin",
+            "Natural Plant Extracts"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Silicones"
+        ],
+        hair_type: [
+            "All Hair Types"
+        ]
     },
+
     {
         id: 3,
         name: "AVACADO & ARGAN HAIR BUTTER",
@@ -35,12 +93,40 @@ export const products = [
         regular_price: 385,
         save: 85,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h3.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h3.webp"
+        },
+
         Trending: "yes",
         quantity: "100gm",
-        benefits: "Deeply conditions and restores dry hair",
-        description: "Butter blend that moisturizes hair, making it soft and shiny."
-    },
+        benefits: [
+            "Deeply conditions and repairs dry, brittle, and damaged hair",
+            "Boosts shine and softness for smooth, frizz-free hair",
+            "Strengthens roots and helps reduce breakage",
+            "Tames frizz and flyaways for better manageability",
+            "Rich yet lightweight formula with no greasy residue"
+        ],
+        short_benefit: "Deeply conditions and restores dry hair",
+        description: "Butter blend that moisturizes hair, making it soft and shiny.",
+        detailed_description: "Treat your hair to the ultimate care with our Avacado & Argan Hair Butter — a luxurious blend that deeply nourishes, strengthens, and restores dry, frizzy, or damaged hair. Powered by Avacado Oil and Moroccan Argan Oil, it delivers intense hydration and lasting softness from root to tip. Ideal for daily or weekly use.",
+        key_ingredients: [
+            "Avacado Oil",
+            "Moroccan Argan Oil"
+        ],
+        free_from: [
+            "Parabens",
+            "Silicones",
+            "Sulfates"
+        ],
+        hair_type: [
+            "Dry Hair",
+            "Frizzy Hair",
+            "Curly Hair",
+            "Wavy Hair",
+            "Damaged Hair"
+        ]
+    }
+    ,
     {
         id: 4,
         name: "ONION HAIR MASK",
@@ -48,11 +134,40 @@ export const products = [
         regular_price: 390,
         save: 90,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h4.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h4.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/ONION HAIR MASK-01.webp"),
+        ],
         quantity: "100gm",
-        benefits: "Stimulates follicles and boosts hair growth",
-        description: "Onion-based mask to control hair fall and improve volume."
-    },
+        benefits: [
+            "Reduces hair fall by strengthening roots and minimizing breakage",
+            "Promotes faster hair growth by boosting scalp circulation",
+            "Repairs dry and damaged hair with deep conditioning",
+            "Soothes scalp by reducing dandruff, itchiness, and irritation",
+            "Adds natural shine, smoothness, and volume"
+        ],
+        short_benefit: "Stimulates follicles and boosts hair growth",
+        description: "Onion-based mask to control hair fall and improve volume.",
+        detailed_description: "Our Onion Hair Mask is a deep-conditioning treatment enriched with the power of red onion extract, nourishing oils, and herbal actives to strengthen roots, reduce hair fall, and promote faster, healthier growth. It revitalizes dull, damaged hair while soothing the scalp, leaving hair soft, shiny, and manageable.",
+        key_ingredients: [
+            "Red Onion Extract",
+            "Nourishing Oils",
+            "Herbal Actives"
+        ],
+        free_from: [
+            "Sulfates",
+            "Parabens",
+            "Silicones"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Hair Fall Prone Hair",
+            "Dry & Damaged Hair"
+        ]
+    }
+    ,
     {
         id: 5,
         name: "SWEET ALMOND OIL",
@@ -60,12 +175,50 @@ export const products = [
         regular_price: 499,
         save: 29,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h5.webp" },
-        bestSeller: 'yes',
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h5.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/SWEET ALMOND OIL-01.webp"),
+            require("../../assets/ProductDetails/Hair/SWEET ALMOND OIL-02.webp"),
+
+        ],
+        bestSeller: "yes",
         quantity: "100ml",
-        benefits: "Nourishes hair roots and adds natural shine",
-        description: "Cold-pressed almond oil rich in vitamins for scalp health."
+        benefits: [
+            "Deeply nourishes hair roots and promotes healthy hair growth",
+            "Adds natural shine while reducing dryness and breakage",
+            "Hydrates and softens skin with long-lasting moisture",
+            "Helps fade dark circles and blemishes over time",
+            "Provides anti-aging benefits by reducing fine lines and wrinkles",
+            "Strengthens nails and cuticles to prevent breakage"
+        ],
+        short_benefit: "Nourishes hair roots and adds natural shine",
+        description: "Cold-pressed almond oil rich in vitamins for scalp health.",
+        detailed_description: "Experience the goodness of 100% Pure Sweet Almond Oil, extracted from high-quality almonds to provide deep nourishment and hydration. Rich in essential vitamins and antioxidants, this lightweight, non-greasy oil is ideal for haircare, skincare, and overall wellness. It strengthens hair, improves scalp health, and leaves skin soft, smooth, and radiant.",
+        key_ingredients: [
+            "100% Pure Sweet Almond Oil"
+        ],
+        free_from: [
+            "Mineral Oil",
+            "Parabens",
+            "Artificial Fragrances"
+        ],
+        suitable_for: [
+            "Hair Care",
+            "Skin Care",
+            "Nail & Cuticle Care"
+        ],
+        hair_type: [
+            "All Hair Types"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Dry Skin",
+            "Sensitive Skin"
+        ]
     },
+
     {
         id: 6,
         name: "BLACK SEED OIL",
@@ -73,10 +226,48 @@ export const products = [
         regular_price: 390,
         save: 50,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h6.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h6.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/BLACK SEED OIL-01.webp"),
+            require("../../assets/ProductDetails/Hair/BLACK SEED OIL-02.webp"),
+
+        ],
         quantity: "100ml",
-        benefits: "Prevents premature greying and strengthens roots",
-        description: "Natural oil that boosts hair health and scalp hydration."
+        benefits: [
+            "Prevents premature greying by strengthening hair roots",
+            "Promotes healthy hair growth and reduces hair fall",
+            "Nourishes scalp and improves hydration",
+            "Supports healthy skin by reducing acne and inflammation",
+            "Boosts immunity with powerful antioxidants",
+            "Rich in Omega-3 and Omega-6 fatty acids for overall wellness"
+        ],
+        short_benefit: "Prevents premature greying and strengthens roots",
+        description: "Natural oil that boosts hair health and scalp hydration.",
+        detailed_description: "Harness the power of 100% Pure Cold-Pressed Black Seed Oil, extracted from Nigella Sativa seeds—often called the 'Seed of Blessing'. This nutrient-rich oil is packed with antioxidants, essential fatty acids, and anti-inflammatory properties. It nourishes the scalp, strengthens hair, supports skin health, and contributes to overall well-being.",
+        key_ingredients: [
+            "100% Pure Cold-Pressed Black Seed Oil (Nigella Sativa)"
+        ],
+        free_from: [
+            "Mineral Oil",
+            "Parabens",
+            "Artificial Additives"
+        ],
+        suitable_for: [
+            "Hair Care",
+            "Skin Care",
+            "Wellness Use"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Premature Greying Hair"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Sensitive Skin",
+            "Acne-Prone Skin"
+        ]
     },
     {
         id: 7,
@@ -85,11 +276,51 @@ export const products = [
         regular_price: 290,
         save: 57,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h7.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h7.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/GINGELLY OIL-01.webp"),
+            require("../../assets/ProductDetails/Hair/GINGELLY OIL-02.webp"),
+        ],
         quantity: "200ml",
-        benefits: "Protects from dandruff and nourishes scalp",
-        description: "Pure sesame oil for silky, strong, and smooth hair."
-    },
+        benefits: [
+            "Protects scalp from dandruff and dryness",
+            "Nourishes scalp deeply and strengthens hair roots",
+            "Promotes healthy hair growth and natural shine",
+            "Softens and hydrates skin naturally",
+            "Supports joint and muscle relief when used for massage",
+            "Traditionally used for oil pulling and wellness care"
+        ],
+        short_benefit: "Protects from dandruff and nourishes scalp",
+        description: "Pure sesame oil for silky, strong, and smooth hair.",
+        detailed_description: "Experience the richness of 100% Pure Cold-Pressed Gingelly Oil, extracted from premium sesame seeds. Known for its deep nourishment and healing properties, this golden oil strengthens hair, reduces dandruff, and improves scalp health. It is also widely used for skincare, massage, and traditional Ayurvedic wellness practices.",
+        key_ingredients: [
+            "100% Pure Cold-Pressed Sesame (Gingelly) Oil"
+        ],
+        free_from: [
+            "Mineral Oil",
+            "Preservatives",
+            "Artificial Additives"
+        ],
+        suitable_for: [
+            "Hair Care",
+            "Skin Care",
+            "Ayurvedic Massage",
+            "Oil Pulling"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Dry Scalp",
+            "Dandruff-Prone Hair"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Dry Skin",
+            "Sensitive Skin"
+        ]
+    }
+    ,
     {
         id: 8,
         name: "COCONUT OIL",
@@ -97,12 +328,52 @@ export const products = [
         regular_price: 260,
         save: 50,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h8.webp" },
-        bestSeller: 'yes',
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h8.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/COCONUT OIL-01.webp"),
+
+        ],
+        bestSeller: "yes",
         quantity: "200ml",
-        benefits: "Moisturizes dry hair and prevents split ends",
-        description: "Virgin coconut oil ideal for daily scalp massage."
-    },
+        benefits: [
+            "Deeply moisturizes dry hair and scalp",
+            "Prevents split ends and reduces breakage",
+            "Promotes healthy hair growth and shine",
+            "Nourishes and softens skin naturally",
+            "Supports overall wellness with natural antioxidants",
+            "Gentle enough for baby massage and sensitive skin"
+        ],
+        short_benefit: "Moisturizes dry hair and prevents split ends",
+        description: "Virgin coconut oil ideal for daily scalp massage.",
+        detailed_description: "Experience the natural richness of 100% Pure Cold-Pressed Coconut Oil, extracted from fresh coconuts to retain its essential nutrients and delightful aroma. This versatile oil deeply nourishes hair, strengthens roots, moisturizes skin, and supports overall wellness. Ideal for daily scalp massage, skincare, and traditional use.",
+        key_ingredients: [
+            "100% Pure Cold-Pressed Coconut Oil"
+        ],
+        free_from: [
+            "Mineral Oil",
+            "Preservatives",
+            "Artificial Additives"
+        ],
+        suitable_for: [
+            "Hair Care",
+            "Skin Care",
+            "Cooking Use",
+            "Baby Care"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Dry & Damaged Hair"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Dry Skin",
+            "Sensitive Skin",
+            "Baby Skin"
+        ]
+    }
+    ,
     {
         id: 9,
         name: "CASTOR OIL",
@@ -110,11 +381,51 @@ export const products = [
         regular_price: 140,
         save: 50,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h9.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h9.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/castor_oil-01.webp"),
+            require("../../assets/ProductDetails/Hair/CASTOR OIL-02.webp"),
+
+        ],
         quantity: "100ml",
-        benefits: "Promotes hair growth and thickness",
-        description: "Natural oil to stimulate hair growth and hydration."
-    },
+        benefits: [
+            "Promotes hair growth by strengthening roots",
+            "Improves hair thickness and reduces hair fall",
+            "Deeply moisturizes scalp and prevents dandruff",
+            "Encourages thicker eyebrows and eyelashes",
+            "Softens dry skin and helps heal cracked heels",
+            "Can be used for massage to relieve joint and muscle pain"
+        ],
+        short_benefit: "Promotes hair growth and thickness",
+        description: "Natural oil to stimulate hair growth and hydration.",
+        detailed_description: "Unlock the power of Pure Castor Oil, extracted from high-quality castor beans and rich in ricinoleic acid. This deeply nourishing, multipurpose oil supports healthy hair growth, improves scalp hydration, strengthens eyebrows and lashes, and helps soothe dry skin. A trusted natural remedy for hair, skin, and wellness care.",
+        key_ingredients: [
+            "100% Pure Castor Oil (Ricinus Communis)"
+        ],
+        free_from: [
+            "Mineral Oil",
+            "Parabens",
+            "Artificial Additives"
+        ],
+        suitable_for: [
+            "Hair Care",
+            "Skin Care",
+            "Eyebrow & Eyelash Care",
+            "Massage Use"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Hair Fall Prone Hair",
+            "Dry Scalp"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Dry Skin"
+        ]
+    }
+    ,
     {
         id: 10,
         name: "SHIKAKAI POWDER",
@@ -122,13 +433,45 @@ export const products = [
         regular_price: 325,
         save: 45,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h10.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h10.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/SHIKAKAI POWDER-01.webp"),
+        ],
         powder: "yes",
         hairpack: "yes",
         quantity: "100gm",
-        benefits: "Cleanses hair naturally and improves texture",
-        description: "Traditional powder that strengthens and smoothens hair."
-    },
+        benefits: [
+            "Gently cleanses hair and scalp without stripping natural oils",
+            "Strengthens hair roots and promotes healthy hair growth",
+            "Prevents dandruff and reduces scalp itchiness",
+            "Adds natural shine, softness, and smooth texture",
+            "Helps prevent premature greying",
+            "100% herbal and chemical-free alternative to shampoo"
+        ],
+        short_benefit: "Cleanses hair naturally and improves texture",
+        description: "Traditional powder that strengthens and smoothens hair.",
+        detailed_description: "Experience the traditional goodness of Ayurvedic Shikakai Powder, a 100% natural hair care solution known for its gentle cleansing, strengthening, and conditioning properties. Rich in natural vitamins and antioxidants, it promotes healthy hair growth, reduces dandruff, and leaves hair soft, shiny, and manageable without the use of chemicals.",
+        key_ingredients: [
+            "100% Pure Shikakai (Acacia concinna)"
+        ],
+        free_from: [
+            "Sulfates",
+            "Parabens",
+            "Artificial Chemicals"
+        ],
+        suitable_for: [
+            "Hair Pack",
+            "Natural Shampoo Alternative"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Dandruff-Prone Hair",
+            "Dry & Damaged Hair"
+        ]
+    }
+    ,
     {
         id: 11,
         name: "HENNA POWDER",
@@ -136,13 +479,47 @@ export const products = [
         regular_price: 160,
         save: 60,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h11.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h11.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/henna_powder-01.webp"),
+
+        ],
         powder: "yes",
         hairpack: "yes",
         quantity: "100gm",
-        benefits: "Colors hair naturally and conditions deeply",
-        description: "Herbal henna powder for shiny, soft, and colored hair."
+        benefits: [
+            "Naturally colors hair with a rich reddish-brown tone",
+            "Deeply conditions hair and prevents dryness and split ends",
+            "Strengthens hair roots and reduces breakage",
+            "Promotes healthy hair growth by improving scalp health",
+            "Cools and soothes scalp, reducing dandruff and irritation",
+            "Safe and suitable for natural mehndi and body art use"
+        ],
+        short_benefit: "Colors hair naturally and conditions deeply",
+        description: "Herbal henna powder for shiny, soft, and naturally colored hair.",
+        detailed_description: "Our Pure Henna Powder is made from the finest henna leaves to deliver a chemical-free, natural hair dye that nourishes the scalp and strengthens hair. Rich in antioxidants and essential nutrients, it provides long-lasting color while improving hair texture, shine, and overall scalp health. Suitable for both hair care and traditional mehndi application.",
+        key_ingredients: [
+            "100% Pure Henna Leaves (Lawsonia inermis)"
+        ],
+        free_from: [
+            "Chemical Dyes",
+            "Parabens",
+            "Artificial Additives"
+        ],
+        suitable_for: [
+            "Hair Coloring",
+            "Hair Pack",
+            "Mehndi / Body Art"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Premature Greying Hair",
+            "Dry & Damaged Hair"
+        ]
     },
+
     {
         id: 12,
         name: "AMLA POWDER",
@@ -150,12 +527,50 @@ export const products = [
         regular_price: 125,
         save: 32,
         category: "Hair Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h12.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h12.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Hair/AMLA POWDER-01.webp"),
+            require("../../assets/ProductDetails/Hair/AMLA POWDER-02.webp"),
+
+        ],
         powder: "yes",
         quantity: "100gm",
-        benefits: "Strengthens hair and prevents greying",
-        description: "Rich in vitamin C to maintain hair pigmentation."
+        benefits: [
+            "Strengthens hair roots and promotes healthy hair growth",
+            "Prevents premature greying and maintains natural hair pigmentation",
+            "Reduces hair fall and dandruff with regular use",
+            "Enhances skin glow and helps reduce pigmentation",
+            "Boosts immunity with high Vitamin C content",
+            "Supports overall wellness and detoxification"
+        ],
+        short_benefit: "Strengthens hair and prevents premature greying",
+        description: "Rich in Vitamin C to maintain hair pigmentation.",
+        detailed_description: "Our 100% Pure Amla Powder is made from carefully dried Indian Gooseberries, preserving its natural Vitamin C, antioxidants, and essential nutrients. Widely used in Ayurvedic hair care, it strengthens hair roots, reduces hair fall, prevents premature greying, and improves scalp health. A powerful natural ingredient for hair, skin, and overall wellness.",
+        key_ingredients: [
+            "100% Pure Amla (Indian Gooseberry)"
+        ],
+        free_from: [
+            "Artificial Chemicals",
+            "Preservatives",
+            "Added Colors"
+        ],
+        suitable_for: [
+            "Hair Pack",
+            "Natural Hair Care",
+            "Wellness Use"
+        ],
+        hair_type: [
+            "All Hair Types",
+            "Premature Greying Hair",
+            "Hair Fall Prone Hair"
+        ],
+        skin_type: [
+            "All Skin Types"
+        ]
     },
+
 
     // --- Skin Care ---
     {
@@ -165,14 +580,49 @@ export const products = [
         regular_price: 220,
         save: 30,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s1.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s1.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ROSE WATER-01.webp"),
+            require("../../assets/ProductDetails/Skin/ROSE WATER-02.webp"),
+
+        ],
         Newproducts: "yes",
         nightroutine: "yes",
+        Bundle_save: "Yes",
         quantity: "120ml",
-        benefits: "Tones skin and tightens pores",
+        benefits: [
+            "Hydrates and refreshes skin for a soft, glowing look",
+            "Acts as a natural toner by tightening pores and balancing pH",
+            "Soothes irritation, redness, acne, and sunburn",
+            "Provides aromatherapy benefits for relaxation and stress relief",
+            "Can be used on scalp to nourish hair and reduce dandruff"
+        ],
+        short_benefit: "Tones skin and tightens pores",
         description: "Natural toner made from fresh rose petals.",
-        Bundle_save:"Yes"
-    },
+        detailed_description: "Experience the natural goodness of 100% Pure Rose Water, made from fresh rose petals through gentle steam distillation. This refreshing floral mist hydrates, soothes, and revitalizes the skin while enhancing mood with its natural aroma. Suitable for daily use and all skin types.",
+        key_ingredients: [
+            "100% Pure Steam-Distilled Rose Water"
+        ],
+        free_from: [
+            "Alcohol",
+            "Artificial Fragrance",
+            "Parabens"
+        ],
+        suitable_for: [
+            "Face Toner",
+            "Night Skin Routine",
+            "Hair & Scalp Care",
+            "Aromatherapy"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Sensitive Skin",
+            "Acne-Prone Skin"
+        ]
+    }
+    ,
     {
         id: 14,
         name: "ROSE POWDER",
@@ -180,12 +630,48 @@ export const products = [
         regular_price: 220,
         save: 30,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s16.avif" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s16.avif"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ROSE POWDER-01.webp"),
+
+
+        ],
         Facepowder: "yes",
         quantity: "100gm",
-        benefits: "Tightens pores and enhances glow",
-        description: "Made from pure dried rose petals for face packs."
+        benefits: [
+            "Tightens pores and enhances natural skin glow",
+            "Brightens and evens skin tone by reducing dullness",
+            "Controls acne and excess oil with natural astringent properties",
+            "Hydrates and refreshes skin for a smooth, soft feel",
+            "Soothes sun damage and reduces tanning",
+            "Strengthens hair and scalp when used as a hair pack"
+        ],
+        short_benefit: "Tightens pores and enhances glow",
+        description: "Made from pure dried rose petals for face packs.",
+        detailed_description: "Indulge in the pure essence of roses with our 100% Natural Rose Powder, made from finely ground dried rose petals. Rich in antioxidants and essential vitamins, this herbal beauty ingredient helps brighten skin, control acne, reduce sun damage, and promote a naturally radiant complexion. It can also be used to nourish hair and scalp.",
+        key_ingredients: [
+            "100% Pure Dried Rose Petals"
+        ],
+        free_from: [
+            "Artificial Colors",
+            "Preservatives",
+            "Chemical Additives"
+        ],
+        suitable_for: [
+            "Face Pack",
+            "Skin Brightening",
+            "Hair Pack"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Oily Skin",
+            "Sensitive Skin",
+            "Acne-Prone Skin"
+        ]
     },
+
     {
         id: 15,
         name: "SKIN BRIGHTENING SOAP",
@@ -193,11 +679,46 @@ export const products = [
         regular_price: 220,
         save: 60,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s2.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s2.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/SKIN BRIGHTENING SOAP-01.webp"),
+            require("../../assets/ProductDetails/Skin/SKIN BRIGHTENING SOAP-02.webp"),
+
+        ],
         quantity: "100gm",
-        benefits: "Brightens skin and reduces dullness",
-        description: "Herbal soap that gives an even skin tone."
+        benefits: [
+            "Brightens skin and evens overall skin tone",
+            "Fades dark spots, blemishes, and dullness",
+            "Gently exfoliates dead skin cells for smoother skin",
+            "Reduces pigmentation and tanning over time",
+            "Hydrates skin while maintaining natural moisture balance",
+            "Mild, pH-balanced formula suitable for daily use"
+        ],
+        short_benefit: "Brightens skin and reduces dullness",
+        description: "Herbal soap that gives an even skin tone.",
+        detailed_description: "Unveil radiant, even-toned skin with our Skin Brightening Soap, crafted with natural extracts and gentle cleansing agents. This mild yet effective soap helps reduce dark spots, pigmentation, and dullness while gently exfoliating and hydrating the skin. Free from harsh chemicals, it is suitable for all skin types and ideal for everyday use.",
+        key_ingredients: [
+            "Natural Herbal Extracts",
+            "Gentle Cleansing Agents"
+        ],
+        free_from: [
+            "Harsh Chemicals",
+            "Parabens",
+            "Artificial Colors"
+        ],
+        suitable_for: [
+            "Daily Skin Cleansing",
+            "Skin Brightening Care"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Dull Skin",
+            "Pigmented Skin"
+        ]
     },
+
     {
         id: 16,
         name: "CHARCOAL SOAP",
@@ -205,11 +726,47 @@ export const products = [
         regular_price: 150,
         save: 40,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s3.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s3.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/CHARCOAL SOAP-01.webp"),
+            require("../../assets/ProductDetails/Skin/CHARCOAL SOAP-02.webp"),
+
+        ],
         quantity: "100gm",
-        benefits: "Removes impurities and unclogs pores",
-        description: "Activated charcoal cleans deeply for fresh skin."
-    },
+        benefits: [
+            "Deeply cleanses skin by drawing out impurities and toxins",
+            "Unclogs pores and removes excess oil",
+            "Helps fight acne, pimples, and breakouts",
+            "Gently exfoliates dead skin cells for smoother texture",
+            "Brightens skin by reducing blemishes and dark spots",
+            "Soothes irritation, redness, and itchiness"
+        ],
+        short_benefit: "Removes impurities and unclogs pores",
+        description: "Activated charcoal cleans deeply for fresh skin.",
+        detailed_description: "Purify your skin with 100% Natural Charcoal Soap, enriched with activated charcoal to detoxify, exfoliate, and unclog pores. This powerful soap absorbs excess oil, removes dirt, and helps fight acne, leaving skin refreshed, smooth, and glowing. Ideal for daily use, especially for oily and acne-prone skin.",
+        key_ingredients: [
+            "Activated Charcoal",
+            "Natural Cleansing Base"
+        ],
+        free_from: [
+            "Harsh Chemicals",
+            "Parabens",
+            "Artificial Colors"
+        ],
+        suitable_for: [
+            "Daily Face & Body Cleansing",
+            "Acne Control"
+        ],
+        skin_type: [
+            "Oily Skin",
+            "Combination Skin",
+            "Acne-Prone Skin"
+        ],
+        return_policy_note: "Soap products cannot be returned once ordered due to hygiene and safety reasons."
+    }
+    ,
     {
         id: 17,
         name: "ORANGE GEL",
@@ -217,11 +774,49 @@ export const products = [
         regular_price: 310,
         save: 60,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s4.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s4.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ORANGE GEL-01.webp"),
+            require("../../assets/ProductDetails/Skin/ORANGE GEL-02.webp"),
+            require("../../assets/ProductDetails/Skin/ORANGE GEL-03.webp"),
+
+        ],
         quantity: "100gm",
-        benefits: "Brightens complexion and refreshes skin",
-        description: "Gel-based moisturizer with orange extracts."
+        benefits: [
+            "Brightens complexion and boosts natural skin radiance",
+            "Refreshes and revives dull, tired-looking skin",
+            "Helps control excess oil and reduce acne breakouts",
+            "Hydrates skin deeply while soothing irritation",
+            "Tightens pores for smoother, refined skin texture",
+            "Lightweight, non-sticky, quick-absorbing gel formula"
+        ],
+        short_benefit: "Brightens complexion and refreshes skin",
+        description: "Gel-based moisturizer with orange extracts.",
+        detailed_description: "Refresh and revive your skin with our Orange Gel, enriched with natural orange extract and Vitamin C. This lightweight, fast-absorbing gel deeply hydrates the skin, brightens dull complexion, and provides a burst of citrus freshness. Ideal for daily use and suitable for all skin types.",
+        key_ingredients: [
+            "Orange Extract",
+            "Vitamin C"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Fragrance"
+        ],
+        suitable_for: [
+            "Daily Moisturizer",
+            "Oil Control",
+            "Skin Brightening"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Oily Skin",
+            "Acne-Prone Skin",
+            "Combination Skin"
+        ]
     },
+
     {
         id: 18,
         name: "ANTI PIGMENTATION CREAM",
@@ -229,11 +824,46 @@ export const products = [
         regular_price: 175,
         save: 55,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s5.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s5.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ANTI PIGMENTATAION CREAM-01.webp"),
+
+        ],
         quantity: "50gm",
-        benefits: "Reduces dark spots and uneven tone",
-        description: "Cream with herbal actives for glowing skin."
-    },
+        benefits: [
+            "Fades dark spots, sun spots, and age spots",
+            "Reduces pigmentation and evens out skin tone",
+            "Brightens complexion and boosts natural radiance",
+            "Helps prevent new pigmentation by controlling melanin production",
+            "Hydrates skin with a lightweight, non-greasy formula"
+        ],
+        short_benefit: "Reduces dark spots and uneven skin tone",
+        description: "Cream with herbal actives for glowing skin.",
+        detailed_description: "Our Anti-Pigmentation Cream is a powerful skin-correcting formula designed to reduce dark spots, blemishes, and uneven skin tone. Enriched with natural brightening agents, antioxidants, and skin-repairing ingredients, it restores the skin’s natural glow while keeping it hydrated and smooth. Suitable for daily use.",
+        key_ingredients: [
+            "Natural Brightening Agents",
+            "Antioxidants",
+            "Herbal Actives"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Fragrances"
+        ],
+        suitable_for: [
+            "Daily Pigmentation Care",
+            "Dark Spot Treatment",
+            "Uneven Skin Tone Correction"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Pigmented Skin",
+            "Dull Skin"
+        ]
+    }
+    ,
     {
         id: 19,
         name: "COTTONSEED MILK MIX",
@@ -241,12 +871,46 @@ export const products = [
         regular_price: 210,
         save: 100,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s6.webp" },
-        bestSeller: 'yes',
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s6.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/COTTONSEED MILK MIX-01.webp"),
+
+
+        ],
+        bestSeller: "yes",
         quantity: "100gm",
-        benefits: "Softens skin and enhances glow",
-        description: "Nutrient-rich mix for smooth, hydrated skin."
-    },
+        benefits: [
+            "Softens skin and improves overall texture",
+            "Enhances natural glow and radiance",
+            "Deeply nourishes skin with plant-based nutrients",
+            "Helps keep skin smooth, hydrated, and healthy",
+            "Gentle and suitable for regular skincare use"
+        ],
+        short_benefit: "Softens skin and enhances glow",
+        description: "Nutrient-rich mix for smooth, hydrated skin.",
+        detailed_description: "Our Cottonseed Milk Mix is a nutrient-rich, plant-based skincare blend made from finely milled cottonseeds. Rich in natural proteins, fiber, and essential nutrients, it helps nourish the skin, improve softness, and enhance natural glow. Free from artificial additives, it is ideal for use in face packs and traditional skincare routines.",
+        key_ingredients: [
+            "Finely Milled Cottonseeds"
+        ],
+        free_from: [
+            "Artificial Flavors",
+            "Preservatives",
+            "Added Sugars"
+        ],
+        suitable_for: [
+            "Face Pack",
+            "Skin Nourishment",
+            "Glow Enhancement"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Dry Skin",
+            "Dull Skin"
+        ]
+    }
+    ,
     {
         id: 20,
         name: "ANTI AGING CREAM",
@@ -254,12 +918,51 @@ export const products = [
         regular_price: 230,
         save: 80,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s7.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s7.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ANTI AGING CREAM-01.webp"),
+            require("../../assets/ProductDetails/Skin/ANTI AGING CREAM-02.webp"),
+
+        ],
         Newproducts: "yes",
         quantity: "50gm",
-        benefits: "Reduces wrinkles and fine lines",
-        description: "Herbal blend that restores youthful glow."
-    },
+        short_benefit: "Reduces wrinkles and fine lines",
+        benefits: [
+            "Reduces fine lines and wrinkles",
+            "Boosts collagen production for firmer skin",
+            "Deeply hydrates and improves elasticity",
+            "Brightens skin and evens out tone",
+            "Restores youthful radiance and smooth texture"
+        ],
+        description: "Herbal blend that restores youthful glow.",
+        detailed_description: "Our Anti-Aging Cream is a rich, rejuvenating formula designed to smooth fine lines, firm skin, and restore youthful radiance. Powered with age-defying ingredients like Retinol, Hyaluronic Acid, and Vitamin E, it deeply hydrates, improves skin elasticity, and supports natural collagen production for visibly younger-looking skin.",
+        key_ingredients: [
+            "Retinol",
+            "Hyaluronic Acid",
+            "Vitamin E",
+            "Herbal Extracts"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Fragrances"
+        ],
+        suitable_for: [
+            "Daily Skincare Routine",
+            "Anti-Aging Treatment",
+            "Night Care"
+        ],
+        skin_type: [
+            "All Skin Types",
+            "Mature Skin",
+            "Dry Skin",
+            "Dull Skin"
+        ],
+        texture: "Non-greasy, fast-absorbing cream"
+    }
+    ,
     {
         id: 21,
         name: "SALICYLIC FACEWASH",
@@ -267,11 +970,43 @@ export const products = [
         regular_price: 300,
         save: 70,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp" },
-        quantity: "150ml",
-        benefits: "Removes acne and controls oil",
-        description: "Gentle foaming facewash with natural acids."
-    },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp"
+        },
+        quantity: "100ml",
+        short_benefit: "Removes acne and controls oil",
+        benefits: [
+            "Fights acne and pimples by penetrating deep into pores",
+            "Unclogs pores by removing dirt, oil, and impurities",
+            "Controls excess oil for a shine-free look",
+            "Provides gentle exfoliation for brighter, clearer skin",
+            "Soothing formula helps reduce redness and irritation"
+        ],
+        description: "Gentle foaming facewash with natural acids.",
+        detailed_description: "Our Salicylic Acid Face Wash is a gentle yet powerful cleanser formulated to fight acne, unclog pores, and leave your skin feeling clean, fresh, and balanced. Infused with 2% salicylic acid and soothing botanical extracts, it targets excess oil and breakouts without drying out the skin—making it ideal for daily use.",
+        key_ingredients: [
+            "2% Salicylic Acid",
+            "Botanical Extracts"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Harsh Chemicals"
+        ],
+        skin_type: [
+            "Oily Skin",
+            "Acne-Prone Skin",
+            "Combination Skin"
+        ],
+        suitable_for: [
+            "Daily Cleansing",
+            "Acne Control",
+            "Oil Regulation"
+        ],
+        texture: "Gentle foaming cleanser"
+    }
+    ,
+
     {
         id: 22,
         name: "TURMERIC POWDER",
@@ -279,12 +1014,42 @@ export const products = [
         regular_price: 120,
         save: 50,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s9.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s9.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/TURMERIC POWDER-01.webp"),
+        ],
         powder: "yes",
         quantity: "100gm",
-        benefits: "Fights acne and brightens skin",
-        description: "Pure turmeric powder with antiseptic properties."
-    },
+        short_benefit: "Fights acne and brightens skin",
+        benefits: [
+            "Fights acne, blemishes, and skin infections",
+            "Brightens skin and improves natural glow",
+            "Powerful anti-inflammatory properties",
+            "Helps reduce pigmentation and dark spots",
+            "Supports overall skin health and healing"
+        ],
+        description: "Pure turmeric powder with natural antiseptic and healing properties.",
+        detailed_description: "Our 100% Pure Turmeric Powder is made from carefully selected turmeric roots and finely ground to preserve its active compound, curcumin. Known for its powerful antioxidant, anti-inflammatory, and antibacterial properties, turmeric is widely used in skincare routines, face packs, and traditional wellness practices for clear, healthy, and glowing skin.",
+        key_ingredients: [
+            "Natural Curcumin",
+            "Pure Turmeric Root Extract"
+        ],
+        free_from: [
+            "Artificial Colors",
+            "Preservatives",
+            "Chemical Additives"
+        ],
+        suitable_for: [
+            "Face Packs",
+            "Acne Control",
+            "Skin Brightening",
+            "Traditional Skincare"
+        ],
+        texture: "Fine herbal powder"
+    }
+    ,
     {
         id: 23,
         name: "ALOEVERA GEL",
@@ -292,11 +1057,42 @@ export const products = [
         regular_price: 175,
         save: 15,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s10.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s10.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-01.webp"),
+            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-02.webp"),
+
+        ],
         quantity: "100gm",
-        benefits: "Hydrates and soothes skin",
-        description: "Cooling gel suitable for all skin types."
-    },
+        short_benefit: "Hydrates and soothes skin",
+        benefits: [
+            "Deeply hydrates and moisturizes skin without greasiness",
+            "Soothes sunburn, irritation, and redness",
+            "Helps reduce acne, pimples, and inflammation",
+            "Improves skin texture and natural glow",
+            "Conditions hair, reduces dandruff, and supports healthy growth"
+        ],
+        description: "Cooling, lightweight aloe vera gel suitable for all skin types.",
+        detailed_description: "Our Aloe Vera Gel is extracted from fresh aloe leaves and formulated to provide intense hydration, soothing relief, and nourishment for both skin and hair. Its fast-absorbing, non-sticky texture makes it ideal for daily use as a moisturizer, after-sun care, acne support gel, or hair and scalp conditioner.",
+        key_ingredients: [
+            "Pure Aloe Vera Extract"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Fragrances"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Acne-Prone Skin",
+            "Sunburn & Irritated Skin",
+            "Hair & Scalp Care"
+        ],
+        texture: "Lightweight, non-sticky gel"
+    }
+    ,
     {
         id: 24,
         name: "ROSE POWDER",
@@ -304,12 +1100,48 @@ export const products = [
         regular_price: 210,
         save: 60,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s11.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s11.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ROSE POWDER-01.webp"),
+        ],
         powder: "yes",
         quantity: "100gm",
-        benefits: "Tightens pores and enhances glow",
-        description: "Made from pure dried rose petals for face packs."
-    },
+        short_benefit: "Tightens pores and enhances natural glow",
+        benefits: [
+            "Brightens and evens skin tone naturally",
+            "Controls acne, pimples, and excess oil",
+            "Tightens pores and improves skin texture",
+            "Reduces tanning, sun damage, and dullness",
+            "Soothes irritated skin with a cooling effect",
+            "Strengthens hair and promotes scalp health"
+        ],
+        description: "Pure rose petal powder ideal for face packs and natural skincare.",
+        detailed_description: "Our 100% Natural Rose Powder is made from finely ground dried rose petals, rich in antioxidants and essential vitamins. It helps brighten skin, tighten pores, control oil, and soothe irritation while leaving a fresh floral fragrance. Suitable for face packs, ubtan, and herbal hair masks, it delivers gentle yet effective care for glowing skin and healthy hair.",
+        key_ingredients: [
+            "Dried Rose Petals"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Colors",
+            "Artificial Fragrances"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Oily & Acne-Prone Skin",
+            "Sensitive Skin",
+            "Hair & Scalp Care"
+        ],
+        usage_suggestions: [
+            "Mix with rose water or milk for a brightening face pack",
+            "Combine with multani mitti for oil control",
+            "Use with aloe vera gel for soothing skin care",
+            "Add to hair packs for shine and scalp nourishment"
+        ]
+    }
+    ,
     {
         id: 25,
         name: "KUMKUMATHI NIGHT ROUTINE",
@@ -318,11 +1150,16 @@ export const products = [
         save: 40,
         category: "Skin Care",
         image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp" },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI NIGHT ROUTINE-01.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI NIGHT ROUTINE-02.webp"),
+
+        ],
         nightroutine: "yes",
         quantity: "50ml",
         benefits: "Improves skin texture overnight",
         description: "Ayurvedic night routine oil for radiant skin.",
-        Bundle_save:"Yes"
+        Bundle_save: "Yes"
     },
     {
         id: 26,
@@ -331,12 +1168,56 @@ export const products = [
         regular_price: 150,
         save: 40,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s13.webp" },
-        bestSeller: 'yes',
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s13.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-01.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-02.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-03.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-04.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-05.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-06.webp"),
+
+        ],
+        bestSeller: "yes",
         quantity: "100gm",
-        benefits: "Brightens and nourishes dull skin",
-        description: "Infused with kumkumathi oil for glowing skin."
-    },
+        short_benefit: "Brightens and nourishes dull skin",
+        benefits: [
+            "Enhances natural skin glow with saffron infusion",
+            "Evens skin tone and reduces pigmentation",
+            "Deeply nourishes and hydrates dry, dull skin",
+            "Helps fight acne and pimples with antibacterial properties",
+            "Reduces fine lines and early signs of aging",
+            "Soothes and calms skin with sandalwood and Ayurvedic herbs"
+        ],
+        description: "Natural handmade soap infused with Kumkumathi oil for radiant, healthy skin.",
+        detailed_description: "Our Kumkumathi Soap is a luxurious, 100% natural handmade soap enriched with Kumkumathi oil, saffron, sandalwood, and traditional Ayurvedic herbs. It gently cleanses while nourishing the skin, improving complexion, reducing blemishes, and restoring a youthful glow. Ideal for daily use on face and body.",
+        key_ingredients: [
+            "Kumkumathi Oil",
+            "Saffron",
+            "Sandalwood",
+            "Ayurvedic Herbal Extracts"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Colors",
+            "Harsh Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Dull & Uneven Skin",
+            "Dry & Normal Skin"
+        ],
+        usage_suggestions: [
+            "Use daily on wet skin and gently massage to create lather",
+            "Rinse thoroughly with water",
+            "Follow with moisturizer for best results"
+        ],
+        return_policy_note: "Soap products cannot be returned once ordered due to hygiene and safety reasons."
+    }
+    ,
     {
         id: 27,
         name: "KASTURI MANJAL",
@@ -344,12 +1225,49 @@ export const products = [
         regular_price: 115,
         save: 35,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s14.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s14.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/KASTURI MANJAL-01.webp"),
+
+        ],
         Facepowder: "yes",
         quantity: "100gm",
-        benefits: "Removes tan and gives natural radiance",
-        description: "Pure wild turmeric for face packs."
-    },
+        short_benefit: "Removes tan and gives natural radiance",
+        benefits: [
+            "Brightens and evens skin tone naturally",
+            "Reduces pigmentation, dark spots, and dullness",
+            "Fights acne and pimples with antibacterial properties",
+            "Removes facial hair and slows down hair growth",
+            "Controls excess oil and maintains matte skin",
+            "Soothes irritation, sunburn, and rashes",
+            "Prevents premature aging and fine lines"
+        ],
+        description: "Pure wild turmeric powder ideal for face packs and natural skincare.",
+        detailed_description: "Kasturi Manjal, or Wild Turmeric, is a traditional Ayurvedic ingredient prized for its skin-brightening, anti-inflammatory, and antibacterial properties. Unlike regular turmeric, it does not stain the skin and is perfect for face packs, herbal treatments, and beauty routines to enhance natural radiance and clear, healthy skin.",
+        key_ingredients: [
+            "Pure Kasturi Manjal (Wild Turmeric)"
+        ],
+        free_from: [
+            "Artificial Colors",
+            "Parabens",
+            "Sulfates",
+            "Harsh Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Oily & Acne-Prone Skin",
+            "Dull or Tanned Skin",
+            "Face Pack & Skincare Treatments"
+        ],
+        usage_suggestions: [
+            "Mix with rose water, milk, or aloe vera gel for face packs",
+            "Apply 2–3 times a week for best results",
+            "Avoid contact with eyes"
+        ]
+    }
+    ,
     {
         id: 28,
         name: "MULTANI MITTI POWDER",
@@ -357,13 +1275,45 @@ export const products = [
         regular_price: 175,
         save: 75,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp"
+        },
         powder: "yes",
         Facepowder: "yes",
         quantity: "100gm",
-        benefits: "Absorbs oil and refreshes skin",
-        description: "Natural clay for smooth, glowing skin."
+        short_benefit: "Absorbs oil and refreshes skin",
+        benefits: [
+            "Deeply cleanses and unclogs pores",
+            "Absorbs excess oil and controls acne",
+            "Brightens and evens skin tone naturally",
+            "Soothes sunburn, irritation, and redness",
+            "Tightens pores and reduces oiliness",
+            "Gently exfoliates dead skin cells for smooth texture"
+        ],
+        description: "Natural clay powder for face packs, deep cleansing, and radiant skin.",
+        detailed_description: "Multani Mitti, also known as Fuller's Earth, is a 100% natural clay known for its oil-absorbing, skin-brightening, and cooling properties. Ideal for face packs and skincare routines, it purifies the skin, removes impurities, tightens pores, and leaves your skin fresh, matte, and glowing.",
+        key_ingredients: [
+            "100% Pure Multani Mitti (Fuller's Earth)"
+        ],
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Colors",
+            "Harsh Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Oily & Acne-Prone Skin",
+            "Dull or Tanned Skin",
+            "Face Pack & Skincare Treatments"
+        ],
+        usage_suggestions: [
+            "Mix with rose water, milk, or aloe vera gel for a face pack",
+            "Apply 2–3 times a week for best results",
+            "Leave on for 10–15 minutes and rinse with lukewarm water"
+        ]
     },
+
 
     // --- Body Care ---
     {
@@ -373,12 +1323,44 @@ export const products = [
         regular_price: 410,
         save: 25,
         category: "Body Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b1.webp" },
-        bestSeller: 'yes',
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b1.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Body/HERBAL BODY WASH-01.webp"),
+            require("../../assets/ProductDetails/Body/HERBAL BODY WASH-02.webp"),
+
+        ],
+        bestSeller: "yes",
         quantity: "250ml",
-        benefits: "Cleanses and refreshes skin",
-        description: "Mild body wash with herbal fragrance."
+        short_benefit: "Cleanses and refreshes skin",
+        benefits: [
+            "Gentle cleansing removes dirt and impurities without drying",
+            "Hydrates and nourishes skin, leaving it soft and supple",
+            "Enriched with herbal extracts to soothe and refresh naturally",
+            "Restores natural glow for healthy, radiant skin",
+            "Free from harsh chemicals like parabens, sulfates, and artificial fragrances"
+        ],
+        description: "Mild body wash infused with herbal fragrance for soft, smooth, and revitalized skin.",
+        detailed_description: "Indulge in a refreshing bath experience with our Herbal Body Wash, crafted with natural herbs and plant extracts. It gently cleanses while nourishing your skin, leaving it soft, smooth, and revitalized. Free from harsh chemicals, it is perfect for daily use for all skin types.",
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Fragrances",
+            "Harsh Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Daily Use",
+            "Sensitive & Normal Skin"
+        ],
+        usage_suggestions: [
+            "Apply to wet skin and lather gently",
+            "Rinse thoroughly with water",
+            "Use daily for best results"
+        ]
     },
+
     {
         id: 30,
         name: "SHEABUTTER BODY WASH",
@@ -386,11 +1368,43 @@ export const products = [
         regular_price: 510,
         save: 100,
         category: "Body Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b2.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b2.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Body/SHEABUTTER BODY WASH-01.webp"),
+            require("../../assets/ProductDetails/Body/SHEABUTTER BODY WASH-02.webp"),
+
+        ],
         quantity: "250ml",
-        benefits: "Softens skin and retains moisture",
-        description: "Moisturizing wash with natural shea butter."
+        short_benefit: "Softens skin and retains moisture",
+        benefits: [
+            "Deep hydration locks in moisture to prevent dryness and flakiness",
+            "Gentle cleansing removes impurities without stripping natural oils",
+            "Softens and smoothens skin for a silky feel",
+            "Soothes sensitive skin and promotes balance",
+            "Rich, creamy lather for a luxurious bath experience"
+        ],
+        description: "Moisturizing body wash enriched with natural shea butter and botanical extracts for soft, smooth, and nourished skin.",
+        detailed_description: "Our Shea Butter Body Wash is a creamy, ultra-moisturizing cleanser that pampers your skin with every wash. Enriched with pure Shea Butter and soothing botanical extracts, it gently cleanses while deeply hydrating—leaving your skin soft, smooth, and beautifully refreshed. Free from sulfates, parabens, and synthetic fragrances, it is suitable for all skin types.",
+        free_from: [
+            "Sulfates",
+            "Parabens",
+            "Synthetic Fragrances",
+            "Harsh Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Sensitive Skin",
+            "Daily Use"
+        ],
+        usage_suggestions: [
+            "Apply to wet skin and lather gently",
+            "Rinse thoroughly with water",
+            "Use daily for soft, hydrated skin"
+        ]
     },
+
     {
         id: 31,
         name: "ALOEVERA GEL",
@@ -398,14 +1412,46 @@ export const products = [
         regular_price: 175,
         save: 15,
         category: "Body Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b3.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b3.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-01.webp"),
+            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-02.webp"),
+
+        ],
         Newproducts: "yes",
         nightroutine: "yes",
         quantity: "100gm",
-        benefits: "Soothes and hydrates dry skin",
-        description: "Cooling aloe gel for everyday freshness.",
-        Bundle_save:"Yes",
+        short_benefit: "Soothes and hydrates dry skin",
+        benefits: [
+            "Deep hydration moisturizes and softens skin without a greasy feel",
+            "Soothes and cools irritated or sunburned skin",
+            "Supports acne and blemish care for clear, healthy skin",
+            "Conditions hair and scalp, reduces dandruff, and promotes growth",
+            "Multipurpose use as face moisturizer, after-sun care, and hair mask"
+        ],
+        description: "Cooling aloe gel for everyday freshness, suitable for skin and hair care.",
+        detailed_description: "Our Aloe Vera Gel is a natural, lightweight, and fast-absorbing formula designed to deeply hydrate, soothe, and nourish your skin and hair. Extracted from fresh aloe leaves, it helps calm irritation, reduce redness, and promote a healthy, radiant glow. Free from parabens, sulfates, and artificial fragrances, it is perfect for all skin types.",
+        free_from: [
+            "Parabens",
+            "Sulfates",
+            "Artificial Fragrances",
+            "Harsh Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Sensitive Skin",
+            "Daily Use"
+        ],
+        usage_suggestions: [
+            "Apply to clean skin or hair as needed",
+            "Gently massage until absorbed",
+            "Use daily for best results"
+        ],
+        Bundle_save: "Yes"
     },
+
     {
         id: 32,
         name: "FLAX SEED",
@@ -413,11 +1459,42 @@ export const products = [
         regular_price: 130,
         save: 50,
         category: "Body Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b4.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b4.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Body/FLAX SEED-01.webp"),
+
+        ],
         quantity: "200gm",
-        benefits: "Rich in omega-3 and fiber",
-        description: "Natural seeds to promote healthy skin and hair."
+        short_benefit: "Rich in omega-3 and fiber",
+        benefits: [
+            "Rich in Omega-3 fatty acids to support heart and brain health",
+            "High in fiber to aid digestion and promote gut health",
+            "Boosts immunity with antioxidants",
+            "Aids in weight management by keeping you fuller for longer",
+            "Regulates blood sugar levels for balanced glucose",
+            "Promotes healthy skin and hair from within"
+        ],
+        description: "Natural seeds to promote healthy skin, hair, and overall wellness.",
+        detailed_description: "Our 100% Natural Flax Seeds are a rich source of Omega-3 fatty acids, fiber, and essential nutrients, making them a perfect addition to a healthy diet. Packed with antioxidants, protein, and good fats, these seeds support heart health, digestion, and weight management while nourishing skin and hair naturally.",
+        free_from: [
+            "Artificial preservatives",
+            "Additives",
+            "Chemicals"
+        ],
+        suitable_for: [
+            "All Ages",
+            "Vegetarian & Vegan Diets",
+            "Daily Consumption"
+        ],
+        usage_suggestions: [
+            "Add to smoothies, yogurt, or cereals",
+            "Mix into baked goods or salads",
+            "Consume daily for optimal health benefits"
+        ]
     },
+
     {
         id: 33,
         name: "AVARAMPOO POWDER",
@@ -425,12 +1502,42 @@ export const products = [
         regular_price: 175,
         save: 75,
         category: "Body Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b5.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b5.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Body/AVARAMPOO POWDER-01.webp"),
+        ],
         powder: "yes",
         quantity: "100gm",
-        benefits: "Brightens skin and clears blemishes",
-        description: "Traditional body powder for glowing skin."
+        short_benefit: "Brightens skin and clears blemishes",
+        benefits: [
+            "Brightens skin by reducing pigmentation, dark spots, and improving complexion",
+            "Controls blood sugar levels to support diabetes management",
+            "Purifies blood by removing toxins for healthy skin and body",
+            "Aids digestion, relieving acidity, bloating, and constipation",
+            "Promotes hair growth and reduces dandruff",
+            "Cools and refreshes the body to prevent heat-related issues"
+        ],
+        description: "Traditional body powder for glowing, healthy skin.",
+        detailed_description: "Avarampoo Powder, made from dried Avaram Senna (Tanner’s Cassia) flowers, is a traditional herbal remedy known for its skin-brightening, detoxifying, and blood sugar controlling properties. Rich in antioxidants, it helps promote clear skin, better digestion, and overall wellness.",
+        free_from: [
+            "Artificial colors",
+            "Preservatives",
+            "Chemicals"
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Daily Use",
+            "Adults & Teens"
+        ],
+        usage_suggestions: [
+            "Mix with water or milk for body application",
+            "Use as a natural scrub or body pack",
+            "Can be used regularly for glowing skin"
+        ]
     },
+
     {
         id: 34,
         name: "ROSE ALOEVERA SOAP",
@@ -438,11 +1545,39 @@ export const products = [
         regular_price: 150,
         save: 40,
         category: "Body Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b6.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b6.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Body/ROSE ALOVERA SOAP-01.webp"),
+        ],
+
         quantity: "100gm",
-        benefits: "Hydrates skin and gives soft texture",
-        description: "Rose-infused soap for daily use."
+        short_benefit: "Hydrates skin and gives soft texture",
+        benefits: [
+            "Deep hydration with Aloe Vera for soft and supple skin",
+            "Brightens & refreshes skin tone with Rose extract",
+            "Gently cleanses without stripping natural oils",
+            "Soothes and heals irritation, acne, and redness",
+            "Reduces fine lines and promotes youthful skin",
+            "Relaxing natural rose fragrance for a soothing bathing experience"
+        ],
+        description: "Rose-infused soap for daily use.",
+        detailed_description: "Experience the luxurious blend of Rose and Aloe Vera in a 100% natural handmade soap, crafted to deeply cleanse, hydrate, and nourish your skin. Infused with the soothing essence of roses and the healing properties of Aloe Vera, this soap leaves your skin soft, radiant, and beautifully scented.",
+        free_from: [
+            "Harsh chemicals",
+            "Parabens",
+            "Sulfates"
+        ],
+        usage_notes: [
+            "Soap products cannot be returned once ordered due to hygiene and safety reasons."
+        ],
+        suitable_for: [
+            "All Skin Types",
+            "Daily Use"
+        ]
     },
+
 
     // --- Wellness & Edibles ---
     {
@@ -452,11 +1587,39 @@ export const products = [
         regular_price: 210,
         save: 50,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/GROUNDNUT OIL-01.webp"),
+            require("../../assets/ProductDetails/Wellness/GROUNDNUT OIL-02.webp"),
+        ],
         quantity: "500ml",
-        benefits: "Rich in healthy fats and nutrients",
-        description: "Cold-pressed groundnut oil for healthy cooking."
+        short_benefit: "Rich in healthy fats and nutrients",
+        benefits: [
+            "Heart-Healthy – Rich in monounsaturated fats & Omega-6 for heart wellness",
+            "Boosts Immunity – Contains antioxidants that fight free radicals",
+            "Enhances Digestion – Supports gut health and easy digestion",
+            "Perfect for Deep Frying – High smoke point for versatile cooking",
+            "Nourishes Skin & Hair – Hydrates dry skin and promotes stronger hair growth"
+        ],
+        description: "Cold-pressed groundnut oil for healthy cooking.",
+        detailed_description: "Enjoy the natural goodness of 100% Pure Cold-Pressed Groundnut Oil, extracted from high-quality peanuts to retain its rich nutrients and authentic flavor. Packed with antioxidants, healthy fats, and essential vitamins, this versatile oil is perfect for cooking, skincare, and overall well-being.",
+        free_from: [
+            "Artificial colors",
+            "Preservatives",
+            "Chemicals"
+        ],
+        usage_notes: [
+            "Store in a cool, dry place away from direct sunlight."
+        ],
+        suitable_for: [
+            "Cooking",
+            "Skincare",
+            "Haircare"
+        ]
     },
+
     {
         id: 36,
         name: "ROSE GULKAND",
@@ -464,11 +1627,40 @@ export const products = [
         regular_price: 180,
         save: 60,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w2.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w2.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/ROSE GULKAND-01.webp"),
+            require("../../assets/ProductDetails/Wellness/ROSE GULKAND-02.webp"),
+        ],
         quantity: "250gm",
-        benefits: "Improves digestion and cools the body",
-        description: "Sweet rose preserve made from fresh petals."
+        short_benefit: "Improves digestion and cools the body",
+        benefits: [
+            "Natural Body Coolant – Helps reduce body heat and soothes acidity",
+            "Aids Digestion – Improves gut health and relieves constipation",
+            "Rich in Antioxidants – Detoxifies the body and boosts immunity",
+            "Enhances Skin Glow – Purifies the blood, promoting clear and radiant skin",
+            "Relieves Stress & Fatigue – Acts as a natural mood enhancer"
+        ],
+        description: "Sweet rose preserve made from fresh petals.",
+        detailed_description: "Indulge in the rich, aromatic taste of Rose Gulkand, a traditional Ayurvedic blend made from fresh, handpicked rose petals and natural sweeteners. Known for its cooling properties, this delicious and nutritious preserve is perfect for overall health and wellness.",
+        free_from: [
+            "Artificial colors",
+            "Preservatives",
+            "Chemicals"
+        ],
+        usage_notes: [
+            "Consume 1–2 tsp daily after meals or as desired.",
+            "Store in a cool, dry place."
+        ],
+        suitable_for: [
+            "Digestive health",
+            "Skin glow",
+            "Stress relief"
+        ]
     },
+
     {
         id: 37,
         name: "JAGGERY",
@@ -476,11 +1668,41 @@ export const products = [
         regular_price: 130,
         save: 60,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w3.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w3.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/JAGGERY-01.webp"),
+
+        ],
         quantity: "500gm",
-        benefits: "Boosts energy and immunity",
-        description: "Pure organic jaggery with natural minerals."
+        short_benefit: "Boosts energy and immunity",
+        benefits: [
+            "Rich in Iron & Minerals – Helps prevent anemia and boosts blood circulation",
+            "Aids Digestion – Acts as a natural detoxifier, cleansing the liver and digestive system",
+            "Boosts Immunity – Fights infections and strengthens the immune system",
+            "Provides Natural Energy – A slow-releasing carbohydrate for sustained energy",
+            "Improves Metabolism – Supports weight management and digestion",
+            "Good for Cough & Cold – Soothes throat irritation and relieves respiratory issues"
+        ],
+        description: "Pure organic jaggery with natural minerals.",
+        detailed_description: "Our 100% Pure Jaggery (Country Sugar) is a chemical-free, unrefined natural sweetener made from sugarcane juice. Packed with essential nutrients, minerals, and antioxidants, jaggery is a healthier alternative to refined sugar, supporting digestion, boosting immunity, and providing long-lasting energy.",
+        free_from: [
+            "Refined sugar",
+            "Artificial chemicals",
+            "Preservatives"
+        ],
+        usage_notes: [
+            "Consume 1–2 tsp daily or as desired",
+            "Store in a cool, dry place"
+        ],
+        suitable_for: [
+            "Energy boost",
+            "Digestive health",
+            "Immunity support"
+        ]
     },
+
     {
         id: 38,
         name: "HONEY",
@@ -488,11 +1710,42 @@ export const products = [
         regular_price: 270,
         save: 80,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w4.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w4.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/HONEY-01.webp"),
+            require("../../assets/ProductDetails/Wellness/HONEY-02.webp"),
+        ],
         quantity: "250ml",
-        benefits: "Natural sweetener and antioxidant",
-        description: "Raw forest honey packed with nutrition."
-    },
+        short_benefit: "Natural sweetener and antioxidant",
+        benefits: [
+            "Boosts Immunity – Rich in antioxidants, helps fight infections",
+            "Aids Digestion – Soothes the stomach, relieves acidity & bloating",
+            "Natural Energy Booster – Provides instant & sustained energy",
+            "Promotes Healthy Skin – Hydrates & nourishes for a natural glow",
+            "Soothes Sore Throat & Cough – Acts as a natural remedy for colds",
+            "Regulates Blood Sugar – A healthier alternative to refined sugar"
+        ],
+        description: "Raw forest honey packed with nutrition.",
+        detailed_description: "Our 100% Pure & Natural Honey is a raw, unprocessed superfood packed with essential nutrients, antioxidants, and healing properties. Sourced from the finest flowers, it’s a perfect natural sweetener that supports immunity, digestion, and overall well-being.",
+        free_from: [
+            "Refined sugar",
+            "Artificial additives",
+            "Preservatives"
+        ],
+        usage_notes: [
+            "Consume 1–2 tsp daily or as desired",
+            "Store in a cool, dry place"
+        ],
+        suitable_for: [
+            "Energy boost",
+            "Digestive health",
+            "Immunity support",
+            "Skin nourishment"
+        ]
+    }
+    ,
     {
         id: 39,
         name: "GHEE",
@@ -500,11 +1753,42 @@ export const products = [
         regular_price: 295,
         save: 95,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w5.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w5.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/GHEE-01.webp"),
+            require("../../assets/ProductDetails/Wellness/GHEE-02.webp"),
+        ],
         quantity: "200ml",
-        benefits: "Boosts energy and improves digestion",
-        description: "Traditional pure cow ghee rich in flavor."
+        short_benefit: "Boosts energy and improves digestion",
+        benefits: [
+            "Boosts Immunity – Rich in antioxidants & essential nutrients",
+            "Aids Digestion – Supports gut health and promotes metabolism",
+            "Enhances Brain Function – Provides essential fats for memory & focus",
+            "Improves Heart Health – Contains good cholesterol for a healthy heart",
+            "Nourishes Skin & Hair – Hydrates skin & strengthens hair naturally",
+            "Strengthens Joints & Bones – Rich in Vitamin K for better bone health"
+        ],
+        description: "Traditional pure cow ghee rich in flavor.",
+        detailed_description: "Our 100% Pure & Traditional Desi Ghee is made from fresh cow’s milk, using the age-old Bilona method to retain its rich flavor, aroma, and essential nutrients. Packed with healthy fats, vitamins, and antioxidants, ghee is a powerhouse of energy, digestion support, and overall wellness.",
+        free_from: [
+            "Artificial preservatives",
+            "Refined oils",
+            "Synthetic additives"
+        ],
+        usage_notes: [
+            "Use in cooking, baking, or as a topping for food",
+            "Store in a cool, dry place"
+        ],
+        suitable_for: [
+            "Energy boost",
+            "Digestive health",
+            "Immunity support",
+            "Skin & hair nourishment"
+        ]
     },
+
     {
         id: 40,
         name: "AMLA CANDY",
@@ -512,12 +1796,43 @@ export const products = [
         regular_price: 180,
         save: 80,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w6.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w6.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/AMLA CANDY-01.webp"),
+            require("../../assets/ProductDetails/Wellness/AMLA CANDY-02.webp"),
+        ],
         Newproducts: "yes",
         quantity: "200gm",
-        benefits: "Improves immunity and digestion",
-        description: "Sweet and tangy amla candy for daily refreshment."
-    },
+        short_benefit: "Improves immunity and digestion",
+        benefits: [
+            "Boosts Immunity – Rich in Vitamin C to fight infections & improve resistance",
+            "Aids Digestion – Helps with acidity, bloating & gut health",
+            "Improves Skin & Hair Health – Promotes natural glow & prevents hair fall",
+            "Regulates Blood Sugar Levels – Supports diabetes management",
+            "Supports Heart Health – Helps maintain cholesterol levels",
+            "Natural Energy Booster – Provides a quick, healthy snack option"
+        ],
+        description: "Sweet and tangy amla candy for daily refreshment.",
+        detailed_description: "Our 100% Natural Amla Candy is a delicious and nutritious treat made from sun-dried Indian Gooseberries, packed with Vitamin C, antioxidants, and essential nutrients. This tasty snack supports immunity, digestion, and overall wellness, making it a perfect guilt-free indulgence for all ages!",
+        free_from: [
+            "Artificial preservatives",
+            "Refined sugar",
+            "Synthetic additives"
+        ],
+        usage_notes: [
+            "Consume as a daily snack or with meals",
+            "Store in a cool, dry place"
+        ],
+        suitable_for: [
+            "Immunity support",
+            "Digestive health",
+            "Energy boost",
+            "Skin & hair nourishment"
+        ]
+    }
+    ,
     {
         id: 41,
         name: "AMLA MOUTH FRESHNER",
@@ -525,12 +1840,41 @@ export const products = [
         regular_price: 195,
         save: 75,
         category: "Wellness & Edibles",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w7.webp" },
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w7.webp"
+        },
+        sub_images: [
+            require("../../assets/ProductDetails/Wellness/AMLA MOUTH FRESHNER-01.webp"),
+            require("../../assets/ProductDetails/Wellness/AMLA MOUTH FRESHNER-02.webp"),
+        ],
         Newproducts: "yes",
-        quantity: "150gm",
-        benefits: "Freshens breath and aids digestion",
-        description: "Herbal mouth freshener made from amla and spices."
+        quantity: "200gm",
+        short_benefit: "Freshens breath and aids digestion",
+        benefits: [
+            "Naturally Freshens Breath – Fights bad breath and promotes oral hygiene",
+            "Rich in Vitamin C – Strengthens gums and prevents oral infections",
+            "Aids Digestion – Helps relieve acidity and bloating",
+            "Supports Immunity – Loaded with antioxidants for overall health",
+            "No Artificial Additives – Free from harmful chemicals and synthetic flavors"
+        ],
+        description: "Herbal mouth freshener made from amla and spices.",
+        detailed_description: "Our 100% Natural Amla Mouth Freshener is a refreshing, herbal blend made from sun-dried Indian Gooseberries (Amla) and natural ingredients. It instantly freshens breath, supports oral hygiene, and aids digestion, making it a perfect after-meal refresher.",
+        free_from: [
+            "Artificial preservatives",
+            "Synthetic flavors",
+            "Harmful chemicals"
+        ],
+        usage_notes: [
+            "Consume a small pinch after meals",
+            "Store in a cool, dry place"
+        ],
+        suitable_for: [
+            "Oral hygiene",
+            "Digestive health",
+            "Immunity support"
+        ]
     },
+
 
 ];
 
