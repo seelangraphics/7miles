@@ -102,7 +102,7 @@ const CartScreenWithTopBar = ({ navigation }) => {
         title="My Cart"
         onBackPress={() => navigation.navigate("Home")}
         onSearchPress={() => console.log("Search in Cart")}
-        onCartPress={() => {}}
+        onCartPress={() => { }}
         onWishlistPress={() => console.log("Wishlist")}
         cartItemsCount={getCartItemsCount()}
       />

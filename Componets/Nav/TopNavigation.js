@@ -31,7 +31,7 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
 
         const query = searchQuery.toLowerCase();
         return products.filter(product => {
-            const matchesSearch = 
+            const matchesSearch =
                 product.name.toLowerCase().includes(query) ||
                 product.category.toLowerCase().includes(query) ||
                 (product.benefits?.toLowerCase() || '').includes(query) ||
@@ -42,7 +42,7 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
             if (activeCategory !== 'All') {
                 return matchesSearch && product.category === activeCategory;
             }
-            
+
             return matchesSearch;
         });
     }, [searchQuery, activeCategory]);
@@ -68,9 +68,9 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
                     />
                 </View>
 
-                <CartButton 
-                    onPress={onCartPress} 
-                    itemCount={getCartItemsCount()} 
+                <CartButton
+                    onPress={onCartPress}
+                    itemCount={getCartItemsCount()}
                 />
             </View>
 
