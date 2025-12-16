@@ -1,61 +1,68 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  Image 
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
+import { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Ionicons } from "@expo/vector-icons";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./Componets/Firebase/Firebase";
 
 // ✅ Your existing components
-import TopNavigation from './Componets/Nav/TopNavigation';
-import SearchBar from './Componets/Nav/SearchBar';
-import BottomNavigation from './Componets/BottomNavigation/BottomNavigation';
-import CategoriesScreen from './Componets/Categories/CategoriesScreen';
-import PromoBanner from './Componets/PromoBanner/PromoBanner';
-import ProductDetailsScreen from './Componets/ProductDetails/ProductDetailsScreen';
-import NewProducts from './Componets/NewProducts/NewProducts';
-import ProductsScreen from './Componets/ProductsContainer/ProductsScreen';
-import HeroSection from './Componets/HeroSection/HeroSection';
-import SevenMile from './Componets/SevenMile/SevenMile';
-import ProductSlider from './Componets/ProductSlider/ProductSlider';
-import Routineproduct from './Componets/Rotine-product/RotineProducts';
-import Adbanner from './Componets/AddBanner/Adbanner';
-import CartScreen from './Componets/CartScreen/CartScreen';
-import CheckoutScreen from './Componets/Checkout/CheckoutScreen';
-import OrderSuccessScreen from './Componets/Success/OrderSuccessScreen';
+import TopNavigation from "./Componets/Nav/TopNavigation";
+import SearchBar from "./Componets/Nav/SearchBar";
+import BottomNavigation from "./Componets/BottomNavigation/BottomNavigation";
+import CategoriesScreen from "./Componets/Categories/CategoriesScreen";
+import PromoBanner from "./Componets/PromoBanner/PromoBanner";
+import ProductDetailsScreen from "./Componets/ProductDetails/ProductDetailsScreen";
+import NewProducts from "./Componets/NewProducts/NewProducts";
+import ProductsScreen from "./Componets/ProductsContainer/ProductsScreen";
+import HeroSection from "./Componets/HeroSection/HeroSection";
+import SevenMile from "./Componets/SevenMile/SevenMile";
+import ProductSlider from "./Componets/ProductSlider/ProductSlider";
+import Routineproduct from "./Componets/Rotine-product/RotineProducts";
+import Adbanner from "./Componets/AddBanner/Adbanner";
+import CartScreen from "./Componets/CartScreen/CartScreen";
+
+import OrderSuccessScreen from "./Componets/Success/OrderSuccessScreen";
 
 // ✅ Cart Context
-import { CartProvider, useCart } from './Componets/context/CartContext';
+import { CartProvider, useCart } from "./Componets/context/CartContext";
 
 // ✅ Splash Screen Component
-import SplashScreen from './Componets/SplashScreen/SplashScreen';
-import BundleComponent from './Componets/BundleComponent/BundleComponent';
-import MarqueeBannerEfficient from './Componets/Facepack_powder/FacepackMarquee';
-import Facepack from './Componets/Facepack_powder/Facepack';
-import { FAQSection } from './Componets/Faq/Faq';
+import SplashScreen from "./Componets/SplashScreen/SplashScreen";
+import BundleComponent from "./Componets/BundleComponent/BundleComponent";
+import MarqueeBannerEfficient from "./Componets/Facepack_powder/FacepackMarquee";
+import Facepack from "./Componets/Facepack_powder/Facepack";
+import { FAQSection } from "./Componets/Faq/Faq";
+import Account from "./Componets/AccountScreen/AccountScreen";
+import AuthScreen from "./Componets/AuthScreen/Login";
+import Toast from "react-native-toast-message";
+import Address from "./Componets/Deliveryaddress/Address";
+import Payment from "./Componets/Payment/Payment";
+import { Youraddress } from "./Componets/Youraddress/Youraddress";
 
 const Stack = createNativeStackNavigator();
 
 /* ---------------------------------------------
    ✅ Reusable TopBar for ALL Non-Home Pages
 --------------------------------------------- */
-const TopBar = ({ 
-  title, 
-  onBackPress, 
-  onSearchPress, 
-  onCartPress, 
-  onWishlistPress, 
+ export const TopBar = ({
+  title,
+  onBackPress,
+  onSearchPress,
+  onCartPress,
+  onWishlistPress,
   cartItemsCount,
-  showBackButton = true 
+  showBackButton = true,
 }) => (
   <View style={styles.topBar}>
-    {/* Back Button */}
     <View style={styles.leftSection}>
       {showBackButton && (
         <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
@@ -66,17 +73,14 @@ const TopBar = ({
     </View>
 
     <View style={styles.iconContainer}>
-      {/* Search Icon */}
       <TouchableOpacity onPress={onSearchPress} style={styles.iconButton}>
         <Ionicons name="search-outline" size={22} color="#000" />
       </TouchableOpacity>
 
-      {/* Wishlist Icon */}
       <TouchableOpacity onPress={onWishlistPress} style={styles.iconButton}>
         <Ionicons name="heart-outline" size={22} color="#000" />
       </TouchableOpacity>
 
-      {/* Cart Icon with Badge */}
       <TouchableOpacity onPress={onCartPress} style={styles.iconButton}>
         <Ionicons name="cart-outline" size={22} color="#000" />
         {cartItemsCount > 0 && (
@@ -89,7 +93,6 @@ const TopBar = ({
   </View>
 );
 
-
 const CartScreenWithTopBar = ({ navigation }) => {
   const { getCartItemsCount } = useCart();
 
@@ -97,7 +100,7 @@ const CartScreenWithTopBar = ({ navigation }) => {
     <View style={styles.container}>
       <TopBar
         title="My Cart"
-        onBackPress={() => navigation.navigate('Home')}
+        onBackPress={() => navigation.navigate("Home")}
         onSearchPress={() => console.log("Search in Cart")}
         onCartPress={() => {}}
         onWishlistPress={() => console.log("Wishlist")}
@@ -108,7 +111,6 @@ const CartScreenWithTopBar = ({ navigation }) => {
   );
 };
 
-// ✅ My Orders Screen
 const MyOrdersScreen = ({ navigation }) => {
   const { getCartItemsCount } = useCart();
 
@@ -116,9 +118,9 @@ const MyOrdersScreen = ({ navigation }) => {
     <View style={styles.container}>
       <TopBar
         title="My Orders"
-        onBackPress={() => navigation.navigate('Home')}
+        onBackPress={() => navigation.navigate("Home")}
         onSearchPress={() => console.log("Search in Orders")}
-        onCartPress={() => navigation.navigate('Cart')}
+        onCartPress={() => navigation.navigate("Cart")}
         onWishlistPress={() => console.log("Wishlist")}
         cartItemsCount={getCartItemsCount()}
       />
@@ -138,9 +140,9 @@ const HelpScreen = ({ navigation }) => {
     <View style={styles.container}>
       <TopBar
         title="Help & Support"
-        onBackPress={() => navigation.navigate('Home')}
+        onBackPress={() => navigation.navigate("Home")}
         onSearchPress={() => console.log("Search in Help")}
-        onCartPress={() => navigation.navigate('Cart')}
+        onCartPress={() => navigation.navigate("Cart")}
         onWishlistPress={() => console.log("Wishlist")}
         cartItemsCount={getCartItemsCount()}
       />
@@ -160,38 +162,45 @@ const AccountScreen = ({ navigation }) => {
     <View style={styles.container}>
       <TopBar
         title="My Account"
-        onBackPress={() => navigation.navigate('Home')}
-        onSearchPress={() => console.log("Search in Account")}
-        onCartPress={() => navigation.navigate('Cart')}
-        onWishlistPress={() => console.log("Wishlist")}
-        cartItemsCount={getCartItemsCount()}
+        onBackPress={() => navigation.navigate("Home")}
+        // onSearchPress={() => console.log("Search in Account")}
+        // onCartPress={() => navigation.navigate('Cart')}
+        // onWishlistPress={() => console.log("Wishlist")}
+        // cartItemsCount={getCartItemsCount()}
       />
       <View style={styles.content}>
-        <Text style={styles.contentText}>Account Screen</Text>
-        {/* Add your account content here */}
+        <Account navigation={navigation} />
       </View>
     </View>
   );
 };
 
-/* ---------------------------------------------
-   ✅ Main App Component
---------------------------------------------- */
 function AppContent() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
   const [showSearch, setShowSearch] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState("home");
+  const [searchQuery, setSearchQuery] = useState("");
   const [showSplash, setShowSplash] = useState(true);
 
   // Handlers
   const handleSearchPress = () => setShowSearch(true);
   const handleSearchClose = () => {
     setShowSearch(false);
-    setSearchQuery('');
+    setSearchQuery("");
   };
   const handleSearch = (text) => setSearchQuery(text);
 
-  const onWishlistPress = () => console.log('❤️ Wishlist Pressed');
+  const onWishlistPress = () => console.log("❤️ Wishlist Pressed");
 
   const handleSplashComplete = () => {
     setShowSplash(false);
@@ -210,16 +219,16 @@ function AppContent() {
     const { getCartItemsCount } = useCart();
 
     const handleTabPress = (tab) => {
-      if (tab === 'categories') {
-        navigation.navigate('Categories');
-      } else if (tab === 'cart') {
-        navigation.navigate('Cart');
-      } else if (tab === 'myorders') {
-        navigation.navigate('MyOrders');
-      } else if (tab === 'help') {
-        navigation.navigate('Help');
-      } else if (tab === 'account') {
-        navigation.navigate('Account');
+      if (tab === "categories") {
+        navigation.navigate("Categories");
+      } else if (tab === "cart") {
+        navigation.navigate("Cart");
+      } else if (tab === "myorders") {
+        navigation.navigate("MyOrders");
+      } else if (tab === "help") {
+        navigation.navigate("Help");
+      } else if (tab === "account") {
+        navigation.navigate("Account");
       } else {
         setActiveTab(tab);
       }
@@ -230,7 +239,9 @@ function AppContent() {
       if (showSearch) {
         return (
           <View style={styles.content}>
-            <Text style={styles.contentText}>Search Results for: {searchQuery}</Text>
+            <Text style={styles.contentText}>
+              Search Results for: {searchQuery}
+            </Text>
           </View>
         );
       }
@@ -242,14 +253,13 @@ function AppContent() {
           <ProductsScreen />
           <HeroSection />
           <SevenMile />
-          <BundleComponent/>
-          <Facepack/>
-         
-       
+          <BundleComponent />
+          <Facepack />
+
           <ProductSlider />
-          <Routineproduct/>
-          <Adbanner/>
-          <FAQSection/>
+          <Routineproduct />
+          <Adbanner />
+          <FAQSection />
         </ScrollView>
       );
     };
@@ -262,8 +272,8 @@ function AppContent() {
         {!showSearch ? (
           <TopNavigation
             onSearchPress={handleSearchPress}
-            onCategoryPress={() => navigation.navigate('Categories')}
-            onCartPress={() => navigation.navigate('Cart')}
+            onCategoryPress={() => navigation.navigate("Categories")}
+            onCartPress={() => navigation.navigate("Cart")}
             cartItemsCount={getCartItemsCount()}
           />
         ) : (
@@ -275,9 +285,7 @@ function AppContent() {
         )}
 
         {/* Main Content */}
-        <View style={styles.mainContent}>
-          {renderHomeContent()}
-        </View>
+        <View style={styles.mainContent}>{renderHomeContent()}</View>
 
         {/* Bottom Navigation */}
         <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
@@ -295,9 +303,9 @@ function AppContent() {
       <View style={styles.container}>
         <TopBar
           title="Categories"
-          onBackPress={() => navigation.navigate('Home')}
+          onBackPress={() => navigation.navigate("Home")}
           onSearchPress={() => console.log("🔍 Search in Categories")}
-          onCartPress={() => navigation.navigate('Cart')}
+          onCartPress={() => navigation.navigate("Cart")}
           onWishlistPress={onWishlistPress}
           cartItemsCount={getCartItemsCount()}
         />
@@ -318,7 +326,7 @@ function AppContent() {
           title="Product Details"
           onBackPress={() => navigation.goBack()}
           onSearchPress={() => console.log("🔍 Search in Product Details")}
-          onCartPress={() => navigation.navigate('Cart')}
+          onCartPress={() => navigation.navigate("Cart")}
           onWishlistPress={onWishlistPress}
           cartItemsCount={getCartItemsCount()}
         />
@@ -331,55 +339,79 @@ function AppContent() {
      🌐 Navigation Container
   --------------------------------------------- */
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Categories"
-          component={CategoriesScreenWithTopBar}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ProductDetails"
-          component={ProductDetailsScreenWithTopBar}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Cart"
-          component={CartScreenWithTopBar}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="MyOrders"
-          component={MyOrdersScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Help"
-          component={HelpScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Account"
-          component={AccountScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Checkout"
-          component={CheckoutScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="OrderSuccess"
-          component={OrderSuccessScreen}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="login"
+            component={AuthScreen}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="delivery"
+            component={Address}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="address"
+            component={Youraddress}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="payment"
+            component={Payment}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="Categories"
+            component={CategoriesScreenWithTopBar}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ProductDetails"
+            component={ProductDetailsScreenWithTopBar}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Cart"
+            component={CartScreenWithTopBar}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MyOrders"
+            component={MyOrdersScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Help"
+            component={HelpScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Account"
+            component={AccountScreen}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="OrderSuccess"
+            component={OrderSuccessScreen}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+
+      <Toast />
+    </>
   );
 }
 
@@ -398,9 +430,9 @@ export default function App() {
    🎨 Updated Styles
 --------------------------------------------- */
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#fff" 
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
 
   // ✅ TopBar Styles (for all non-home pages)
@@ -433,23 +465,23 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     marginLeft: 18,
-    position: 'relative',
+    position: "relative",
   },
   cartBadge: {
-    position: 'absolute',
+    position: "absolute",
     top: -5,
     right: -5,
-    backgroundColor: '#ff4444',
+    backgroundColor: "#ff4444",
     borderRadius: 10,
     minWidth: 18,
     height: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   cartBadgeText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   mainContent: { flex: 1 },

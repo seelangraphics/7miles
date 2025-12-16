@@ -27,11 +27,11 @@ const CartScreen = ({ navigation }) => {
       Alert.alert('Cart Empty', 'Please add items to cart before checkout');
       return;
     }
-    navigation.navigate('Checkout');
+    navigation.navigate('delivery');
   };
 
-  const handleBackPress = () => {
-    navigation.navigate('Home');
+  const handlelogin = () => {
+    navigation.navigate("login");
   };
 
   // Check cartItems.length
@@ -58,8 +58,7 @@ const CartScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Top Bar for Cart Screen */}
-    
-      
+
       <ScrollView style={styles.cartItems}>
         {/* Map over cartItems */}
         {cartItems.map((item, index) => (
@@ -72,25 +71,31 @@ const CartScreen = ({ navigation }) => {
             </View>
             <View style={styles.cartItemActions}>
               <View style={styles.quantityContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.quantityButton}
                   onPress={() => updateQuantity(item.name, item.quantity - 1)}
                 >
                   <Text style={styles.quantityText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.quantity}>{item.quantity}</Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.quantityButton}
                   onPress={() => updateQuantity(item.name, item.quantity + 1)}
                 >
                   <Text style={styles.quantityText}>+</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => removeFromCart(item.name)}
               >
                 <Ionicons name="trash-outline" size={20} color="#ff4444" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.checkoutButton}
+                onPress={handlelogin}
+              >
+                <Text style={styles.checkoutText}>Proceed to login</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -99,9 +104,15 @@ const CartScreen = ({ navigation }) => {
 
       <View style={styles.cartFooter}>
         <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: ₹{getCartTotal().toFixed(2)}</Text>
+          <Text style={styles.totalText}>
+            Total: ₹{getCartTotal().toFixed(2)}
+          </Text>
         </View>
-        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+
+        <TouchableOpacity
+          style={styles.checkoutButton}
+          onPress={handleCheckout}
+        >
           <Text style={styles.checkoutText}>Proceed to Checkout</Text>
         </TouchableOpacity>
       </View>
