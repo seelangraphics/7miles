@@ -1,5 +1,3 @@
-
-
 export const products = [
     // --- Hair Care ---
     {
@@ -13,9 +11,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h1.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-01.webp"),
-            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-02.webp"),
-
+            require("../../assets/ProductDetails/Hair/ANTI-DANDRUFF-SHAMPOO-01.webp"),
+            require("../../assets/ProductDetails/Hair/ANTI-DANDRUFF-SHAMPOO-02.webp"),
         ],
         Newproducts: "yes",
         quantity: "200ml",
@@ -55,9 +52,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h2.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-01.webp"),
-            require("../../assets/ProductDetails/Hair/ANTI DANDRUFF SHAMPOO-02.webp"),
-
+            require("../../assets/ProductDetails/Hair/ANTI-HAIRFALL-SHAMPOO-01.webp"),
+            require("../../assets/ProductDetails/Hair/ANTI-HAIRFALL-SHAMPOO-02.webp"),
         ],
         bestSeller: "yes",
         quantity: "200ml",
@@ -70,7 +66,7 @@ export const products = [
         ],
         short_benefit: "Prevents hair fall and promotes growth",
         description: "Nourishing shampoo enriched with herbal extracts for strong hair.",
-        detailed_description: "Say goodbye to hair fall and hello to stronger, fuller strands with our Anti-Hairfall Shampoo. Infused with biotin, keratin, and natural plant extracts, this powerful yet gentle formula helps reduce breakage, nourish the scalp, and promote healthy hair growth. Gentle on the scalp yet tough on hair fall, it’s ideal for daily use and suitable for all hair types.",
+        detailed_description: "Say goodbye to hair fall and hello to stronger, fuller strands with our Anti-Hairfall Shampoo. Infused with biotin, keratin, and natural plant extracts, this powerful yet gentle formula helps reduce breakage, nourish the scalp, and promote healthy hair growth. Gentle on the scalp yet tough on hair fall, it's ideal for daily use and suitable for all hair types.",
         key_ingredients: [
             "Biotin",
             "Keratin",
@@ -96,7 +92,6 @@ export const products = [
         image: {
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h3.webp"
         },
-
         Trending: "yes",
         quantity: "100gm",
         benefits: [
@@ -125,8 +120,8 @@ export const products = [
             "Wavy Hair",
             "Damaged Hair"
         ]
-    }
-    ,
+    },
+
     {
         id: 4,
         name: "ONION HAIR MASK",
@@ -138,7 +133,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h4.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/ONION HAIR MASK-01.webp"),
+            require("../../assets/ProductDetails/Hair/ONION-HAIR-MASK-01.webp"),
+            
         ],
         quantity: "100gm",
         benefits: [
@@ -166,8 +162,8 @@ export const products = [
             "Hair Fall Prone Hair",
             "Dry & Damaged Hair"
         ]
-    }
-    ,
+    },
+
     {
         id: 5,
         name: "SWEET ALMOND OIL",
@@ -179,9 +175,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h5.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/SWEET ALMOND OIL-01.webp"),
-            require("../../assets/ProductDetails/Hair/SWEET ALMOND OIL-02.webp"),
-
+            require("../../assets/ProductDetails/Hair/SWEET-ALMOND-OIL-01.webp"),
+            require("../../assets/ProductDetails/Hair/SWEET-ALMOND-OIL-02.webp"),
         ],
         bestSeller: "yes",
         quantity: "100ml",
@@ -230,9 +225,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h6.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/BLACK SEED OIL-01.webp"),
-            require("../../assets/ProductDetails/Hair/BLACK SEED OIL-02.webp"),
-
+            require("../../assets/ProductDetails/Hair/BLACK-SEED-OIL-01.webp"),
+            require("../../assets/ProductDetails/Hair/BLACK-SEED-OIL-02.webp"),
         ],
         quantity: "100ml",
         benefits: [
@@ -269,6 +263,7 @@ export const products = [
             "Acne-Prone Skin"
         ]
     },
+
     {
         id: 7,
         name: "GINGELLY OIL",
@@ -280,8 +275,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h7.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/GINGELLY OIL-01.webp"),
-            require("../../assets/ProductDetails/Hair/GINGELLY OIL-02.webp"),
+            require("../../assets/ProductDetails/Hair/GINGELLY-OIL-01.webp"),
+            require("../../assets/ProductDetails/Hair/GINGELLY-OIL-02.webp"),
         ],
         quantity: "200ml",
         benefits: [
@@ -319,8 +314,8 @@ export const products = [
             "Dry Skin",
             "Sensitive Skin"
         ]
-    }
-    ,
+    },
+
     {
         id: 8,
         name: "COCONUT OIL",
@@ -332,8 +327,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h8.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/COCONUT OIL-01.webp"),
-
+            require("../../assets/ProductDetails/Hair/COCONUT-OIL-01.webp"),
+           
         ],
         bestSeller: "yes",
         quantity: "200ml",
@@ -372,8 +367,8 @@ export const products = [
             "Sensitive Skin",
             "Baby Skin"
         ]
-    }
-    ,
+    },
+
     {
         id: 9,
         name: "CASTOR OIL",
@@ -386,8 +381,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/castor_oil-01.webp"),
-            require("../../assets/ProductDetails/Hair/CASTOR OIL-02.webp"),
-
+            require("../../assets/ProductDetails/Hair/CASTOR-OIL-02.webp"),
         ],
         quantity: "100ml",
         benefits: [
@@ -424,8 +418,8 @@ export const products = [
             "All Skin Types",
             "Dry Skin"
         ]
-    }
-    ,
+    },
+
     {
         id: 10,
         name: "SHIKAKAI POWDER",
@@ -437,7 +431,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h10.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/SHIKAKAI POWDER-01.webp"),
+            require("../../assets/ProductDetails/Hair/SHIKAKAI-POWDER-01.webp"),
+            
         ],
         powder: "yes",
         hairpack: "yes",
@@ -470,8 +465,8 @@ export const products = [
             "Dandruff-Prone Hair",
             "Dry & Damaged Hair"
         ]
-    }
-    ,
+    },
+
     {
         id: 11,
         name: "HENNA POWDER",
@@ -484,7 +479,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/henna_powder-01.webp"),
-
+         
         ],
         powder: "yes",
         hairpack: "yes",
@@ -531,9 +526,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h12.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Hair/AMLA POWDER-01.webp"),
-            require("../../assets/ProductDetails/Hair/AMLA POWDER-02.webp"),
-
+            require("../../assets/ProductDetails/Hair/AMLA-POWDER-01.webp"),
+            require("../../assets/ProductDetails/Hair/AMLA-POWDER-02.webp"),
         ],
         powder: "yes",
         quantity: "100gm",
@@ -571,7 +565,6 @@ export const products = [
         ]
     },
 
-
     // --- Skin Care ---
     {
         id: 13,
@@ -584,9 +577,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s1.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ROSE WATER-01.webp"),
-            require("../../assets/ProductDetails/Skin/ROSE WATER-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/ROSE-WATER-01.webp"),
+            require("../../assets/ProductDetails/Skin/ROSE-WATER-02.webp"),
         ],
         Newproducts: "yes",
         nightroutine: "yes",
@@ -621,8 +613,8 @@ export const products = [
             "Sensitive Skin",
             "Acne-Prone Skin"
         ]
-    }
-    ,
+    },
+
     {
         id: 14,
         name: "ROSE POWDER",
@@ -634,9 +626,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s16.avif"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ROSE POWDER-01.webp"),
-
-
+            require("../../assets/ProductDetails/Skin/ROSE-POWDER-01.webp"),
+           
         ],
         Facepowder: "yes",
         quantity: "100gm",
@@ -683,9 +674,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s2.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/SKIN BRIGHTENING SOAP-01.webp"),
-            require("../../assets/ProductDetails/Skin/SKIN BRIGHTENING SOAP-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-01.webp"),
+            require("../../assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-02.webp"),
         ],
         quantity: "100gm",
         benefits: [
@@ -730,9 +720,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s3.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/CHARCOAL SOAP-01.webp"),
-            require("../../assets/ProductDetails/Skin/CHARCOAL SOAP-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/CHARCOAL-SOAP-01.webp"),
+            require("../../assets/ProductDetails/Skin/CHARCOAL-SOAP-02.webp"),
         ],
         quantity: "100gm",
         benefits: [
@@ -765,8 +754,8 @@ export const products = [
             "Acne-Prone Skin"
         ],
         return_policy_note: "Soap products cannot be returned once ordered due to hygiene and safety reasons."
-    }
-    ,
+    },
+
     {
         id: 17,
         name: "ORANGE GEL",
@@ -778,10 +767,9 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s4.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ORANGE GEL-01.webp"),
-            require("../../assets/ProductDetails/Skin/ORANGE GEL-02.webp"),
-            require("../../assets/ProductDetails/Skin/ORANGE GEL-03.webp"),
-
+            require("../../assets/ProductDetails/Skin/ORANGE-GEL-01.webp"),
+            require("../../assets/ProductDetails/Skin/ORANGE-GEL-02.webp"),
+            require("../../assets/ProductDetails/Skin/ORANGE-GEL-03.webp"),
         ],
         quantity: "100gm",
         benefits: [
@@ -828,8 +816,7 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s5.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ANTI PIGMENTATAION CREAM-01.webp"),
-
+            require("../../assets/ProductDetails/Skin/ANTI-PIGMENTATAION-CREAM-01.webp"),
         ],
         quantity: "50gm",
         benefits: [
@@ -841,7 +828,7 @@ export const products = [
         ],
         short_benefit: "Reduces dark spots and uneven skin tone",
         description: "Cream with herbal actives for glowing skin.",
-        detailed_description: "Our Anti-Pigmentation Cream is a powerful skin-correcting formula designed to reduce dark spots, blemishes, and uneven skin tone. Enriched with natural brightening agents, antioxidants, and skin-repairing ingredients, it restores the skin’s natural glow while keeping it hydrated and smooth. Suitable for daily use.",
+        detailed_description: "Our Anti-Pigmentation Cream is a powerful skin-correcting formula designed to reduce dark spots, blemishes, and uneven skin tone. Enriched with natural brightening agents, antioxidants, and skin-repairing ingredients, it restores the skin's natural glow while keeping it hydrated and smooth. Suitable for daily use.",
         key_ingredients: [
             "Natural Brightening Agents",
             "Antioxidants",
@@ -862,8 +849,8 @@ export const products = [
             "Pigmented Skin",
             "Dull Skin"
         ]
-    }
-    ,
+    },
+
     {
         id: 19,
         name: "COTTONSEED MILK MIX",
@@ -875,9 +862,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s6.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/COTTONSEED MILK MIX-01.webp"),
-
-
+            require("../../assets/ProductDetails/Skin/COTTONSEED-MILK-MIX-01.webp"),
+     
         ],
         bestSeller: "yes",
         quantity: "100gm",
@@ -909,8 +895,8 @@ export const products = [
             "Dry Skin",
             "Dull Skin"
         ]
-    }
-    ,
+    },
+
     {
         id: 20,
         name: "ANTI AGING CREAM",
@@ -922,9 +908,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s7.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ANTI AGING CREAM-01.webp"),
-            require("../../assets/ProductDetails/Skin/ANTI AGING CREAM-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/ANTI-AGING-CREAM-01.webp"),
+            require("../../assets/ProductDetails/Skin/ANTI-AGING-CREAM-02.webp"),
         ],
         Newproducts: "yes",
         quantity: "50gm",
@@ -961,8 +946,8 @@ export const products = [
             "Dull Skin"
         ],
         texture: "Non-greasy, fast-absorbing cream"
-    }
-    ,
+    },
+
     {
         id: 21,
         name: "SALICYLIC FACEWASH",
@@ -973,6 +958,10 @@ export const products = [
         image: {
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp"
         },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/SALICYLIC-FACEWASH-01.webp"),
+            require("../../assets/ProductDetails/Skin/SALICYLIC-FACEWASH-02.webp"),
+        ],
         quantity: "100ml",
         short_benefit: "Removes acne and controls oil",
         benefits: [
@@ -1004,8 +993,7 @@ export const products = [
             "Oil Regulation"
         ],
         texture: "Gentle foaming cleanser"
-    }
-    ,
+    },
 
     {
         id: 22,
@@ -1018,7 +1006,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s9.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/TURMERIC POWDER-01.webp"),
+            require("../../assets/ProductDetails/Skin/TURMERIC-POWDER-01.webp"),
+        
         ],
         powder: "yes",
         quantity: "100gm",
@@ -1048,8 +1037,8 @@ export const products = [
             "Traditional Skincare"
         ],
         texture: "Fine herbal powder"
-    }
-    ,
+    },
+
     {
         id: 23,
         name: "ALOEVERA GEL",
@@ -1061,9 +1050,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s10.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-01.webp"),
-            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/ALOEVERA-GEL-01.webp"),
+            require("../../assets/ProductDetails/Skin/ALOEVERA-GEL-02.webp"),
         ],
         quantity: "100gm",
         short_benefit: "Hydrates and soothes skin",
@@ -1091,8 +1079,8 @@ export const products = [
             "Hair & Scalp Care"
         ],
         texture: "Lightweight, non-sticky gel"
-    }
-    ,
+    },
+
     {
         id: 24,
         name: "ROSE POWDER",
@@ -1104,7 +1092,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s11.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ROSE POWDER-01.webp"),
+            require("../../assets/ProductDetails/Skin/ROSE-POWDER-01.webp"),
+         
         ],
         powder: "yes",
         quantity: "100gm",
@@ -1140,8 +1129,8 @@ export const products = [
             "Use with aloe vera gel for soothing skin care",
             "Add to hair packs for shine and scalp nourishment"
         ]
-    }
-    ,
+    },
+
     {
         id: 25,
         name: "KUMKUMATHI NIGHT ROUTINE",
@@ -1149,11 +1138,12 @@ export const products = [
         regular_price: 310,
         save: 40,
         category: "Skin Care",
-        image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp" },
+        image: { 
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp" 
+        },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI NIGHT ROUTINE-01.webp"),
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI NIGHT ROUTINE-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-01.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-02.webp"),
         ],
         nightroutine: "yes",
         quantity: "50ml",
@@ -1161,6 +1151,7 @@ export const products = [
         description: "Ayurvedic night routine oil for radiant skin.",
         Bundle_save: "Yes"
     },
+
     {
         id: 26,
         name: "KUMKUMATHI SOAP",
@@ -1172,13 +1163,12 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s13.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-01.webp"),
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-02.webp"),
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-03.webp"),
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-04.webp"),
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-05.webp"),
-            require("../../assets/ProductDetails/Skin/KUMKUMATHI SOAP-06.webp"),
-
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-01.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-02.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-03.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-04.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-05.webp"),
+            require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-06.webp"),
         ],
         bestSeller: "yes",
         quantity: "100gm",
@@ -1200,10 +1190,10 @@ export const products = [
             "Ayurvedic Herbal Extracts"
         ],
         free_from: [
+            "Harsh Chemicals",
             "Parabens",
             "Sulfates",
-            "Artificial Colors",
-            "Harsh Chemicals"
+            "Artificial Colors"
         ],
         suitable_for: [
             "All Skin Types",
@@ -1216,8 +1206,8 @@ export const products = [
             "Follow with moisturizer for best results"
         ],
         return_policy_note: "Soap products cannot be returned once ordered due to hygiene and safety reasons."
-    }
-    ,
+    },
+
     {
         id: 27,
         name: "KASTURI MANJAL",
@@ -1229,8 +1219,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s14.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/KASTURI MANJAL-01.webp"),
-
+            require("../../assets/ProductDetails/Skin/KASTURI-MANJAL-01.webp"),
+            
         ],
         Facepowder: "yes",
         quantity: "100gm",
@@ -1266,8 +1256,8 @@ export const products = [
             "Apply 2–3 times a week for best results",
             "Avoid contact with eyes"
         ]
-    }
-    ,
+    },
+
     {
         id: 28,
         name: "MULTANI MITTI POWDER",
@@ -1278,6 +1268,10 @@ export const products = [
         image: {
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp"
         },
+        sub_images: [
+            require("../../assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"),
+          
+        ],
         powder: "yes",
         Facepowder: "yes",
         quantity: "100gm",
@@ -1314,7 +1308,6 @@ export const products = [
         ]
     },
 
-
     // --- Body Care ---
     {
         id: 29,
@@ -1327,9 +1320,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b1.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Body/HERBAL BODY WASH-01.webp"),
-            require("../../assets/ProductDetails/Body/HERBAL BODY WASH-02.webp"),
-
+            require("../../assets/ProductDetails/Body/HERBAL-BODY-WASH-01.webp"),
+            require("../../assets/ProductDetails/Body/HERBAL-BODY-WASH-02.webp"),
         ],
         bestSeller: "yes",
         quantity: "250ml",
@@ -1372,9 +1364,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b2.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Body/SHEABUTTER BODY WASH-01.webp"),
-            require("../../assets/ProductDetails/Body/SHEABUTTER BODY WASH-02.webp"),
-
+            require("../../assets/ProductDetails/Body/SHEABUTTER-BODY-WASH-01.webp"),
+            require("../../assets/ProductDetails/Body/SHEABUTTER-BODY-WASH-02.webp"),
         ],
         quantity: "250ml",
         short_benefit: "Softens skin and retains moisture",
@@ -1416,9 +1407,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b3.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-01.webp"),
-            require("../../assets/ProductDetails/Skin/ALOEVERA GEL-02.webp"),
-
+            require("../../assets/ProductDetails/Skin/ALOEVERA-GEL-01.webp"),
+            require("../../assets/ProductDetails/Skin/ALOEVERA-GEL-02.webp"),
         ],
         Newproducts: "yes",
         nightroutine: "yes",
@@ -1463,8 +1453,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b4.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Body/FLAX SEED-01.webp"),
-
+            require("../../assets/ProductDetails/Body/FLAX-SEED-01.webp"),
+        
         ],
         quantity: "200gm",
         short_benefit: "Rich in omega-3 and fiber",
@@ -1506,7 +1496,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b5.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Body/AVARAMPOO POWDER-01.webp"),
+            require("../../assets/ProductDetails/Body/AVARAMPOO-POWDER-01.webp"),
+          
         ],
         powder: "yes",
         quantity: "100gm",
@@ -1520,7 +1511,7 @@ export const products = [
             "Cools and refreshes the body to prevent heat-related issues"
         ],
         description: "Traditional body powder for glowing, healthy skin.",
-        detailed_description: "Avarampoo Powder, made from dried Avaram Senna (Tanner’s Cassia) flowers, is a traditional herbal remedy known for its skin-brightening, detoxifying, and blood sugar controlling properties. Rich in antioxidants, it helps promote clear skin, better digestion, and overall wellness.",
+        detailed_description: "Avarampoo Powder, made from dried Avaram Senna (Tanner's Cassia) flowers, is a traditional herbal remedy known for its skin-brightening, detoxifying, and blood sugar controlling properties. Rich in antioxidants, it helps promote clear skin, better digestion, and overall wellness.",
         free_from: [
             "Artificial colors",
             "Preservatives",
@@ -1549,9 +1540,9 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b6.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Body/ROSE ALOVERA SOAP-01.webp"),
+            require("../../assets/ProductDetails/Body/ROSE-ALOVERA-SOAP-01.webp"),
+           
         ],
-
         quantity: "100gm",
         short_benefit: "Hydrates skin and gives soft texture",
         benefits: [
@@ -1578,7 +1569,6 @@ export const products = [
         ]
     },
 
-
     // --- Wellness & Edibles ---
     {
         id: 35,
@@ -1591,8 +1581,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Wellness/GROUNDNUT OIL-01.webp"),
-            require("../../assets/ProductDetails/Wellness/GROUNDNUT OIL-02.webp"),
+            require("../../assets/ProductDetails/Wellness/GROUNDNUT-OIL-01.webp"),
+            require("../../assets/ProductDetails/Wellness/GROUNDNUT-OIL-02.webp"),
         ],
         quantity: "500ml",
         short_benefit: "Rich in healthy fats and nutrients",
@@ -1631,8 +1621,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w2.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Wellness/ROSE GULKAND-01.webp"),
-            require("../../assets/ProductDetails/Wellness/ROSE GULKAND-02.webp"),
+            require("../../assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp"),
+            require("../../assets/ProductDetails/Wellness/ROSE-GULKAND-02.webp"),
         ],
         quantity: "250gm",
         short_benefit: "Improves digestion and cools the body",
@@ -1728,7 +1718,7 @@ export const products = [
             "Regulates Blood Sugar – A healthier alternative to refined sugar"
         ],
         description: "Raw forest honey packed with nutrition.",
-        detailed_description: "Our 100% Pure & Natural Honey is a raw, unprocessed superfood packed with essential nutrients, antioxidants, and healing properties. Sourced from the finest flowers, it’s a perfect natural sweetener that supports immunity, digestion, and overall well-being.",
+        detailed_description: "Our 100% Pure & Natural Honey is a raw, unprocessed superfood packed with essential nutrients, antioxidants, and healing properties. Sourced from the finest flowers, it's a perfect natural sweetener that supports immunity, digestion, and overall well-being.",
         free_from: [
             "Refined sugar",
             "Artificial additives",
@@ -1744,8 +1734,8 @@ export const products = [
             "Immunity support",
             "Skin nourishment"
         ]
-    }
-    ,
+    },
+
     {
         id: 39,
         name: "GHEE",
@@ -1771,7 +1761,7 @@ export const products = [
             "Strengthens Joints & Bones – Rich in Vitamin K for better bone health"
         ],
         description: "Traditional pure cow ghee rich in flavor.",
-        detailed_description: "Our 100% Pure & Traditional Desi Ghee is made from fresh cow’s milk, using the age-old Bilona method to retain its rich flavor, aroma, and essential nutrients. Packed with healthy fats, vitamins, and antioxidants, ghee is a powerhouse of energy, digestion support, and overall wellness.",
+        detailed_description: "Our 100% Pure & Traditional Desi Ghee is made from fresh cow's milk, using the age-old Bilona method to retain its rich flavor, aroma, and essential nutrients. Packed with healthy fats, vitamins, and antioxidants, ghee is a powerhouse of energy, digestion support, and overall wellness.",
         free_from: [
             "Artificial preservatives",
             "Refined oils",
@@ -1800,8 +1790,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w6.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Wellness/AMLA CANDY-01.webp"),
-            require("../../assets/ProductDetails/Wellness/AMLA CANDY-02.webp"),
+            require("../../assets/ProductDetails/Wellness/AMLA-CANDY-01.webp"),
+            require("../../assets/ProductDetails/Wellness/AMLA-CANDY-02.webp"),
         ],
         Newproducts: "yes",
         quantity: "200gm",
@@ -1831,8 +1821,8 @@ export const products = [
             "Energy boost",
             "Skin & hair nourishment"
         ]
-    }
-    ,
+    },
+
     {
         id: 41,
         name: "AMLA MOUTH FRESHNER",
@@ -1844,8 +1834,8 @@ export const products = [
             uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w7.webp"
         },
         sub_images: [
-            require("../../assets/ProductDetails/Wellness/AMLA MOUTH FRESHNER-01.webp"),
-            require("../../assets/ProductDetails/Wellness/AMLA MOUTH FRESHNER-02.webp"),
+            require("../../assets/ProductDetails/Wellness/AMLA-MOUTH-FRESHNER-01.webp"),
+            require("../../assets/ProductDetails/Wellness/AMLA-MOUTH-FRESHNER-02.webp"),
         ],
         Newproducts: "yes",
         quantity: "200gm",
@@ -1874,7 +1864,4 @@ export const products = [
             "Immunity support"
         ]
     },
-
-
 ];
-

@@ -1,4 +1,4 @@
-// Componets/context/CartContext.js
+// components/context/CartContext.js
 import React, { createContext, useState, useContext, useCallback, useMemo } from 'react';
 
 const CartContext = createContext();

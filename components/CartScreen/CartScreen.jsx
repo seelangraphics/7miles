@@ -63,7 +63,15 @@ const CartScreen = ({ navigation }) => {
         {/* Map over cartItems */}
         {cartItems.map((item, index) => (
           <View key={item.name + index} style={styles.cartItem}>
-            <Image source={item.image} style={styles.cartItemImage} />
+            <Image
+  source={
+    typeof item.image === 'string'
+      ? { uri: item.image }
+      : item.image
+  }
+  style={styles.cartItemImage}
+/>
+
             <View style={styles.cartItemDetails}>
               <Text style={styles.cartItemName}>{item.name}</Text>
               <Text style={styles.cartItemCategory}>{item.category}</Text>

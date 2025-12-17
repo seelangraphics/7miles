@@ -1,68 +1,132 @@
+import Constants from 'expo-constants';
+
+const PRODUCTS_API = Constants.expoConfig.extra.PRODUCTS_API;
+
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-  Alert
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  Image, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Dimensions, 
+  Animated, 
+  Alert,
+  ActivityIndicator 
 } from 'react-native';
-import { products } from "../data/7mils_Products";
 import { useCart } from '../context/CartContext';
 import { useNavigation } from '@react-navigation/native';
+
+// Remove the hardcoded PRODUCTS_API line below
+// const PRODUCTS_API = 'https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/product.json';
 
 const { width } = Dimensions.get('window');
 
 const Routineproduct = () => {
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const flatListRefs = useRef({});
   const scrollX = useRef(new Animated.Value(0)).current;
   const currentIndices = useRef({});
 
   // Cart context and navigation
-  const { addToCart, getItemQuantity, updateQuantity, removeFromCart, getCartItemsCount } = useCart();
+  const { addToCart, getItemQuantity, updateQuantity, removeFromCart, getCartItemsCount,im } = useCart();
   const navigation = useNavigation();
+
+  // Fetch products from AWS
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Use the PRODUCTS_API from expo constants (configured via .env)
+      const response = await fetch(PRODUCTS_API);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Transform the data if needed (assuming the API returns an array of products)
+      // If the API returns an object with products array, adjust accordingly
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else if (data.products && Array.isArray(data.products)) {
+        setProducts(data.products);
+      } else if (typeof data === 'object') {
+        // If it's a single object, convert to array
+        setProducts([data]);
+      } else {
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setError(err.message);
+      Alert.alert('Error', 'Failed to load products. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter products based on selected criteria
   const filteredProducts = useMemo(() => {
+    if (!Array.isArray(products)) return [];
+    
     if (selectedFilter === 'all') {
-      return products.filter(product =>
-        product.Facepowder === "yes" ||
-        product.nightroutine === "yes" ||
+      return products.filter(product => 
+        product.Facepowder === "yes" || 
+        product.nightroutine === "yes" || 
         product.hairpack === "yes"
       );
     }
+    
     return products.filter(product => product[selectedFilter] === "yes");
-  }, [selectedFilter]);
+  }, [products, selectedFilter]);
 
   // Get products for each category for horizontal sliders
-  const categoryProducts = useMemo(() => ({
-    Facepowder: products.filter(product => product.Facepowder === "yes"),
-    nightroutine: products.filter(product => product.nightroutine === "yes"),
-    hairpack: products.filter(product => product.hairpack === "yes"),
-  }), []);
+  const categoryProducts = useMemo(() => {
+    if (!Array.isArray(products)) {
+      return {
+        Facepowder: [],
+        nightroutine: [],
+        hairpack: []
+      };
+    }
+    
+    return {
+      Facepowder: products.filter(product => product.Facepowder === "yes"),
+      nightroutine: products.filter(product => product.nightroutine === "yes"),
+      hairpack: products.filter(product => product.hairpack === "yes"),
+    };
+  }, [products]);
 
   // Auto-scroll for horizontal sliders - moves one product at a time
   useEffect(() => {
     const intervals = {};
-
+    
     Object.keys(categoryProducts).forEach(category => {
       const categoryProductsList = categoryProducts[category];
+      
       if (categoryProductsList.length > 1) {
         intervals[category] = setInterval(() => {
           if (flatListRefs.current[category]) {
             const currentIndex = currentIndices.current[category] || 0;
             const nextIndex = (currentIndex + 1) % categoryProductsList.length;
-
+            
             flatListRefs.current[category].scrollToIndex({
               index: nextIndex,
               animated: true,
               viewPosition: 0.5
             });
-
+            
             currentIndices.current[category] = nextIndex;
           }
         }, 3000); // Auto scroll every 3 seconds
@@ -81,13 +145,13 @@ const Routineproduct = () => {
       'Success!',
       `${product.name} added to cart`,
       [
-        {
-          text: 'Continue Shopping',
-          style: 'cancel'
+        { 
+          text: 'Continue Shopping', 
+          style: 'cancel' 
         },
-        {
-          text: 'Go to Cart',
-          onPress: () => navigation.navigate('Cart')
+        { 
+          text: 'Go to Cart', 
+          onPress: () => navigation.navigate('Cart') 
         }
       ]
     );
@@ -117,12 +181,21 @@ const Routineproduct = () => {
 
   // Handle Product Press - Navigate to Product Details
   const handleProductPress = (product) => {
-    navigation.navigate("ProductDetails", { product: product });
+    navigation.navigate("ProductDetails", { 
+      product: product 
+    });
   };
 
   // Calculate discount percentage
   const getDiscountPercentage = (regular, sale) => {
+    if (!regular || !sale || regular <= sale) return 0;
     return Math.round(((regular - sale) / regular) * 100);
+  };
+
+  // Handle image error
+  const handleImageError = () => {
+    console.log('Image failed to load');
+    // You could set a default image here
   };
 
   // Horizontal Product Card component with cart functionality
@@ -130,22 +203,33 @@ const Routineproduct = () => {
     const quantity = getItemQuantity(item.name);
     const isInCart = quantity > 0;
 
+    // Handle missing image - use a placeholder
+const imageSource =
+  typeof item.image === 'string'
+    ? { uri: item.image }
+    : item.image;
+
     return (
-      <TouchableOpacity
+      <TouchableOpacity 
         style={styles.horizontalCard}
         onPress={() => handleProductPress(item)}
       >
         <View style={styles.horizontalImageContainer}>
-          <Image source={item.image} style={styles.horizontalProductImage} />
-
+          <Image 
+            source={imageSource}
+            style={styles.horizontalProductImage}
+            onError={handleImageError}
+            resizeMode="cover"
+          />
+          
           {/* Category Badge */}
           <View style={styles.categoryBadge}>
             <Text style={styles.categoryBadgeText}>
-              {category === 'Facepowder' ? 'Face Powder' :
-                category === 'nightroutine' ? 'Night Routine' : 'Hair Pack'}
+              {category === 'Facepowder' ? 'Face Powder' : 
+               category === 'nightroutine' ? 'Night Routine' : 'Hair Pack'}
             </Text>
           </View>
-
+          
           {/* Discount Badge */}
           {item.regular_price > item.sale_price && (
             <View style={styles.discountBadge}>
@@ -155,19 +239,27 @@ const Routineproduct = () => {
             </View>
           )}
         </View>
-
+        
         <View style={styles.horizontalProductInfo}>
           <Text style={styles.horizontalProductName} numberOfLines={2}>
-            {item.name}
+            {item.name || 'Unnamed Product'}
           </Text>
-
-          <Text style={styles.horizontalCategory}>{item.category}</Text>
-
+          
+          <Text style={styles.horizontalCategory}>
+            {item.category || 'Uncategorized'}
+          </Text>
+          
           <View style={styles.horizontalPriceContainer}>
-            <Text style={styles.horizontalSalePrice}>₹{item.sale_price}</Text>
-            <Text style={styles.horizontalRegularPrice}>₹{item.regular_price}</Text>
+            <Text style={styles.horizontalSalePrice}>
+              ₹{item.sale_price || item.price || 'N/A'}
+            </Text>
+            {item.regular_price > item.sale_price && (
+              <Text style={styles.horizontalRegularPrice}>
+                ₹{item.regular_price}
+              </Text>
+            )}
           </View>
-
+          
           {/* Additional Tags */}
           <View style={styles.horizontalTagsContainer}>
             {item.Newproducts === "yes" && (
@@ -180,21 +272,19 @@ const Routineproduct = () => {
               <Text style={styles.trendingTag}>TRENDING</Text>
             )}
           </View>
-
+          
           {/* Cart Actions */}
           <View style={styles.actionButtons}>
             {isInCart ? (
               <View style={styles.quantityContainer}>
-                <TouchableOpacity
+                <TouchableOpacity 
                   style={styles.quantityButton}
                   onPress={() => handleQuantityDecrease(item.name)}
                 >
                   <Text style={styles.quantityText}>-</Text>
                 </TouchableOpacity>
-
                 <Text style={styles.quantity}>{quantity}</Text>
-
-                <TouchableOpacity
+                <TouchableOpacity 
                   style={styles.quantityButton}
                   onPress={() => handleQuantityIncrease(item.name)}
                 >
@@ -202,16 +292,16 @@ const Routineproduct = () => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={styles.addToCartButton}
                 onPress={() => handleAddToCart(item)}
               >
                 <Text style={styles.addToCartText}>Add to Cart</Text>
               </TouchableOpacity>
             )}
-
+            
             {/* Buy Now Button */}
-            <TouchableOpacity
+            <TouchableOpacity 
               style={styles.buyNowButton}
               onPress={() => handleBuyNow(item)}
             >
@@ -225,7 +315,7 @@ const Routineproduct = () => {
 
   // Cart Icon Component
   const CartIcon = () => (
-    <TouchableOpacity
+    <TouchableOpacity 
       style={styles.cartIcon}
       onPress={() => navigation.navigate('Cart')}
     >
@@ -238,60 +328,60 @@ const Routineproduct = () => {
   // Filter Buttons Component
   const FilterButtons = () => (
     <View style={styles.filterContainer}>
-      <TouchableOpacity
+      <TouchableOpacity 
         style={[
-          styles.filterButton,
+          styles.filterButton, 
           selectedFilter === 'all' && styles.filterButtonActive
         ]}
         onPress={() => setSelectedFilter('all')}
       >
         <Text style={[
-          styles.filterButtonText,
+          styles.filterButtonText, 
           selectedFilter === 'all' && styles.filterButtonTextActive
         ]}>
           All Products
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
+      
+      <TouchableOpacity 
         style={[
-          styles.filterButton,
+          styles.filterButton, 
           selectedFilter === 'Facepowder' && styles.filterButtonActive
         ]}
         onPress={() => setSelectedFilter('Facepowder')}
       >
         <Text style={[
-          styles.filterButtonText,
+          styles.filterButtonText, 
           selectedFilter === 'Facepowder' && styles.filterButtonTextActive
         ]}>
           Face Powder
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
+      
+      <TouchableOpacity 
         style={[
-          styles.filterButton,
+          styles.filterButton, 
           selectedFilter === 'nightroutine' && styles.filterButtonActive
         ]}
         onPress={() => setSelectedFilter('nightroutine')}
       >
         <Text style={[
-          styles.filterButtonText,
+          styles.filterButtonText, 
           selectedFilter === 'nightroutine' && styles.filterButtonTextActive
         ]}>
           Night Routine
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
+      
+      <TouchableOpacity 
         style={[
-          styles.filterButton,
+          styles.filterButton, 
           selectedFilter === 'hairpack' && styles.filterButtonActive
         ]}
         onPress={() => setSelectedFilter('hairpack')}
       >
         <Text style={[
-          styles.filterButtonText,
+          styles.filterButtonText, 
           selectedFilter === 'hairpack' && styles.filterButtonTextActive
         ]}>
           Hair Pack
@@ -302,11 +392,11 @@ const Routineproduct = () => {
 
   // Horizontal Slider Section
   const HorizontalSliderSection = ({ category }) => {
-    const products = categoryProducts[category];
-    const categoryTitle = category === 'Facepowder' ? 'Face Powder' :
-      category === 'nightroutine' ? 'Night Routine' : 'Hair Pack';
+    const productsList = categoryProducts[category];
+    const categoryTitle = category === 'Facepowder' ? 'Face Powder' : 
+                         category === 'nightroutine' ? 'Night Routine' : 'Hair Pack';
 
-    if (!products || products.length === 0) return null;
+    if (!productsList || productsList.length === 0) return null;
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
       if (viewableItems.length > 0) {
@@ -323,15 +413,21 @@ const Routineproduct = () => {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{categoryTitle} Products</Text>
           <Text style={styles.sectionSubtitle}>
-            {products.length} products • Auto-scrolling
+            {productsList.length} products • Auto-scrolling
           </Text>
         </View>
+        
         <Animated.FlatList
           ref={ref => flatListRefs.current[category] = ref}
           horizontal
-          data={products}
-          renderItem={({ item }) => <HorizontalProductCard item={item} category={category} />}
-          keyExtractor={(item, index) => `horizontal-${category}-${item.name}-${index}`}
+          data={productsList}
+          renderItem={({ item }) => (
+            <HorizontalProductCard 
+              item={item} 
+              category={category} 
+            />
+          )}
+          keyExtractor={(item, index) => `horizontal-${category}-${item.id || item.name}-${index}`}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.horizontalList}
           snapToInterval={width * 0.7 + 16}
@@ -353,17 +449,60 @@ const Routineproduct = () => {
     );
   };
 
-  // Render horizontal sliders for all categories
-  const renderHorizontalSliders = () => (
-    <>
-      <HorizontalSliderSection category="Facepowder" />
-      <HorizontalSliderSection category="nightroutine" />
-      <HorizontalSliderSection category="hairpack" />
-    </>
+  // Loading State
+  const renderLoading = () => (
+    <View style={styles.centered}>
+      <ActivityIndicator size="large" color="#000" />
+      <Text style={styles.loadingText}>Loading products...</Text>
+    </View>
   );
+
+  // Error State
+  const renderError = () => (
+    <View style={styles.centered}>
+      <Text style={styles.errorText}>Error: {error}</Text>
+      <TouchableOpacity 
+        style={styles.retryButton}
+        onPress={fetchProducts}
+      >
+        <Text style={styles.retryText}>Retry</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  // Empty State
+  const renderEmpty = () => (
+    <View style={styles.centered}>
+      <Text style={styles.emptyText}>No products found</Text>
+      <TouchableOpacity 
+        style={styles.retryButton}
+        onPress={fetchProducts}
+      >
+        <Text style={styles.retryText}>Refresh</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  // Render horizontal sliders for all categories
+  const renderHorizontalSliders = () => {
+    if (products.length === 0 && !loading) {
+      return renderEmpty();
+    }
+
+    return (
+      <>
+        <HorizontalSliderSection category="Facepowder" />
+        <HorizontalSliderSection category="nightroutine" />
+        <HorizontalSliderSection category="hairpack" />
+      </>
+    );
+  };
 
   // Main content based on selected filter
   const renderMainContent = () => {
+    if (loading) return renderLoading();
+    if (error) return renderError();
+
     if (selectedFilter === 'all') {
       // When "all" is selected, only show horizontal sliders in a ScrollView
       return (
@@ -387,24 +526,23 @@ const Routineproduct = () => {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <View>
-            <Text style={styles.headerTitle}>7Mils Products</Text>
+            <Text style={styles.headerTitle}>7Miles Products</Text>
             <Text style={styles.headerSubtitle}>
               Specialized Face Powder, Night Routine & Hair Pack Products
             </Text>
           </View>
           <CartIcon />
         </View>
-
+        
         {/* Filter Buttons */}
         <FilterButtons />
       </View>
-
+      
       {/* Main Content */}
       {renderMainContent()}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -7,27 +7,59 @@ import {
   TouchableOpacity, 
   ScrollView, 
   Alert,
-  Dimensions 
+  Dimensions,
+  ActivityIndicator 
 } from 'react-native';
-import { products } from '../data/7mils_Products';
+import Constants from 'expo-constants';
 import { useCart } from '../context/CartContext';
 
 const { width } = Dimensions.get('window');
+const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
 
 const BundleComponent = () => {
+  const [bundleProducts, setBundleProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
 
-  // Filter products that have Bundle_save:"Yes"
-  const bundleProducts = useMemo(() => {
-    return products.filter(product => product.Bundle_save === "Yes");
+  // Fetch products from AWS API
+  useEffect(() => {
+    const fetchBundleProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(PRODUCTS_API);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const allProducts = await response.json();
+        
+        // Filter products that have Bundle_save:"Yes"
+        const bundleItems = allProducts.filter(product => 
+          product.Bundle_save === "Yes" || product.Bundle_save === true
+        );
+        
+        setBundleProducts(bundleItems);
+      } catch (err) {
+        console.error('Error fetching bundle products:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (PRODUCTS_API) {
+      fetchBundleProducts();
+    }
   }, []);
 
   // Calculate total savings for bundle products
   const calculateBundleSavings = useMemo(() => {
     return bundleProducts.reduce((total, product) => {
-      const regular = product.regular_price || 0;
-      const sale = product.sale_price || 0;
+      const regular = parseFloat(product.regular_price) || 0;
+      const sale = parseFloat(product.sale_price) || 0;
       return total + (regular - sale);
     }, 0);
   }, [bundleProducts]);
@@ -35,14 +67,14 @@ const BundleComponent = () => {
   // Calculate total original price for bundle
   const calculateBundleOriginalPrice = useMemo(() => {
     return bundleProducts.reduce((total, product) => {
-      return total + (product.regular_price || 0);
+      return total + (parseFloat(product.regular_price) || 0);
     }, 0);
   }, [bundleProducts]);
 
   // Calculate total sale price for bundle
   const calculateBundleSalePrice = useMemo(() => {
     return bundleProducts.reduce((total, product) => {
-      return total + (product.sale_price || 0);
+      return total + (parseFloat(product.sale_price) || 0);
     }, 0);
   }, [bundleProducts]);
 
@@ -63,7 +95,7 @@ const BundleComponent = () => {
           isFromBundle: true,
           bundleId: bundleId,
           timestamp: Date.now(),
-          bundleDiscount: (product.regular_price - product.sale_price)
+          bundleDiscount: (parseFloat(product.regular_price) - parseFloat(product.sale_price))
         };
         addToCart(cartProduct);
       });
@@ -71,7 +103,7 @@ const BundleComponent = () => {
       // Show success message
       Alert.alert(
         "Bundle Added to Cart! 🎉",
-        `Added ${bundleProducts.length} products and saved ₹${calculateBundleSavings}`,
+        `Added ${bundleProducts.length} products and saved ₹${calculateBundleSavings.toFixed(2)}`,
         [{ text: "Continue Shopping" }, { text: "View Cart" }]
       );
       
@@ -82,6 +114,26 @@ const BundleComponent = () => {
       setIsAdding(false);
     }
   };
+
+  // Handle loading state
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text style={styles.loadingText}>Loading bundle offers...</Text>
+      </View>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Failed to load bundle offers</Text>
+        <Text style={styles.errorSubText}>{error}</Text>
+      </View>
+    );
+  }
 
   // If no bundle products, don't show the component
   if (bundleProducts.length === 0) {
@@ -108,7 +160,6 @@ const BundleComponent = () => {
             style={styles.bannerImage}
             resizeMode="cover"
           />
-         
         </View>
 
         {/* Products Section - Horizontal Scroll */}
@@ -119,32 +170,39 @@ const BundleComponent = () => {
             contentContainerStyle={styles.productsContainer}
           >
             {bundleProducts.map((product) => (
-              <View key={product.id} style={styles.productCard}>
-                {/* Product Image */}
+              <View key={product.id || product._id} style={styles.productCard}>
+                {/* Product Image - Handle different image structures */}
                 <Image 
-                  source={{ uri: product.image.uri }} 
+                  source={{ uri: product.image?.uri || product.image || product.thumbnail }} 
                   style={styles.productImage}
+                 
                 />
                 
                 {/* Product Info */}
                 <View style={styles.productInfo}>
                   <Text style={styles.productName} numberOfLines={2}>
-                    {product.name}
+                    {product.name || product.title}
                   </Text>
                   
-                  <Text style={styles.productQuantity}>
-                    {product.quantity}
-                  </Text>
+                  {product.quantity && (
+                    <Text style={styles.productQuantity}>
+                      {product.quantity}
+                    </Text>
+                  )}
                   
                   {/* Price Section */}
                   <View style={styles.priceSection}>
                     <View style={styles.priceRow}>
                       <Text style={styles.priceLabel}>Sale:</Text>
-                      <Text style={styles.salePrice}>₹{product.sale_price}</Text>
+                      <Text style={styles.salePrice}>
+                        ₹{parseFloat(product.sale_price || 0).toFixed(2)}
+                      </Text>
                     </View>
                     <View style={styles.priceRow}>
                       <Text style={styles.priceLabel}>Regular:</Text>
-                      <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
+                      <Text style={styles.regularPrice}>
+                        ₹{parseFloat(product.regular_price || 0).toFixed(2)}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -159,7 +217,7 @@ const BundleComponent = () => {
             <Text style={styles.savingsLabel}>Total Savings</Text>
             <View style={styles.savingsAmount}>
               <Text style={styles.saveText}>SAVE</Text>
-              <Text style={styles.savingsValue}>₹{calculateBundleSavings}</Text>
+              <Text style={styles.savingsValue}>₹{calculateBundleSavings.toFixed(2)}</Text>
             </View>
           </View>
           
@@ -183,7 +241,6 @@ const BundleComponent = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F8F8F8',
@@ -375,7 +432,7 @@ savingsValue: {
   borderRadius: 40,
   paddingHorizontal: 20,
   paddingVertical: 12,
-  minWidth: 160,
+  minWidth: 120,
 },
 
 addButtonText: {

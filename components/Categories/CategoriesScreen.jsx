@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,66 +7,107 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { products } from "../data/7mils_Products";
+import Constants from "expo-constants";
 import { useCart } from "../context/CartContext";
 
+const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+
 const CategoriesScreen = () => {
-  const allProducts = products;
   const navigation = useNavigation();
-      const [addedItems, setAddedItems] = useState({});
-      const [quantities, setQuantities] = useState({});
-    const { addToCart, updateQuantity } = useCart(); // Use cart context
-  const categories = [...new Set(allProducts.map((item) => item.category))];
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const { addToCart, updateQuantity } = useCart();
 
-
-
-
-
-    const handleAddToCart = (product) => {
-      setAddedItems((prev) => ({ ...prev, [product.name]: true }));
-      setQuantities((prev) => ({ ...prev, [product.name]: 1 }));
-      addToCart(product);
-    };
-
-    
-    const handleQuantityChange = (product, change) => {
-      const currentQty = quantities[product.name] || 0;
-      const newQty = Math.max(0, currentQty + change);
-
-      setQuantities((prev) => ({ ...prev, [product.name]: newQty }));
-      updateQuantity(product.name, newQty); // Update global cart
-
-      if (newQty === 0) {
-        setAddedItems((prev) => ({ ...prev, [product.name]: false }));
-      }
-    };
-
-
-
- 
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [addedItems, setAddedItems] = useState({});
+  const [quantities, setQuantities] = useState({});
   const [filterVisible, setFilterVisible] = useState(false);
   const [sortVisible, setSortVisible] = useState(false);
-const [selectedSort, setSelectedSort] = useState("Best Selling");
-const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedSort, setSelectedSort] = useState("Best Selling");
+  const [selectedFilter, setSelectedFilter] = useState("");
 
-const categoryImages = {
-    "Hair Care": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/haircare.jpeg" },
-    "Skin Care": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/bodycare.jpeg" },
-    "Body Care": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/skincare.jpeg" },
-    "Wellness & Edibles": { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/edible.jpeg" },
-};
+  // Fetch products from AWS
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
- 
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(PRODUCTS_API);
+      const data = await response.json();
+
+      if (Array.isArray(data)) setAllProducts(data);
+      else if (data.products) setAllProducts(data.products);
+      else setAllProducts([]);
+    } catch (error) {
+      console.log("Error fetching products:", error);
+      setAllProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Add to Cart
+  const handleAddToCart = (product) => {
+    setAddedItems((prev) => ({ ...prev, [product.name]: true }));
+    setQuantities((prev) => ({ ...prev, [product.name]: 1 }));
+    addToCart(product);
+  };
+
+  // Handle Quantity Change
+  const handleQuantityChange = (product, change) => {
+    const currentQty = quantities[product.name] || 0;
+    const newQty = Math.max(0, currentQty + change);
+
+    setQuantities((prev) => ({ ...prev, [product.name]: newQty }));
+    updateQuantity(product.name, newQty);
+
+    if (newQty === 0) {
+      setAddedItems((prev) => ({ ...prev, [product.name]: false }));
+    }
+  };
+
+  // Categories
+  const categories = [...new Set(allProducts.map((item) => item.category))];
+  const [selectedCategory, setSelectedCategory] = useState(
+    categories.length > 0 ? categories[0] : ""
+  );
+
   const filteredProducts = allProducts.filter(
     (item) => item.category === selectedCategory
   );
 
+  // Category Images
+  const categoryImages = {
+    "Hair Care": {
+      uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/haircare.jpeg",
+    },
+    "Skin Care": {
+      uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/bodycare.jpeg",
+    },
+    "Body Care": {
+      uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/skincare.jpeg",
+    },
+    "Wellness & Edibles": {
+      uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/categories/edible.jpeg",
+    },
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
+      {/* Filter & Sort */}
       <View style={styles.filterSortRow}>
         <TouchableOpacity
           style={styles.filterSortButton}
@@ -85,6 +126,7 @@ const categoryImages = {
         </TouchableOpacity>
       </View>
 
+      {/* Category Tabs */}
       <FlatList
         horizontal
         data={categories}
@@ -92,10 +134,7 @@ const categoryImages = {
         contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 12 }}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={[
-              styles.categoryTab,
-              selectedCategory === item && styles.activeTab,
-            ]}
+            style={[styles.categoryTab, selectedCategory === item && styles.activeTab]}
             onPress={() => setSelectedCategory(item)}
           >
             <Image
@@ -105,12 +144,7 @@ const categoryImages = {
                 selectedCategory === item && styles.activeCategoryImage,
               ]}
             />
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === item && styles.activeText,
-              ]}
-            >
+            <Text style={[styles.categoryText, selectedCategory === item && styles.activeText]}>
               {item}
             </Text>
           </TouchableOpacity>
@@ -118,27 +152,26 @@ const categoryImages = {
         keyExtractor={(item) => item}
       />
 
-      {/* 🛍 Product Grid */}
+      {/* Products Grid */}
       <FlatList
         data={filteredProducts}
         keyExtractor={(item) => item.id}
         numColumns={2}
+        contentContainerStyle={styles.flatListContent}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <TouchableOpacity
               style={styles.productCard}
-              onPress={() =>
-                navigation.navigate("ProductDetails", { product: item })
-              }
+              onPress={() => navigation.navigate("ProductDetails", { product: item })}
             >
-              {/* Image Container - Covering half the card */}
               <View style={styles.imageContainer}>
-                <Image source={item.image} style={styles.productImage} />
+                <Image
+                  source={typeof item.image === "string" ? { uri: item.image } : item.image}
+                  style={styles.productImage}
+                />
               </View>
 
-              {/* Content Container */}
               <View style={styles.contentContainer}>
-                {/* Name and Wishlist Row */}
                 <View style={styles.nameRow}>
                   <Text style={styles.productName} numberOfLines={2}>
                     {item.name}
@@ -148,59 +181,30 @@ const categoryImages = {
                   </TouchableOpacity>
                 </View>
 
-                {/* Price Container */}
                 <View style={styles.priceContainer}>
                   <View style={styles.priceContent}>
-                    {/* Price Badge */}
                     <View style={styles.priceBadge}>
-                      <Text style={styles.discountedPrice}>
-                        ₹{item.sale_price}
-                      </Text>
-                      <Text style={styles.originalPrice}>
-                        ₹{item.regular_price}
-                      </Text>
+                      <Text style={styles.discountedPrice}>₹{item.sale_price}</Text>
+                      <Text style={styles.originalPrice}>₹{item.regular_price}</Text>
                     </View>
-
-                    {/* Save amount with animation */}
-                    <TouchableOpacity
-                      style={styles.saveBadge}
-                      activeOpacity={0.8}
-                    >
+                    <TouchableOpacity style={styles.saveBadge} activeOpacity={0.8}>
                       <Text style={styles.offerText}>Save ₹{item.save}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
 
-                {/* Add to cart button with icon */}
-
-                {/* Add to cart button or Quantity controls */}
                 {addedItems[item.name] ? (
-                  // Show quantity buttons when added
                   <View style={styles.quantityContainer}>
-                    <TouchableOpacity
-                      style={styles.qtyBtn}
-                      onPress={() => handleQuantityChange(item, -1)}
-                    >
+                    <TouchableOpacity style={styles.qtyBtn} onPress={() => handleQuantityChange(item, -1)}>
                       <Text style={styles.qtyText}>-</Text>
                     </TouchableOpacity>
-
-                    <Text style={styles.qtyCount}>
-                      {quantities[item.name] || 1}
-                    </Text>
-
-                    <TouchableOpacity
-                      style={styles.qtyBtn}
-                      onPress={() => handleQuantityChange(item, +1)}
-                    >
+                    <Text style={styles.qtyCount}>{quantities[item.name] || 1}</Text>
+                    <TouchableOpacity style={styles.qtyBtn} onPress={() => handleQuantityChange(item, +1)}>
                       <Text style={styles.qtyText}>+</Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
-                  // Show Add button when not added
-                  <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={() => handleAddToCart(item)}
-                  >
+                  <TouchableOpacity style={styles.addButton} onPress={() => handleAddToCart(item)}>
                     <Ionicons name="cart" size={16} color="#fff" />
                     <Text style={styles.addButtonText}>Add</Text>
                   </TouchableOpacity>
@@ -209,98 +213,36 @@ const categoryImages = {
             </TouchableOpacity>
           </View>
         )}
-        contentContainerStyle={styles.flatListContent}
       />
-      {/* 🔸 Filter Modal */}
 
+      {/* Filter Modal */}
       <Modal visible={filterVisible} animationType="slide" transparent>
         <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.floatingCloseButton}
-            onPress={() => setFilterVisible(false)}
-          >
+          <TouchableOpacity style={styles.floatingCloseButton} onPress={() => setFilterVisible(false)}>
             <Text style={styles.floatingCloseIcon}>×</Text>
           </TouchableOpacity>
-
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Filter by</Text>
-
             {["Hair Type", "Price Range", "Brand", "Discount"].map((option) => (
-              <TouchableOpacity key={option} style={styles.modalOption}>
+              <TouchableOpacity key={option} style={styles.modalOption} onPress={() => setSelectedFilter(option)}>
                 <Text style={styles.optionText}>{option}</Text>
               </TouchableOpacity>
             ))}
-
-            <TouchableOpacity
-              onPress={() => setFilterVisible(false)}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      {/* Sort Modal */}
       <Modal visible={sortVisible} animationType="slide" transparent>
         <View style={styles.modalContainer}>
-          {/* Floating Close Icon Button */}
-          <TouchableOpacity
-            style={styles.floatingCloseButton}
-            onPress={() => setSortVisible(false)}
-          >
+          <TouchableOpacity style={styles.floatingCloseButton} onPress={() => setSortVisible(false)}>
             <Text style={styles.floatingCloseIcon}>×</Text>
           </TouchableOpacity>
-
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Sort by</Text>
-
-            {[
-              "Best Selling",
-              "Featured",
-              "Price (Low to High)",
-              "Price (High to Low)",
-              "Alphabetical (A-Z)",
-              "Alphabetical (Z-A)",
-            ].map((option) => (
-              <TouchableOpacity
-                key={option}
-                style={styles.radioOption}
-                onPress={() => setSelectedSort(option)}
-              >
-                <View style={styles.radioCircle}>
-                  {selectedSort === option && (
-                    <View style={styles.radioSelected} />
-                  )}
-                </View>
-                <Text style={styles.optionText}>{option}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </Modal>
-
-      <Modal visible={filterVisible} animationType="slide" transparent>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.floatingCloseButton}
-            onPress={() => setFilterVisible(false)}
-          >
-            <Text style={styles.floatingCloseIcon}>×</Text>
-          </TouchableOpacity>
-
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Filter by</Text>
-
-            {["Hair Type", "Price Range", "Brand", "Discount"].map((option) => (
-              <TouchableOpacity
-                key={option}
-                style={styles.radioOption}
-                onPress={() => setSelectedFilter(option)}
-              >
-                <View style={styles.radioCircle}>
-                  {selectedFilter === option && (
-                    <View style={styles.radioSelected} />
-                  )}
-                </View>
+            {["Best Selling", "Featured", "Price (Low to High)", "Price (High to Low)", "A-Z", "Z-A"].map((option) => (
+              <TouchableOpacity key={option} style={styles.radioOption} onPress={() => setSelectedSort(option)}>
+                <View style={styles.radioCircle}>{selectedSort === option && <View style={styles.radioSelected} />}</View>
                 <Text style={styles.optionText}>{option}</Text>
               </TouchableOpacity>
             ))}

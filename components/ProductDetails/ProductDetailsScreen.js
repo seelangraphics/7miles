@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,34 +6,85 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { products } from "../data/7mils_Products";
+import Constants from 'expo-constants';
 import { GoldenDrop } from "./GoldenDrop";
 import ProductFeatures from "./Features";
 import ProductImageSlider from "./ProductImageSlider";
 
+// Get the API URL from environment variables
+const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API 
+
+
 const ProductDetailsScreen = ({ route, navigation }) => {
   const { product } = route.params;
   const [quantity, setQuantity] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Color Palette (enhanced for better visual hierarchy)
   const COLORS = {
-    primary: "black",     // Professional blue for CTAs
-    secondary: "#10B981",   // Green for savings/success
-    accent: "#F59E0B",      // Amber for highlights
-    dark: "#1F2937",        // Charcoal for main text
-    light: "#6B7280",       // Gray for secondary text
-    border: "#E5E7EB",      // Light borders
-    background: "#F9FAFB",  // Light background
+    primary: "black",
+    secondary: "#10B981",
+    accent: "#F59E0B",
+    dark: "#1F2937",
+    light: "#6B7280",
+    border: "#E5E7EB",
+    background: "#F9FAFB",
     white: "#FFFFFF",
   };
 
-  // Combine main image + sub images
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // console.log('Fetching products from:', PRODUCTS_API);
+      
+      const response = await fetch(PRODUCTS_API);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      // console.log('Products data received:', data);
+      
+      // Handle different response formats
+      let productsArray = data;
+      if (!Array.isArray(data) && data.products && Array.isArray(data.products)) {
+        productsArray = data.products;
+      }
+      
+      // Ensure each product has proper image format
+      const formattedProducts = productsArray.map(item => ({
+        ...item,
+        // Ensure image is properly formatted for Image component
+        image: typeof item.image === 'string' ? { uri: item.image } : item.image,
+      }));
+      
+      setProducts(formattedProducts);
+      
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setError(err.message || 'Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Format slider images - ensure all are proper image sources
   const sliderImages = [
-    product.image,
-    ...(product.sub_images || []),
-  ];
+    typeof product.image === 'string' ? { uri: product.image } : product.image,
+    ...(product.sub_images || []).map(img => 
+      typeof img === 'string' ? { uri: img } : img
+    ),
+  ].filter(Boolean);
 
   const similarProducts = products
     .filter(
@@ -53,7 +104,10 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         activeOpacity={0.9}
       >
         <View style={styles.imageWrapper}>
-          <Image source={item.image} style={styles.productImage} />
+          <Image 
+            source={item.image} 
+            style={styles.productImage} 
+          />
         </View>
 
         <View style={styles.productContent}>
@@ -75,26 +129,49 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     </View>
   );
 
+  const handleRetry = () => {
+    fetchProducts();
+  };
+
+  if (loading && products.length === 0) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={styles.loadingText}>Loading products...</Text>
+      </View>
+    );
+  }
+
+  if (error && products.length === 0) {
+    return (
+      <View style={styles.errorContainer}>
+        <Ionicons name="warning-outline" size={60} color="#ff6b6b" />
+        <Text style={styles.errorTitle}>Failed to load products</Text>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
         data={similarProducts}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         numColumns={2}
         renderItem={renderSimilarProduct}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View>
-            {/* IMAGE SLIDER */}
             <ProductImageSlider
               images={sliderImages}
               dotColor={COLORS.primary}
             />
 
-            {/* PRODUCT DETAILS */}
             <View style={styles.detailsContainer}>
-              {/* Product Title & Category */}
               <View style={styles.titleSection}>
                 <Text style={styles.name}>{product.name}</Text>
                 <View style={styles.categoryTag}>
@@ -102,14 +179,13 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                 </View>
               </View>
 
-              {/* Price Section with Better Visual Hierarchy */}
               <View style={styles.priceSection}>
                 <View style={styles.priceRow}>
                   <Text style={styles.discountedPrice}>₹{product.sale_price}</Text>
                   <Text style={styles.originalPrice}>₹{product.regular_price}</Text>
                   <View style={styles.saveBadge}>
                     <Text style={styles.saveText}>
-                      Save ₹{product.save}
+                      Save ₹{product.save || product.regular_price - product.sale_price}
                     </Text>
                   </View>
                 </View>
@@ -127,52 +203,60 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                 </View>
               </View>
 
-              {/* Description */}
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Description</Text>
                 <View style={styles.descriptionBox}>
                   <Text style={styles.description}>
-                    {product.detailed_description}
+                    {product.detailed_description || product.description || 'No description available.'}
                   </Text>
                 </View>
               </View>
 
-              {/* Benefits */}
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Benefits</Text>
                 <View style={styles.benefitsContainer}>
-                  {product.benefits.map((item, index) => (
+                  {(Array.isArray(product.benefits) ? product.benefits : []).map((item, index) => (
                     <View key={index} style={styles.benefitItem}>
-                      <Ionicons name="checkmark-circle" size={16} color={COLORS.secondary} />
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={16}
+                        color={COLORS.secondary}
+                      />
                       <Text style={styles.benefitText}>{item}</Text>
                     </View>
                   ))}
                 </View>
               </View>
 
-              {/* Features */}
               <View style={styles.section}>
                 <ProductFeatures />
               </View>
 
-              {/* Golden Drop */}
               <View style={styles.section}>
                 <GoldenDrop />
               </View>
 
-              {/* Similar Products Header */}
               <View style={styles.similarHeader}>
                 <Text style={styles.sectionTitle}>Similar Products</Text>
-                <TouchableOpacity>
-                  <Text style={styles.seeAll}>See All</Text>
-                </TouchableOpacity>
+                {similarProducts.length > 0 && (
+                  <TouchableOpacity>
+                    <Text style={styles.seeAll}>See All</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>
         }
+        ListEmptyComponent={
+          loading ? (
+            <View style={styles.loadingMoreContainer}>
+              <ActivityIndicator size="small" color={COLORS.primary} />
+              <Text style={styles.loadingMoreText}>Loading similar products...</Text>
+            </View>
+          ) : null
+        }
       />
 
-      {/* ENHANCED BOTTOM BAR */}
       <View style={styles.bottomBar}>
         <TouchableOpacity
           style={[styles.bottomButton, styles.cartBtn]}
@@ -192,6 +276,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     </View>
   );
 };
+
+
 
 export default ProductDetailsScreen;
 

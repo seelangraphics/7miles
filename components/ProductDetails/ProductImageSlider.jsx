@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
-const ProductImageSlider = ({ images }) => {
+const ProductImageSlider = ({ images, dotColor = "#000" }) => {
   const flatListRef = useRef(null);
   const modalListRef = useRef(null);
 
@@ -36,13 +36,24 @@ const ProductImageSlider = ({ images }) => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [currentIndex, images.length]);
 
   const onViewRef = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index);
     }
   });
+
+  if (!images || images.length === 0) {
+    return (
+     <View style={styles.imageContainer}>
+    <Image
+      source={{ uri: product.image }}
+      style={styles.image}
+    />
+  </View>
+    );
+  }
 
   return (
     <>
@@ -54,7 +65,7 @@ const ProductImageSlider = ({ images }) => {
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(_, i) => i.toString()}
+          keyExtractor={(item, index) => index.toString()}
           onViewableItemsChanged={onViewRef.current}
           viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
           renderItem={({ item, index }) => (
@@ -77,7 +88,10 @@ const ProductImageSlider = ({ images }) => {
             {images.map((_, i) => (
               <View
                 key={i}
-                style={[styles.dot, i === currentIndex && styles.activeDot]}
+                style={[
+                  styles.dot, 
+                  i === currentIndex && [styles.activeDot, { backgroundColor: dotColor }]
+                ]}
               />
             ))}
           </View>
@@ -120,6 +134,8 @@ const ProductImageSlider = ({ images }) => {
     </>
   );
 };
+
+
 
 export default ProductImageSlider;
 

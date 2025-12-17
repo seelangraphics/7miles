@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     View, 
     Text, 
     TouchableOpacity, 
-    StyleSheet, 
     Image, 
-    ScrollView,
-    Dimensions
+    ScrollView, 
+    Dimensions,
+    StyleSheet
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
-
-const { width } = Dimensions.get('window');
-
-import { products } from '../data/7mils_Products';
+import Constants from "expo-constants";
 import { useCart } from '../context/CartContext';
 
+const { width } = Dimensions.get('window');
+const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+
 const NewProducts = () => {
+    const [products, setProducts] = useState([]);
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
     const navigation = useNavigation();
     const { addToCart, updateQuantity } = useCart();
+
+    // Fetch products from API
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch(PRODUCTS_API);
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     const newProducts = products.filter(product => product.Newproducts === "yes");
 
@@ -53,21 +68,15 @@ const NewProducts = () => {
 
         return (
             <TouchableOpacity 
-                style={[
-                    styles.productCard,
-                    { backgroundColor: isEven ? '#f3eeea' : '#f3eeea' }
-                ]}
-                onPress={() => navigation.navigate("ProductDetails", { product: product })}
+                style={[styles.productCard, { backgroundColor: '#f3eeea' }]}
+                onPress={() => navigation.navigate("ProductDetails", { product })}
             >
-                {/* Product Image - Fixed Height */}
                 <View style={styles.imageContainer}>
                     <Image 
-                        source={product.image}
+                        source={typeof product.image === 'string' ? { uri: product.image } : product.image}
                         style={styles.productImage}
                         resizeMode="cover"
                     />
-                    
-                    {/* Discount Badge */}
                     <View style={styles.discountBadge}>
                         <Text style={styles.discountText}>
                             {calculateDiscount(product.regular_price, product.sale_price)}% OFF
@@ -75,75 +84,51 @@ const NewProducts = () => {
                     </View>
                 </View>
 
-                {/* Product Info - Fixed Height Container */}
                 <View style={styles.productInfo}>
-                    {/* Product Name with Fixed Height */}
                     <View style={styles.productNameContainer}>
-                        <Text style={[
-                            styles.productName,
-                            { color: isEven ? '#000' : '#000' }
-                        ]} numberOfLines={2}>
+                        <Text style={styles.productName} numberOfLines={2}>
                             {product.name}
                         </Text>
                     </View>
                     
-                    <Text style={[
-                        styles.productCategory,
-                        { color: isEven ? '#000' : '#666' }
-                    ]}>
-                        {product.category}
-                    </Text>
+                    <Text style={styles.productCategory}>{product.category}</Text>
 
-                    {/* Price Section */}
                     <View style={styles.priceContainer}>
-                        <Text style={[
-                            styles.salePrice,
-                            { color: isEven ? '#000' : '#000' }
-                        ]}>
-                            ₹{product.sale_price}
-                        </Text>
-                        <Text style={[
-                            styles.regularPrice,
-                            { color: isEven ? '#000' : '#999' }
-                        ]}>
-                            ₹{product.regular_price}
-                        </Text>
+                        <Text style={styles.salePrice}>₹{product.sale_price}</Text>
+                        <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
                     </View>
 
-                    {/* Quantity Controls or Add Button */}
                     {isAdded ? (
                         <View style={styles.quantityContainer}>
                             <TouchableOpacity 
                                 style={[
-                                    styles.quantityButton,
+                                    styles.quantityButton, 
                                     { backgroundColor: isEven ? '#000' : '#ddd' }
-                                ]}
+                                ]} 
                                 onPress={() => handleQuantityChange(product, -1)}
                             >
                                 <Text style={[
-                                    styles.quantityText,
+                                    styles.quantityText, 
                                     { color: isEven ? '#fff' : '#000' }
                                 ]}>
                                     -
                                 </Text>
                             </TouchableOpacity>
-                            
                             <Text style={[
-                                styles.quantity,
+                                styles.quantity, 
                                 { color: isEven ? '#000' : '#000' }
                             ]}>
                                 {quantity}
                             </Text>
-                            
                             <TouchableOpacity 
                                 style={[
-                                    styles.quantityButton,
+                                    styles.quantityButton, 
                                     { backgroundColor: isEven ? '#333' : '#ddd' }
-                                ]}
+                                ]} 
                                 onPress={() => handleQuantityChange(product, 1)}
                             >
                                 <Text style={[
-                                    styles.quantityText,
+                                    styles.quantityText, 
                                     { color: isEven ? '#fff' : '#000' }
                                 ]}>
                                     +
@@ -153,22 +138,18 @@ const NewProducts = () => {
                     ) : (
                         <TouchableOpacity 
                             style={[
-                                styles.addToCartButton,
+                                styles.addToCartButton, 
                                 { 
-                                    backgroundColor: isEven ? '#000' : '#000',
-                                    borderWidth: isEven ? 0 : 2,
-                                    borderColor: '#000'
+                                    backgroundColor: isEven ? '#000' : '#000', 
+                                    borderWidth: isEven ? 0 : 2, 
+                                    borderColor: '#000' 
                                 }
-                            ]}
+                            ]} 
                             onPress={() => handleAddToCart(product)}
                         >
-                            <Ionicons 
-                                name="cart-outline" 
-                                size={16} 
-                                color={isEven ? '#fff' : '#fff'} 
-                            />
+                            <Ionicons name="cart-outline" size={16} color={isEven ? '#fff' : '#fff'} />
                             <Text style={[
-                                styles.addToCartText,
+                                styles.addToCartText, 
                                 { color: isEven ? '#fff' : '#fff' }
                             ]}>
                                 ADD
@@ -191,13 +172,11 @@ const NewProducts = () => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <View style={styles.header}>
                 <Text style={styles.title}>New Arrivals</Text>
                 <Text style={styles.subtitle}>Fresh products just for you</Text>
             </View>
 
-            {/* Products Grid - 2 per row */}
             <ScrollView 
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.productsGrid}

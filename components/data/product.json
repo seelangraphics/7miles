@@ -623,8 +623,8 @@
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s2.webp",
         "sub_images": [
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SKIN-BRIGHTENING SOAP-01.webp",
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SKIN-BRIGHTENING SOAP-02.webp"
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-01.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-02.webp"
         ],
         "quantity": "100gm",
         "benefits": [
@@ -888,6 +888,11 @@
         "save": 70,
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp",
+         "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SALICYLIC-FACEWASH-01.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SALICYLIC-FACEWASH-02.webp"
+        ],
+        
         "quantity": "100ml",
         "short_benefit": "Removes acne and controls oil",
         "benefits": [
@@ -1170,6 +1175,9 @@
         "save": 75,
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp",
+          "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"
+        ],
         "powder": "yes",
         "Facepowder": "yes",
         "quantity": "100gm",
@@ -1453,8 +1461,8 @@
         "category": "Wellness & Edibles",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp",
         "sub_images": [
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GROUNDNUT OIL-01.webp",
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GROUNDNUT OIL-02.webp"
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GROUNDNUT-OIL-01.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GROUNDNUT-OIL-02.webp"
         ],
         "quantity": "500ml",
         "short_benefit": "Rich in healthy fats and nutrients",

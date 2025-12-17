@@ -12,7 +12,11 @@ const SearchResultItem = ({ item, onPress }) => {
             onPress={onPress}
             activeOpacity={0.7}
         >
-            <Image source={item.image} style={styles.resultImage} resizeMode="cover" />
+            <Image 
+                source={{ uri: item.image }} 
+                style={styles.resultImage} 
+                resizeMode="cover"
+            />
             <View style={styles.resultInfo}>
                 <Text style={styles.resultName} numberOfLines={2}>{item.name}</Text>
                 <View style={styles.resultMeta}>
@@ -32,7 +36,7 @@ const SearchResultItem = ({ item, onPress }) => {
                 </View>
                 {item.benefits && (
                     <Text style={styles.resultBenefits} numberOfLines={1}>
-                        {item.benefits}
+                        {Array.isArray(item.benefits) ? item.benefits[0] : item.benefits}
                     </Text>
                 )}
             </View>

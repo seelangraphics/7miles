@@ -12,41 +12,41 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./Componets/Firebase/Firebase";
+import { auth } from "./components/Firebase/Firebase";
 
 // ✅ Your existing components
-import TopNavigation from "./Componets/Nav/TopNavigation";
-import SearchBar from "./Componets/Nav/SearchBar";
-import BottomNavigation from "./Componets/BottomNavigation/BottomNavigation";
-import CategoriesScreen from "./Componets/Categories/CategoriesScreen";
-import PromoBanner from "./Componets/PromoBanner/PromoBanner";
-import ProductDetailsScreen from "./Componets/ProductDetails/ProductDetailsScreen";
-import NewProducts from "./Componets/NewProducts/NewProducts";
-import ProductsScreen from "./Componets/ProductsContainer/ProductsScreen";
-import HeroSection from "./Componets/HeroSection/HeroSection";
-import SevenMile from "./Componets/SevenMile/SevenMile";
-import ProductSlider from "./Componets/ProductSlider/ProductSlider";
-import Routineproduct from "./Componets/Rotine-product/RotineProducts";
-import Adbanner from "./Componets/AddBanner/Adbanner";
-import CartScreen from "./Componets/CartScreen/CartScreen";
+import TopNavigation from "./components/Nav/TopNavigation";
+import SearchBar from "./components/Nav/SearchBar";
+import BottomNavigation from "./components/BottomNavigation/BottomNavigation";
+import CategoriesScreen from "./components/Categories/CategoriesScreen";
+import PromoBanner from "./components/PromoBanner/PromoBanner";
+import ProductDetailsScreen from "./components/ProductDetails/ProductDetailsScreen";
+import NewProducts from "./components/NewProducts/NewProducts";
+import ProductsScreen from "./components/ProductsContainer/ProductsScreen";
+import HeroSection from "./components/HeroSection/HeroSection";
+import SevenMile from "./components/SevenMile/SevenMile";
+import ProductSlider from "./components/ProductSlider/ProductSlider";
+import Routineproduct from "./components/Rotine-product/RotineProducts";
+import Adbanner from "./components/AddBanner/Adbanner";
+import CartScreen from "./components/CartScreen/CartScreen";
 
-import OrderSuccessScreen from "./Componets/Success/OrderSuccessScreen";
+import OrderSuccessScreen from "./components/Success/OrderSuccessScreen";
 
 // ✅ Cart Context
-import { CartProvider, useCart } from "./Componets/context/CartContext";
+import { CartProvider, useCart } from "./components/context/CartContext";
 
 // ✅ Splash Screen Component
-import SplashScreen from "./Componets/SplashScreen/SplashScreen";
-import BundleComponent from "./Componets/BundleComponent/BundleComponent";
-import MarqueeBannerEfficient from "./Componets/Facepack_powder/FacepackMarquee";
-import Facepack from "./Componets/Facepack_powder/Facepack";
-import { FAQSection } from "./Componets/Faq/Faq";
-import Account from "./Componets/AccountScreen/AccountScreen";
-import AuthScreen from "./Componets/AuthScreen/Login";
+import SplashScreen from "./components/SplashScreen/SplashScreen";
+import BundleComponent from "./components/BundleComponent/BundleComponent";
+import MarqueeBannerEfficient from "./components/Facepack_powder/FacepackMarquee";
+import Facepack from "./components/Facepack_powder/Facepack";
+import { FAQSection } from "./components/Faq/Faq";
+import Account from "./components/AccountScreen/AccountScreen";
+import AuthScreen from "./components/AuthScreen/Login";
 import Toast from "react-native-toast-message";
-import Address from "./Componets/Deliveryaddress/Address";
-import Payment from "./Componets/Payment/Payment";
-import { Youraddress } from "./Componets/Youraddress/Youraddress";
+import Address from "./components/Deliveryaddress/Address";
+import Payment from "./components/Payment/Payment";
+import { Youraddress } from "./components/Youraddress/Youraddress";
 
 const Stack = createNativeStackNavigator();
 
