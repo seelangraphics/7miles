@@ -34,7 +34,8 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
             const matchesSearch =
                 product.name.toLowerCase().includes(query) ||
                 product.category.toLowerCase().includes(query) ||
-                (product.benefits?.toLowerCase() || '').includes(query) ||
+              (String(product.benefits || '').toLowerCase()).includes(query)
+ ||
                 (product.description?.toLowerCase() || '').includes(query) ||
                 (product.quantity?.toLowerCase() || '').includes(query);
 

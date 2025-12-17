@@ -35,7 +35,8 @@ export const GoldenDrop = () => {
             isLooping={true}
             resizeMode={ResizeMode.COVER}
             useNativeControls={false}
-            isMuted={false}
+            isMuted={true}
+            
           />
         </View>
         
