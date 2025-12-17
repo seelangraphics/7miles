@@ -196,7 +196,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
 
         <TouchableOpacity
           style={[styles.footerBtn, styles.ordersBtn]}
-          onPress={() => navigation.navigate("MyOrders")}
+          onPress={() => navigation.navigate("orders")}
         >
           <Ionicons name="list-outline" size={18} color="#4F46E5" />
           <Text style={styles.ordersBtnText}>View My Orders</Text>

@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { products } from "../data/7mils_Products";
 import { useCart } from "../context/CartContext";
+import TopBar from "../Topbar/Topbar";
 
 const CategoriesScreen = () => {
   const allProducts = products;
@@ -66,6 +67,9 @@ const categoryImages = {
   );
 
   return (
+  <>
+
+  <TopBar/>
     <View style={styles.container}>
       <View style={styles.filterSortRow}>
         <TouchableOpacity
@@ -308,6 +312,7 @@ const categoryImages = {
         </View>
       </Modal>
     </View>
+  </>
   );
 };
 

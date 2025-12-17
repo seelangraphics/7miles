@@ -16,7 +16,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../Firebase/Firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Toast from "react-native-toast-message";
-import { TopBar } from "../../App";
 import { useCart } from "../context/CartContext";
 import { useNavigation } from "@react-navigation/native";
 
@@ -250,7 +249,7 @@ const AddressPage = () => {
 
   return (
     <>
-      <TopBar />
+    
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Delivery Address Section */}

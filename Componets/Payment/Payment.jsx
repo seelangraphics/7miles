@@ -16,6 +16,11 @@ import { useCart } from "../context/CartContext";
 import Toast from "react-native-toast-message";
 import { auth, db } from "../Firebase/Firebase";
 import { doc, updateDoc, getDoc, collection, addDoc } from "firebase/firestore";
+import axios from "axios";
+
+const MAIL_ENDPOINT =
+  "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
+
 
 const Payment = () => {
   const navigation = useNavigation();
@@ -26,7 +31,8 @@ const Payment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-
+  const [username, setUsername] = useState('');
+  const [useremail, setuserEmail] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
@@ -78,78 +84,135 @@ const Payment = () => {
     return `ORD${timestamp}${random}`;
   };
 
-const saveOrderToFirebase = async (
-  paymentMethod,
-  paymentStatus = "pending"
-) => {
-  if (!auth.currentUser?.uid) return null;
+  const saveOrderToFirebase = async (
+    paymentMethod,
+    paymentStatus = "pending"
+  ) => {
+    if (!auth.currentUser?.uid) return null;
 
-  const orderId = generateOrderId();
-  const orderData = {
-    orderId,
-    items: cartItems.map((item) => ({
-      id: item.id,
-      name: item.name,
-      image: item.image,
-      price: item.sale_price,
-      quantity: item.quantity,
-      category: item.category,
-    })),
-    address: {
-      name: `${address.firstName} ${address.lastName}`,
-      phone: address.phone,
-      address: address.addressLine1,
-      address2: address.addressLine2 || "",
-      city: address.city,
-      state: address.state,
-      pincode: address.pincode,
-    },
-    payment: {
-      method: paymentMethod,
-      status: paymentStatus,
-      transactionId: paymentMethod === "razorpay" ? `TXN${Date.now()}` : null,
-    },
-    priceDetails: {
-      subtotal: getCartTotal(),
-      shipping: shippingCharge,
-      tax: tax,
-      total: finalTotal,
-    },
-    status:
-      paymentMethod === "cod"
-        ? "confirmed"
-        : paymentStatus === "success"
-        ? "confirmed"
-        : "pending",
-    createdAt: new Date().toISOString(),
-    estimatedDelivery: new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000
-    ).toISOString(), // 7 days from now
+    const orderId = generateOrderId();
+    const orderData = {
+      orderId,
+      items: cartItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        image: item.image,
+        price: item.sale_price,
+        quantity: item.quantity,
+        category: item.category,
+      })),
+      address: {
+        name: `${address.firstName} ${address.lastName}`,
+        phone: address.phone,
+        address: address.addressLine1,
+        address2: address.addressLine2 || "",
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode,
+      },
+      payment: {
+        method: paymentMethod,
+        status: paymentStatus,
+        transactionId: paymentMethod === "razorpay" ? `TXN${Date.now()}` : null,
+      },
+      priceDetails: {
+        subtotal: getCartTotal(),
+        shipping: shippingCharge,
+        tax: tax,
+        total: finalTotal,
+      },
+      status:
+        paymentMethod === "cod"
+          ? "confirmed"
+          : paymentStatus === "success"
+            ? "confirmed"
+            : "pending",
+      createdAt: new Date().toISOString(),
+      estimatedDelivery: new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000
+      ).toISOString(), // 7 days from now
+    };
+
+    try {
+      const userRef = doc(db, "milesusers", auth.currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data();
+      setUsername(userData.name || '');
+      setuserEmail(userData.email || '');
+      // Create orders array if it doesn't exist
+      const currentOrders = userData.orders || [];
+
+      await updateDoc(userRef, {
+        orders: [...currentOrders, orderData],
+      });
+
+      return orderData;
+    } catch (error) {
+      console.error("Error saving order:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to save order",
+        text2: "Please try again",
+      });
+      return null;
+    }
   };
 
-  try {
-    const userRef = doc(db, "milesusers", auth.currentUser.uid);
-    const userSnap = await getDoc(userRef);
-    const userData = userSnap.data();
 
-    // Create orders array if it doesn't exist
-    const currentOrders = userData.orders || [];
 
-    await updateDoc(userRef, {
-      orders: [...currentOrders, orderData],
-    });
+  const sendOrderPlacedEmail = async (order) => {
+    try {
+      const payload = {
+        storeType: "tinykarts",
+        to: useremail,
+        username: username,
+        subject: `Order Placed Successfully #${order.orderId}`,
+        message: `
+        <div style="font-family:Arial;">
+          <h2>Your order is confirmed! 🎉</h2>
+          <p>Hello ${username},</p>
+          <p>Thanks for shopping with <strong>7miles</strong>.</p>
 
-    return orderData;
-  } catch (error) {
-    console.error("Error saving order:", error);
-    Toast.show({
-      type: "error",
-      text1: "Failed to save order",
-      text2: "Please try again",
-    });
-    return null;
-  }
-};
+          <p>Your order <strong>#${order.orderId}</strong> has been successfully placed.</p>
+
+          <p>We will start preparing your products and notify you when shipped!</p>
+
+          <br />
+
+          <p><strong>Payment Method:</strong> ${order.payment.method.toUpperCase()}</p>
+          <p><strong>Order Total:</strong> ₹${order.priceDetails.total}</p>
+
+          <br />
+          <p>We hope you enjoy shopping with us!</p>
+          <p><strong>Team 7miles</strong></p>
+        </div>
+      `,
+        orderid: order.orderId,
+      };
+
+      await axios.post(MAIL_ENDPOINT, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      return true;
+
+    } catch (err) {
+      console.log("❌ Order placed email error →", err.response?.data || err.message);
+      return false;
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
 
   const handleRazorpayPayment = async () => {
     setIsLoading(true);
@@ -205,6 +268,11 @@ const saveOrderToFirebase = async (
     }
   };
 
+
+
+
+
+
   const handleCashOnDelivery = async () => {
     setIsLoading(true);
 
@@ -212,6 +280,10 @@ const saveOrderToFirebase = async (
       const orderData = await saveOrderToFirebase("cod", "pending");
 
       if (orderData) {
+
+        // send mail
+        await sendOrderPlacedEmail(orderData);
+
         setOrderDetails(orderData);
         setOrderPlaced(true);
         clearCart();
@@ -222,7 +294,6 @@ const saveOrderToFirebase = async (
           text2: "Your order has been confirmed.",
         });
 
-        // Navigate to order confirmation after delay
         setTimeout(() => {
           navigation.navigate("OrderSuccess", { order: orderData });
         }, 2000);
@@ -238,6 +309,31 @@ const saveOrderToFirebase = async (
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handlePayment = () => {
     if (!selectedMethod) {
       Toast.show({
@@ -250,8 +346,7 @@ const saveOrderToFirebase = async (
 
     Alert.alert(
       "Confirm Order",
-      `Proceed with ${
-        selectedMethod === "razorpay" ? "Razorpay Payment" : "Cash on Delivery"
+      `Proceed with ${selectedMethod === "razorpay" ? "Razorpay Payment" : "Cash on Delivery"
       }?`,
       [
         { text: "Cancel", style: "cancel" },
@@ -470,7 +565,7 @@ const saveOrderToFirebase = async (
         </View>
 
         {/* Terms & Conditions */}
-     
+
       </ScrollView>
 
       {/* Bottom Action Bar */}

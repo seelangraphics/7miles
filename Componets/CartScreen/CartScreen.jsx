@@ -46,7 +46,7 @@ const CartScreen = ({ navigation }) => {
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
           <TouchableOpacity 
             style={styles.continueShoppingButton}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('MainTabs')}
           >
             <Text style={styles.continueShoppingText}>Continue Shopping</Text>
           </TouchableOpacity>
@@ -123,20 +123,9 @@ const CartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#fff" 
+    backgroundColor: "#fff" ,
   },
-  // Top Bar Styles
-  topBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 50,
-    paddingBottom: 10,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    backgroundColor: "#d0c9c4",
-  },
+
   leftSection: {
     flexDirection: "row",
     alignItems: "center",
