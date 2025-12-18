@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  Alert
+  Alert,
+  SafeAreaView
 } from 'react-native';
 import { Video } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -18,311 +19,172 @@ const Adbanner = () => {
   const [status, setStatus] = useState({});
 
   const handleShopNow = () => {
-    Alert.alert('Shop Now', 'Redirecting to Face Powder collection...');
-    // Add navigation logic here
+    Alert.alert('Shop Now', 'Redirecting to Rose Gulkand...');
   };
 
   return (
-    <View style={styles.bannerContainer}>
-      {/* Video Background */}
-      <Video
-        ref={videoRef}
-        source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/b.mp4" }}
+    <SafeAreaView style={styles.container}>
+      {/* Video Section */}
+      <View style={styles.videoContainer}>
+        <Video
+          ref={videoRef}
+          source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/b.mp4" }}
+          style={styles.video}
+          resizeMode="cover"
+          shouldPlay
+          isLooping
+          isMuted
+          onPlaybackStatusUpdate={status => setStatus(() => status)}
+        />
+        <LinearGradient
+          colors={['rgba(0,0,0,0.5)', 'transparent']}
+          style={styles.videoOverlay}
+        />
+      </View>
 
-        style={styles.videoBackground}
-        resizeMode="cover"
-        shouldPlay
-        isLooping
-        isMuted
-        onPlaybackStatusUpdate={status => setStatus(() => status)}
-      />
-
-      {/* Dark Overlay */}
-      <View style={styles.darkOverlay} />
-
-      {/* Gradient Overlay for better text readability */}
-      <LinearGradient
-        colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
-        style={styles.gradientOverlay}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      />
-
-      {/* Content Container */}
-      <View style={styles.contentContainer}>
-
-
-        {/* Main Heading */}
-        <Text style={styles.mainHeading}>
-          Glow Naturally with{'\n'}
-          <Text style={styles.highlightText}>7Miles Facepack</Text>
-        </Text>
+      {/* Content Section */}
+      <View style={styles.content}>
+        {/* Title Section */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.mainTitle}>Naturally Sweet.</Text>
+          <Text style={styles.subTitle}>Traditionally Healing.</Text>
+        </View>
 
         {/* Description */}
         <Text style={styles.description}>
-          Pure, chemical-free facepack powders made to{'\n'}
-          pamper every skin type with natural ingredients
+          At 7miles, we bring you nature's finest treasures.
         </Text>
 
-
+        {/* Product Description */}
+        <View style={styles.productCard}>
+          <Ionicons name="flower" size={24} color="red" />
+          <View style={styles.productTextContainer}>
+            <Text style={styles.productTitle}>7miles Rose Gulkand</Text>
+            <Text style={styles.productDescription}>
+              Savor the rich taste and aroma of 7miles Rose Gulkand. Made without any artificial preservatives, it's perfect for daily wellness.
+            </Text>
+          </View>
+        </View>
 
         {/* Shop Now Button */}
         <TouchableOpacity
-          style={styles.shopNowButton}
+          style={styles.shopButton}
           onPress={handleShopNow}
           activeOpacity={0.9}
         >
           <LinearGradient
-            colors={['#FFD700', '#FFA000']}
+            colors={['black', 'black']}
             style={styles.buttonGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
           >
-            <Ionicons name="cart" size={20} color="#000" />
-            <Text style={styles.shopNowText}>Shop Face Powders</Text>
+            <Text style={styles.buttonText}>Shop Now</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Features Grid */}
-        <View style={styles.featuresContainer}>
-          <View style={styles.featureItem}>
-            <View style={styles.featureIcon}>
-              <Ionicons name="leaf" size={12} color="#FFD700" />
-            </View>
-            <Text style={styles.featureText}>Natural Ingredients</Text>
-          </View>
-
-          <View style={styles.featureItem}>
-            <View style={styles.featureIcon}>
-              <Ionicons name="shield-checkmark" size={12} color="#FFD700" />
-            </View>
-            <Text style={styles.featureText}>Premium Quality</Text>
-          </View>
-
-          <View style={styles.featureItem}>
-            <View style={styles.featureIcon}>
-              <Ionicons name="cash" size={12} color="#FFD700" />
-            </View>
-            <Text style={styles.featureText}>Affordable</Text>
-          </View>
-
-          <View style={styles.featureItem}>
-            <View style={styles.featureIcon}>
-              <Ionicons name="earth" size={12} color="#FFD700" />
-            </View>
-            <Text style={styles.featureText}>Eco-Friendly</Text>
-          </View>
-        </View>
-
-        {/* Bottom Offer Text */}
-        <View style={styles.offerContainer}>
-          <Text style={styles.offerText}>
-            🎁 Free Shipping on orders above ₹499
-          </Text>
-        </View>
+        {/* Brand Tagline */}
+        <Text style={styles.brandTagline}>Pure • Natural • Ayurvedic</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  bannerContainer: {
-    width: width - 32,
-    height: 420,
-    marginHorizontal: 16,
-    marginVertical: 16,
-    borderRadius: 24,
-    overflow: 'hidden',
-    elevation: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
   },
-  videoBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+  videoContainer: {
+    height: 250,
+    width: '100%',
+    position: 'relative',
+  },
+  video: {
     width: '100%',
     height: '100%',
   },
-  darkOverlay: {
+  videoOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    height: 60,
   },
-  gradientOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  contentContainer: {
+  content: {
+    padding: 24,
     flex: 1,
-    padding: 28,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
-  premiumBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.3)',
-    marginBottom: 20,
+  titleContainer: {
+    marginBottom: 16,
   },
-  premiumText: {
-    color: '#FFD700',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginLeft: 4,
-    letterSpacing: 1,
+  mainTitle: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#1A202C',
+    letterSpacing: -0.5,
   },
-  mainHeading: {
+  subTitle: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 36,
-    marginBottom: 12,
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-    letterSpacing: 0.5,
-  },
-  highlightText: {
-    color: '#FFD700',
-    textShadowColor: 'rgba(255, 215, 0, 0.5)',
+    fontWeight: '700',
+    color: 'red',
+    marginTop: 4,
   },
   description: {
     fontSize: 16,
-    color: '#E8F5E8',
-    textAlign: 'center',
-    lineHeight: 22,
+    color: '#4A5568',
+    lineHeight: 24,
     marginBottom: 24,
-    opacity: 0.9,
-    fontWeight: '500',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
-  statsContainer: {
+  productCard: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingVertical: 16,
+    backgroundColor: '#FFF5F5',
     borderRadius: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 20,
+    marginBottom: 32,
+    alignItems: 'flex-start',
   },
-  statItem: {
-    alignItems: 'center',
+  productTextContainer: {
+    flex: 1,
+    marginLeft: 16,
   },
-  statNumber: {
+  productTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 4,
+    fontWeight: '700',
+    color: '#1A202C',
+    marginBottom: 8,
   },
-  statLabel: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    opacity: 0.8,
-    fontWeight: '600',
+  productDescription: {
+    fontSize: 14,
+    color: '#4A5568',
+    lineHeight: 22,
   },
-  statDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  shopNowButton: {
-    borderRadius: 25,
+  shopButton: {
+    height: 56,
+    borderRadius: 28,
     overflow: 'hidden',
-    marginBottom: 20,
-    elevation: 6,
-    shadowColor: '#FFD700',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  buttonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-  },
-  shopNowText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-    letterSpacing: 0.5,
-  },
-  featuresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
     marginBottom: 16,
   },
-  featureItem: {
-    width: '48%',
+  buttonGradient: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    padding: 8,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  featureIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.3)',
+    gap: 10,
   },
-  featureText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-    opacity: 0.9,
-    flex: 1,
+  buttonText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
-  offerContainer: {
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.3)',
-    alignItems: 'center',
-  },
-  offerText: {
-    color: '#FFD700',
-    fontSize: 13,
-    fontWeight: 'bold',
+  brandTagline: {
     textAlign: 'center',
+    fontSize: 14,
+    color: '#718096',
+    fontWeight: '500',
+    letterSpacing: 1,
   },
 });
 

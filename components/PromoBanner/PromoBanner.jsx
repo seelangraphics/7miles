@@ -23,28 +23,6 @@ const PromoBanner = () => {
     { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb2.jpg" },
   ];
 
-  const bannerData = [
-    {
-      offer: "FLAT 300 OFF",
-      code: "MYNTRA300",
-      discount: "UNDER 2199",
-    },
-    {
-      offer: "BUY 1 GET 1 FREE",
-      code: "BOGO50",
-      discount: "ON ALL ITEMS",
-    },
-    {
-      offer: "50% OFF SALE",
-      code: "HALFPRICE",
-      discount: "LIMITED TIME",
-    },
-    {
-      offer: "FREE SHIPPING",
-      code: "FREESHIP",
-      discount: "ABOVE 999",
-    },
-  ];
 
   // Auto-change banner every 5 seconds
   useEffect(() => {
@@ -57,7 +35,7 @@ const PromoBanner = () => {
     return () => clearInterval(interval);
   }, [bannerImages.length]);
 
-  const currentBanner = bannerData[currentImageIndex];
+ 
 
   return (
     <View style={styles.container}>
@@ -74,20 +52,7 @@ const PromoBanner = () => {
           resizeMode="cover"
         />
 
-        {/* Overlay Content */}
-        <View style={styles.overlay}>
-          <View style={styles.content}>
-            <View style={styles.textContainer}>
-              <Text style={styles.offerText}>{currentBanner.offer}</Text>
-              <Text style={styles.codeText}>{currentBanner.code}</Text>
-            </View>
-
-            <View style={styles.detailsContainer}>
-              <Text style={styles.useCodeText}>USECODE:</Text>
-              <Text style={styles.discountText}>{currentBanner.discount}</Text>
-            </View>
-          </View>
-        </View>
+       
 
         {/* Image Indicators */}
         <View style={styles.indicators}>
@@ -110,7 +75,6 @@ const PromoBanner = () => {
   );
 };
 
-// ... styles remain the same ...
 const styles = StyleSheet.create({
   container: {
     width: width,
@@ -129,7 +93,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    opacity: 0.6,
+    opacity: 10,
   },
   overlay: {
     flex: 1,
@@ -158,33 +122,11 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 5,
   },
-  codeText: {
-    fontSize: 16,
-    fontWeight: "800",
-    color: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    alignSelf: "flex-start",
-    overflow: "hidden",
-    textShadowColor: "rgba(0, 0, 0, 0.5)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-  },
+
   detailsContainer: {
     alignItems: "flex-end",
   },
-  useCodeText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "rgba(255, 255, 255, 0.9)",
-    marginBottom: 4,
-    letterSpacing: 0.5,
-    textShadowColor: "rgba(0, 0, 0, 0.5)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-  },
+ 
   discountText: {
     fontSize: 18,
     fontWeight: "800",
