@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import Toast from "react-native-toast-message";
 import { useCart } from "../context/CartContext";
 import { useNavigation } from "@react-navigation/native";
 
-const { height, width } = Dimensions.get("window");
+const { height} = Dimensions.get("window");
 
 const AddressPage = ({ route }) => {
   const [addresses, setAddresses] = useState([]);
@@ -31,9 +31,8 @@ const AddressPage = ({ route }) => {
   const { cartItems = [], getCartTotal } = useCart();
   const navigation = useNavigation();
 
-  const subtotal = priceDetails?.subtotal || getCartTotal().toFixed(2);
   const shipping =
-    priceDetails?.shipping || (getCartTotal() >= 200 ? "0.00" : "40.00");
+    priceDetails?.shipping
 
   const finalTotal =
     priceDetails?.finalTotal
@@ -208,8 +207,10 @@ const AddressPage = ({ route }) => {
     }
     navigation.navigate("payment", {
       address: defaultAddress,
+      shippingaddress:shipping,
       totalAmount: finalTotal,
       cartItems,
+      
     });
   };
 

@@ -33,15 +33,12 @@ const Payment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-  const [username, setUsername] = useState("");
-  const [useremail, setuserEmail] = useState("");
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
-  const [orderId, SetOrderId] = useState("");
-  const { address, totalAmount } = route.params || {};
+  const { address, totalAmount,shippingaddress } = route.params || {};
 
-  const shippingCharge = 40;
-  const tax = getCartTotal() * 0.18;
+
+ const shippingCharge =shippingaddress;
   const finalTotal = totalAmount;
 
   useEffect(() => {
@@ -105,6 +102,7 @@ const Payment = () => {
     return `ORD${timestamp}${random}`;
   };
 
+  
   const saveOrderToFirebase = async (
     paymentMethod,
     paymentStatus = "pending"
@@ -153,7 +151,6 @@ const Payment = () => {
         priceDetails: {
           subtotal: getCartTotal(),
           shipping: shippingCharge,
-          tax: tax,
           total: finalTotal,
         },
 
@@ -167,7 +164,6 @@ const Payment = () => {
         createdAt: new Date().toISOString(),
       };
 
-      // Save to Firestore
       const currentOrders = userData.orders || [];
 
       await updateDoc(userRef, {
@@ -493,13 +489,10 @@ const Payment = () => {
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Shipping</Text>
             <Text style={styles.summaryValue}>
-              ₹{shippingCharge.toFixed(2)}
+              ₹{shippingCharge}
             </Text>
           </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Tax (18%)</Text>
-            <Text style={styles.summaryValue}>₹{tax.toFixed(2)}</Text>
-          </View>
+       
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Amount</Text>
             <Text style={styles.totalValue}>₹{finalTotal}</Text>
