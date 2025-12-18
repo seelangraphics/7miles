@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
-import Toast from "react-native-toast-message";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./Componets/Firebase/Firebase";
+import { auth } from "./components/Firebase/Firebase";
 
-import { CartProvider } from "./Componets/context/CartContext";
+// ✅ Your existing components
 
-// Screens
-import BottomNavigation from "./Componets/BottomNavigation/BottomNavigation";
-import AuthScreen from "./Componets/AuthScreen/Login";
-import ProductDetailsScreen from "./Componets/ProductDetails/ProductDetailsScreen";
-import CategoriesScreen from "./Componets/Categories/CategoriesScreen";
-import CartScreen from "./Componets/CartScreen/CartScreen";
-import Address from "./Componets/Deliveryaddress/Address";
-import Payment from "./Componets/Payment/Payment";
-import OrderSuccessScreen from "./Componets/Success/OrderSuccessScreen";
-import Yourorder from "./Componets/Yourorders/Yourorder";
-import { Youraddress } from "./Componets/Youraddress/Youraddress";
-import TopBar from "./Componets/Topbar/Topbar";
+import BottomNavigation from "./components/BottomNavigation/BottomNavigation";
+import CategoriesScreen from "./components/Categories/CategoriesScreen";
+import ProductDetailsScreen from "./components/ProductDetails/ProductDetailsScreen";
+import CartScreen from "./components/CartScreen/CartScreen";
+import OrderSuccessScreen from "./components/Success/OrderSuccessScreen";
+import { CartProvider } from "./components/context/CartContext";
+import AuthScreen from "./components/AuthScreen/Login";
+import Toast from "react-native-toast-message";
+import Address from "./components/Deliveryaddress/Address";
+import Payment from "./components/Payment/Payment";
+import { Youraddress } from "./components/Youraddress/Youraddress";
+import TopBar from "./components/Topbar/Topbar";
 
 const Stack = createNativeStackNavigator();
 
@@ -107,11 +106,7 @@ function AppContent() {
             options={{ title: "Your Address", headerShown: true }}
           />
           {/* My Orders */}
-          <Stack.Screen
-            name="orders"
-            component={Yourorder}
-            options={{ title: "Your Orders", headerShown: true }}
-          />
+     
 
           {/* Payment */}
           <Stack.Screen
