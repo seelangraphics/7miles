@@ -1,27 +1,56 @@
 // components/SearchSuggestions.js
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    Dimensions
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
-const SearchSuggestions = ({ onSearchTermSelect, onCategorySelect, categories }) => {
-    const popularSearches = ['Shampoo', 'Oil', 'Powder', 'Soap', 'Facewash', 'Honey', 'Cream', 'Gel'];
-    
+const SearchSuggestions = ({
+    onSearchTermSelect = () => {},
+    onCategorySelect = () => {},
+    categories = [], // ✅ DEFAULT SAFE ARRAY
+}) => {
+    const popularSearches = [
+        'Shampoo',
+        'Oil',
+        'Powder',
+        'Soap',
+        'Facewash',
+        'Honey',
+        'Cream',
+        'Gel'
+    ];
+
     const categoryIcons = {
         'Hair Care': 'cut-outline',
         'Skin Care': 'body-outline',
         'Body Care': 'water-outline',
-        'Wellness & Edibles': 'nutrition-outline'
+        'Wellness & Edibles': 'nutrition-outline',
     };
+
+    // ✅ EXTRA SAFETY (in case someone passes wrong type)
+    const safeCategories = Array.isArray(categories) ? categories : [];
 
     return (
         <View style={styles.searchSuggestions}>
             <Ionicons name="search-outline" size={80} color="#f0f0f0" />
-            <Text style={styles.suggestionsTitle}>What are you looking for?</Text>
-            
+
+            <Text style={styles.suggestionsTitle}>
+                What are you looking for?
+            </Text>
+
+            {/* Popular Searches */}
             <View style={styles.quickSearches}>
-                <Text style={styles.quickSearchesTitle}>Popular Searches</Text>
+                <Text style={styles.quickSearchesTitle}>
+                    Popular Searches
+                </Text>
+
                 <View style={styles.quickSearchChips}>
                     {popularSearches.map((term) => (
                         <TouchableOpacity
@@ -29,34 +58,57 @@ const SearchSuggestions = ({ onSearchTermSelect, onCategorySelect, categories })
                             style={styles.quickSearchChip}
                             onPress={() => onSearchTermSelect(term)}
                         >
-                            <Ionicons name="search-outline" size={14} color="#666" />
-                            <Text style={styles.quickSearchText}>{term}</Text>
+                            <Ionicons
+                                name="search-outline"
+                                size={14}
+                                color="#666"
+                            />
+                            <Text style={styles.quickSearchText}>
+                                {term}
+                            </Text>
                         </TouchableOpacity>
                     ))}
                 </View>
             </View>
 
+            {/* Categories */}
             <View style={styles.categoriesSection}>
-                <Text style={styles.categoriesTitle}>Browse Categories</Text>
+                <Text style={styles.categoriesTitle}>
+                    Browse Categories
+                </Text>
+
                 <View style={styles.categoriesGrid}>
-                    {categories.map((category) => (
-                        <TouchableOpacity
-                            key={category}
-                            style={styles.categoryCard}
-                            onPress={() => onCategorySelect(category)}
-                        >
-                            <View style={styles.categoryIcon}>
-                                <Ionicons 
-                                    name={categoryIcons[category] || 'cube-outline'} 
-                                    size={24} 
-                                    color="#666" 
-                                />
-                            </View>
-                            <Text style={styles.categoryCardText} numberOfLines={2}>
-                                {category}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+                    {safeCategories.length === 0 ? (
+                        <Text style={styles.emptyText}>
+                            No categories available
+                        </Text>
+                    ) : (
+                        safeCategories.map((category) => (
+                            <TouchableOpacity
+                                key={category}
+                                style={styles.categoryCard}
+                                onPress={() => onCategorySelect(category)}
+                            >
+                                <View style={styles.categoryIcon}>
+                                    <Ionicons
+                                        name={
+                                            categoryIcons[category] ||
+                                            'cube-outline'
+                                        }
+                                        size={24}
+                                        color="#666"
+                                    />
+                                </View>
+
+                                <Text
+                                    style={styles.categoryCardText}
+                                    numberOfLines={2}
+                                >
+                                    {category}
+                                </Text>
+                            </TouchableOpacity>
+                        ))
+                    )}
                 </View>
             </View>
         </View>
@@ -151,6 +203,13 @@ const styles = StyleSheet.create({
         color: '#333',
         textAlign: 'center',
         lineHeight: 18,
+    },
+    emptyText: {
+        width: '100%',
+        textAlign: 'center',
+        color: '#999',
+        fontSize: 14,
+        marginTop: 10,
     },
 });
 

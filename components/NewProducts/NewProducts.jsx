@@ -5,16 +5,17 @@ import {
     TouchableOpacity, 
     Image, 
     ScrollView, 
-    Dimensions,
-    StyleSheet
+    StyleSheet,
+    Dimensions 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { useCart } from '../context/CartContext';
 
-const { width } = Dimensions.get('window');
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+const CARD_WIDTH = 160; // Fixed card width
+const CARD_HEIGHT = 300; // Adjust height as needed
 
 const NewProducts = () => {
     const [products, setProducts] = useState([]);
@@ -23,7 +24,6 @@ const NewProducts = () => {
     const navigation = useNavigation();
     const { addToCart, updateQuantity } = useCart();
 
-    // Fetch products from API
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -37,12 +37,12 @@ const NewProducts = () => {
         fetchProducts();
     }, []);
 
-    const newProducts = products.filter(product => product.Newproducts === "yes");
+    const newProducts = products.filter(product => product.Newproducts === "yes").slice(0, 6); // Limit to 6
 
     const handleAddToCart = (product) => {
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
         setQuantities(prev => ({ ...prev, [product.name]: 1 }));
-        addToCart(product); 
+        addToCart(product);
     };
 
     const handleQuantityChange = (product, change) => {
@@ -57,303 +57,286 @@ const NewProducts = () => {
         }
     };
 
-    const calculateDiscount = (regular, sale) => {
-        return Math.round(((regular - sale) / regular) * 100);
-    };
-
-    const ProductCard = ({ product, index }) => {
-        const isEven = index % 2 === 0;
-        const quantity = quantities[product.name] || 0;
-        const isAdded = addedItems[product.name];
-
-        return (
-            <TouchableOpacity 
-                style={[styles.productCard, { backgroundColor: '#f3eeea' }]}
-                onPress={() => navigation.navigate("ProductDetails", { product })}
-            >
-                <View style={styles.imageContainer}>
-                    <Image 
-                        source={typeof product.image === 'string' ? { uri: product.image } : product.image}
-                        style={styles.productImage}
-                        resizeMode="cover"
-                    />
-                    <View style={styles.discountBadge}>
-                        <Text style={styles.discountText}>
-                            {calculateDiscount(product.regular_price, product.sale_price)}% OFF
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={styles.productInfo}>
-                    <View style={styles.productNameContainer}>
-                        <Text style={styles.productName} numberOfLines={2}>
-                            {product.name}
-                        </Text>
-                    </View>
-                    
-                    <Text style={styles.productCategory}>{product.category}</Text>
-
-                    <View style={styles.priceContainer}>
-                        <Text style={styles.salePrice}>₹{product.sale_price}</Text>
-                        <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
-                    </View>
-
-                    {isAdded ? (
-                        <View style={styles.quantityContainer}>
-                            <TouchableOpacity 
-                                style={[
-                                    styles.quantityButton, 
-                                    { backgroundColor: isEven ? '#000' : '#ddd' }
-                                ]} 
-                                onPress={() => handleQuantityChange(product, -1)}
-                            >
-                                <Text style={[
-                                    styles.quantityText, 
-                                    { color: isEven ? '#fff' : '#000' }
-                                ]}>
-                                    -
-                                </Text>
-                            </TouchableOpacity>
-                            <Text style={[
-                                styles.quantity, 
-                                { color: isEven ? '#000' : '#000' }
-                            ]}>
-                                {quantity}
-                            </Text>
-                            <TouchableOpacity 
-                                style={[
-                                    styles.quantityButton, 
-                                    { backgroundColor: isEven ? '#333' : '#ddd' }
-                                ]} 
-                                onPress={() => handleQuantityChange(product, 1)}
-                            >
-                                <Text style={[
-                                    styles.quantityText, 
-                                    { color: isEven ? '#fff' : '#000' }
-                                ]}>
-                                    +
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    ) : (
-                        <TouchableOpacity 
-                            style={[
-                                styles.addToCartButton, 
-                                { 
-                                    backgroundColor: isEven ? '#000' : '#000', 
-                                    borderWidth: isEven ? 0 : 2, 
-                                    borderColor: '#000' 
-                                }
-                            ]} 
-                            onPress={() => handleAddToCart(product)}
-                        >
-                            <Ionicons name="cart-outline" size={16} color={isEven ? '#fff' : '#fff'} />
-                            <Text style={[
-                                styles.addToCartText, 
-                                { color: isEven ? '#fff' : '#fff' }
-                            ]}>
-                                ADD
-                            </Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
-            </TouchableOpacity>
-        );
-    };
-
     if (newProducts.length === 0) {
-        return (
-            <View style={styles.emptyContainer}>
-                <Ionicons name="cube-outline" size={64} color="#ccc" />
-                <Text style={styles.emptyText}>No new products available</Text>
-            </View>
-        );
+        return null; // Don't show if no new products
     }
 
     return (
         <View style={styles.container}>
+            {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.title}>New Arrivals</Text>
-                <Text style={styles.subtitle}>Fresh products just for you</Text>
+                <View style={styles.headerContent}>
+                    <Text style={styles.title}>New Arrivals</Text>
+                    <Text style={styles.subtitle}>Freshly added to our collection</Text>
+                </View>
+                
             </View>
 
+            {/* Products Horizontal Scroll */}
             <ScrollView 
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.productsGrid}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.scrollContainer}
+                contentContainerStyle={styles.scrollContent}
             >
-                <View style={styles.productsRow}>
-                    {newProducts.map((product, index) => (
-                        <View key={product.name + index} style={styles.productWrapper}>
-                            <ProductCard product={product} index={index} />
-                        </View>
-                    ))}
-                </View>
+                {newProducts.map((product, index) => (
+                    <ProductCard 
+                        key={product.name + index}
+                        product={product}
+                        index={index}
+                        quantity={quantities[product.name] || 0}
+                        isAdded={addedItems[product.name]}
+                        onAdd={() => handleAddToCart(product)}
+                        onQuantityChange={(change) => handleQuantityChange(product, change)}
+                        onPress={() => navigation.navigate("ProductDetails", { product })}
+                    />
+                ))}
             </ScrollView>
         </View>
     );
 };
 
+const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress }) => {
+    const discount = Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100);
+    const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
+    const bgColor = colors[index % colors.length];
+
+    return (
+        <TouchableOpacity 
+            style={[styles.productCard, { backgroundColor: bgColor }]}
+            onPress={onPress}
+            activeOpacity={0.9}
+        >
+            {/* Discount Badge */}
+            <View style={styles.discountBadge}>
+                <Text style={styles.discountText}>Save ₹{product.save}.00</Text>
+            </View>
+
+            {/* Wishlist Icon */}
+            <TouchableOpacity style={styles.wishlistBtn}>
+                <Ionicons name="heart-outline" size={16} color="#666" />
+            </TouchableOpacity>
+
+            {/* Product Image - Now FULL WIDTH */}
+            <View style={styles.imageContainer}>
+                <Image 
+                    source={typeof product.image === 'string' ? { uri: product.image } : product.image}
+                    style={styles.productImage}
+                    resizeMode="cover"
+                />
+            </View>
+
+            {/* Product Info */}
+            <View style={styles.productInfo}>
+                <Text style={styles.category} numberOfLines={1}>{product.category}</Text>
+                <Text style={styles.productName} numberOfLines={2}>{product.name}</Text>
+                
+                <View style={styles.priceContainer}>
+                    <Text style={styles.salePrice}>₹{product.sale_price}</Text>
+                    <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
+                </View>
+
+                {/* Add to Cart / Quantity Controls */}
+                {isAdded ? (
+                    <View style={styles.quantityControls}>
+                        <TouchableOpacity 
+                            style={styles.qtyBtn}
+                            onPress={() => onQuantityChange(-1)}
+                        >
+                            <Text style={styles.qtyBtnText}>-</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.quantity}>{quantity}</Text>
+                        <TouchableOpacity 
+                            style={styles.qtyBtn}
+                            onPress={() => onQuantityChange(1)}
+                        >
+                            <Text style={styles.qtyBtnText}>+</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <TouchableOpacity 
+                        style={styles.addBtn}
+                        onPress={onAdd}
+                    >
+                        <Ionicons name="cart" size={14} color="#fff" />
+                        <Text style={styles.addBtnText}>Add to Cart</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+        </TouchableOpacity>
+    );
+};
+
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#f8f8f8',
-        paddingHorizontal: 12,
+        backgroundColor: '#fff',
+        paddingVertical: 20,
+        paddingHorizontal: 16,
+        marginTop: 8,
     },
     header: {
-        paddingVertical: 24,
-        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        marginBottom: 20,
+    },
+    headerContent: {
+        flex: 1,
     },
     title: {
-        fontSize: 32,
-        fontWeight: '900',
-        color: '#000',
-        marginBottom: 8,
-        letterSpacing: -0.5,
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#1F2937',
+        marginBottom: 4,
     },
     subtitle: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        fontWeight: '500',
+        fontSize: 13,
+        color: '#6B7280',
     },
-    productsGrid: {
-        paddingBottom: 20,
-    },
-    productsRow: {
+    viewAllBtn: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#F5F3FF',
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 20,
     },
-    productWrapper: {
-        width: '48%',
-        marginBottom: 16,
+    viewAllText: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: '#8B5CF6',
+        marginRight: 4,
+    },
+    scrollContainer: {
+        flexDirection: 'row',
+    },
+    scrollContent: {
+        paddingRight: 16,
     },
     productCard: {
-        borderRadius: 20,
-        overflow: 'hidden',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 8,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 16,
-        elevation: 8,
-        height: 320,
-    },
-    imageContainer: {
+        width: CARD_WIDTH,
+        borderRadius: 16,
+        marginRight: 14,
+        // REMOVED padding from here - images will be full width
         position: 'relative',
-        height: 160,
-    },
-    productImage: {
-        width: '100%',
-        height: '100%',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+        overflow: 'hidden', // Important for full width images
     },
     discountBadge: {
         position: 'absolute',
-        top: 10,
-        right: 10,
-        backgroundColor: '#48bb78',
+        top: 12,
+        left: 12,
+        backgroundColor: '#EF4444',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 10,
+        zIndex: 2,
     },
     discountText: {
         color: '#fff',
-        fontSize: 9,
+        fontSize: 10,
         fontWeight: '800',
     },
-    productInfo: {
-        padding: 14,
-        height: 140,
-        justifyContent: 'space-between',
+    wishlistBtn: {
+        position: 'absolute',
+        top: 12,
+        right: 12,
+        zIndex: 2,
+        padding: 4,
     },
-    productNameContainer: {
-        height: 40,
-        justifyContent: 'center',
+    imageContainer: {
+        width: CARD_WIDTH, // Full width
+        height: CARD_WIDTH * 0.75, // 4:3 aspect ratio
+        // REMOVED margins that were creating padding
+    },
+    productImage: {
+        width: '100%', // Full width
+        height: '100%', // Full height
+        // REMOVED borderRadius that was creating padding effect
+    },
+    productInfo: {
+        padding: 12, // Add padding only to the info section, not the image
+        paddingTop: 8,
+    },
+    category: {
+        fontSize: 11,
+        color: '#6B7280',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        marginBottom: 4,
     },
     productName: {
-        fontSize: 14,
-        fontWeight: '700',
-        lineHeight: 18,
-        letterSpacing: -0.2,
-        flexWrap: 'wrap',
-    },
-    productCategory: {
-        fontSize: 11,
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
+        fontSize: 13,
         fontWeight: '600',
-        marginTop: 4,
+        color: '#1F2937',
+        marginBottom: 8,
+        height: 36,
+        lineHeight: 18,
     },
     priceContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 8,
-        flexWrap: 'wrap',
-        marginTop: 4,
+        marginBottom: 12,
     },
     salePrice: {
-        fontSize: 18,
-        fontWeight: '800',
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1F2937',
         marginRight: 6,
     },
     regularPrice: {
         fontSize: 12,
+        color: '#9CA3AF',
         textDecorationLine: 'line-through',
-        fontWeight: '500',
     },
-    addToCartButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 10,
-        borderRadius: 12,
-        gap: 6,
-        marginTop: 4,
-    },
-    addToCartText: {
-        fontSize: 12,
-        fontWeight: '700',
-        letterSpacing: 0.5,
-    },
-    quantityContainer: {
+    quantityControls: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderRadius: 12,
-        paddingHorizontal: 8,
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        paddingHorizontal: 10,
         paddingVertical: 6,
-        marginTop: 4,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
     },
-    quantityButton: {
-        width: 28,
-        height: 28,
-        borderRadius: 14,
-        alignItems: 'center',
+    qtyBtn: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: '#F3F4F6',
         justifyContent: 'center',
+        alignItems: 'center',
     },
-    quantityText: {
-        fontSize: 16,
-        fontWeight: '700',
+    qtyBtnText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#374151',
     },
     quantity: {
-        fontSize: 16,
-        fontWeight: '700',
-        minWidth: 30,
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#1F2937',
+        minWidth: 20,
         textAlign: 'center',
     },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
+    addBtn: {
+        flexDirection: 'row',
         alignItems: 'center',
-        padding: 40,
+        justifyContent: 'center',
+        backgroundColor: '#000',
+        borderRadius: 20,
+        paddingVertical: 10,
+        gap: 6,
     },
-    emptyText: {
-        fontSize: 16,
-        color: '#666',
-        marginTop: 16,
-        textAlign: 'center',
+    addBtnText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#fff',
     },
 });
 

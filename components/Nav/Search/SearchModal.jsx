@@ -146,7 +146,7 @@ const SearchModal = ({
                             dismissSearch();
                             onCategoryPress?.(category, 'main');
                         }}
-                        categories={categories.slice(1)}
+                       
                     />
                 )}
             </SafeAreaView>

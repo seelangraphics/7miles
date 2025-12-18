@@ -1,834 +1,560 @@
-import Constants from 'expo-constants';
-
-const PRODUCTS_API = Constants.expoConfig.extra.PRODUCTS_API;
-
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  Image, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Dimensions, 
-  Animated, 
-  Alert,
-  ActivityIndicator 
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  Animated
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import Constants from "expo-constants";
 import { useCart } from '../context/CartContext';
-import { useNavigation } from '@react-navigation/native';
 
-// Remove the hardcoded PRODUCTS_API line below
-// const PRODUCTS_API = 'https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/product.json';
-
-const { width } = Dimensions.get('window');
+const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+const CARD_WIDTH = 160; // Fixed card width
+const CARD_MARGIN = 14;
+const TOTAL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN;
 
 const Routineproduct = () => {
-  const [selectedFilter, setSelectedFilter] = useState('all');
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const flatListRefs = useRef({});
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const currentIndices = useRef({});
-
-  // Cart context and navigation
-  const { addToCart, getItemQuantity, updateQuantity, removeFromCart, getCartItemsCount,im } = useCart();
+  const [addedItems, setAddedItems] = useState({});
+  const [quantities, setQuantities] = useState({});
   const navigation = useNavigation();
+  const { addToCart, updateQuantity } = useCart();
 
-  // Fetch products from AWS
+  // Refs for each horizontal scroll
+  const facePowderRef = useRef(null);
+  const nightRoutineRef = useRef(null);
+  const hairPackRef = useRef(null);
+
+  // Current indices for auto-scroll
+  const currentIndices = useRef({
+    facePowder: 0,
+    nightRoutine: 0,
+    hairPack: 0
+  });
+
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(PRODUCTS_API);
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
     fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // Use the PRODUCTS_API from expo constants (configured via .env)
-      const response = await fetch(PRODUCTS_API);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      // Transform the data if needed (assuming the API returns an array of products)
-      // If the API returns an object with products array, adjust accordingly
-      if (Array.isArray(data)) {
-        setProducts(data);
-      } else if (data.products && Array.isArray(data.products)) {
-        setProducts(data.products);
-      } else if (typeof data === 'object') {
-        // If it's a single object, convert to array
-        setProducts([data]);
-      } else {
-        setProducts([]);
-      }
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      setError(err.message);
-      Alert.alert('Error', 'Failed to load products. Please check your connection.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Filter products by category
+  const facePowderProducts = products.filter(product => product.Facepowder === "yes").slice(0, 6);
+  const nightRoutineProducts = products.filter(product => product.nightroutine === "yes").slice(0, 6);
+  const hairPackProducts = products.filter(product => product.hairpack === "yes").slice(0, 6);
 
-  // Filter products based on selected criteria
-  const filteredProducts = useMemo(() => {
-    if (!Array.isArray(products)) return [];
-    
-    if (selectedFilter === 'all') {
-      return products.filter(product => 
-        product.Facepowder === "yes" || 
-        product.nightroutine === "yes" || 
-        product.hairpack === "yes"
-      );
-    }
-    
-    return products.filter(product => product[selectedFilter] === "yes");
-  }, [products, selectedFilter]);
-
-  // Get products for each category for horizontal sliders
-  const categoryProducts = useMemo(() => {
-    if (!Array.isArray(products)) {
-      return {
-        Facepowder: [],
-        nightroutine: [],
-        hairpack: []
-      };
-    }
-    
-    return {
-      Facepowder: products.filter(product => product.Facepowder === "yes"),
-      nightroutine: products.filter(product => product.nightroutine === "yes"),
-      hairpack: products.filter(product => product.hairpack === "yes"),
-    };
-  }, [products]);
-
-  // Auto-scroll for horizontal sliders - moves one product at a time
+  // Auto-scroll effect
   useEffect(() => {
     const intervals = {};
-    
-    Object.keys(categoryProducts).forEach(category => {
-      const categoryProductsList = categoryProducts[category];
-      
-      if (categoryProductsList.length > 1) {
-        intervals[category] = setInterval(() => {
-          if (flatListRefs.current[category]) {
-            const currentIndex = currentIndices.current[category] || 0;
-            const nextIndex = (currentIndex + 1) % categoryProductsList.length;
-            
-            flatListRefs.current[category].scrollToIndex({
-              index: nextIndex,
-              animated: true,
-              viewPosition: 0.5
-            });
-            
-            currentIndices.current[category] = nextIndex;
-          }
-        }, 3000); // Auto scroll every 3 seconds
-      }
-    });
 
+    // Auto-scroll for Face Powder
+    if (facePowderProducts.length > 1 && facePowderRef.current) {
+      intervals.facePowder = setInterval(() => {
+        const currentIndex = currentIndices.current.facePowder;
+        const nextIndex = (currentIndex + 1) % facePowderProducts.length;
+
+        facePowderRef.current.scrollToIndex({
+          index: nextIndex,
+          animated: true,
+          viewPosition: 0.5
+        });
+
+        currentIndices.current.facePowder = nextIndex;
+      }, 3000); // 3 seconds
+    }
+
+    // Auto-scroll for Night Routine
+    if (nightRoutineProducts.length > 1 && nightRoutineRef.current) {
+      intervals.nightRoutine = setInterval(() => {
+        const currentIndex = currentIndices.current.nightRoutine;
+        const nextIndex = (currentIndex + 1) % nightRoutineProducts.length;
+
+        nightRoutineRef.current.scrollToIndex({
+          index: nextIndex,
+          animated: true,
+          viewPosition: 0.5
+        });
+
+        currentIndices.current.nightRoutine = nextIndex;
+      }, 3200); // 3.2 seconds (slightly offset)
+    }
+
+    // Auto-scroll for Hair Pack
+    if (hairPackProducts.length > 1 && hairPackRef.current) {
+      intervals.hairPack = setInterval(() => {
+        const currentIndex = currentIndices.current.hairPack;
+        const nextIndex = (currentIndex + 1) % hairPackProducts.length;
+
+        hairPackRef.current.scrollToIndex({
+          index: nextIndex,
+          animated: true,
+          viewPosition: 0.5
+        });
+
+        currentIndices.current.hairPack = nextIndex;
+      }, 3400); // 3.4 seconds (slightly offset)
+    }
+
+    // Cleanup intervals
     return () => {
-      Object.values(intervals).forEach(interval => clearInterval(interval));
+      Object.values(intervals).forEach(interval => {
+        if (interval) clearInterval(interval);
+      });
     };
-  }, [categoryProducts]);
+  }, [facePowderProducts, nightRoutineProducts, hairPackProducts]);
 
-  // Enhanced Add to Cart function with cart context
   const handleAddToCart = (product) => {
+    setAddedItems(prev => ({ ...prev, [product.name]: true }));
+    setQuantities(prev => ({ ...prev, [product.name]: 1 }));
     addToCart(product);
-    Alert.alert(
-      'Success!',
-      `${product.name} added to cart`,
-      [
-        { 
-          text: 'Continue Shopping', 
-          style: 'cancel' 
-        },
-        { 
-          text: 'Go to Cart', 
-          onPress: () => navigation.navigate('Cart') 
-        }
-      ]
-    );
   };
 
-  // Handle quantity increase
-  const handleQuantityIncrease = (productName) => {
-    const currentQuantity = getItemQuantity(productName);
-    updateQuantity(productName, currentQuantity + 1);
-  };
+  const handleQuantityChange = (product, change) => {
+    const currentQty = quantities[product.name] || 0;
+    const newQty = Math.max(0, currentQty + change);
 
-  // Handle quantity decrease
-  const handleQuantityDecrease = (productName) => {
-    const currentQuantity = getItemQuantity(productName);
-    if (currentQuantity === 1) {
-      removeFromCart(productName);
-    } else {
-      updateQuantity(productName, currentQuantity - 1);
+    setQuantities(prev => ({ ...prev, [product.name]: newQty }));
+    updateQuantity(product.name, newQty);
+
+    if (newQty === 0) {
+      setAddedItems(prev => ({ ...prev, [product.name]: false }));
     }
   };
 
-  // Handle Buy Now
-  const handleBuyNow = (product) => {
-    addToCart(product);
-    navigation.navigate('Cart');
-  };
-
-  // Handle Product Press - Navigate to Product Details
-  const handleProductPress = (product) => {
-    navigation.navigate("ProductDetails", { 
-      product: product 
-    });
-  };
-
-  // Calculate discount percentage
-  const getDiscountPercentage = (regular, sale) => {
-    if (!regular || !sale || regular <= sale) return 0;
-    return Math.round(((regular - sale) / regular) * 100);
-  };
-
-  // Handle image error
-  const handleImageError = () => {
-    console.log('Image failed to load');
-    // You could set a default image here
-  };
-
-  // Horizontal Product Card component with cart functionality
-  const HorizontalProductCard = ({ item, category }) => {
-    const quantity = getItemQuantity(item.name);
-    const isInCart = quantity > 0;
-
-    // Handle missing image - use a placeholder
-const imageSource =
-  typeof item.image === 'string'
-    ? { uri: item.image }
-    : item.image;
-
-    return (
-      <TouchableOpacity 
-        style={styles.horizontalCard}
-        onPress={() => handleProductPress(item)}
-      >
-        <View style={styles.horizontalImageContainer}>
-          <Image 
-            source={imageSource}
-            style={styles.horizontalProductImage}
-            onError={handleImageError}
-            resizeMode="cover"
-          />
-          
-          {/* Category Badge */}
-          <View style={styles.categoryBadge}>
-            <Text style={styles.categoryBadgeText}>
-              {category === 'Facepowder' ? 'Face Powder' : 
-               category === 'nightroutine' ? 'Night Routine' : 'Hair Pack'}
-            </Text>
-          </View>
-          
-          {/* Discount Badge */}
-          {item.regular_price > item.sale_price && (
-            <View style={styles.discountBadge}>
-              <Text style={styles.discountText}>
-                {getDiscountPercentage(item.regular_price, item.sale_price)}% OFF
-              </Text>
-            </View>
-          )}
-        </View>
-        
-        <View style={styles.horizontalProductInfo}>
-          <Text style={styles.horizontalProductName} numberOfLines={2}>
-            {item.name || 'Unnamed Product'}
-          </Text>
-          
-          <Text style={styles.horizontalCategory}>
-            {item.category || 'Uncategorized'}
-          </Text>
-          
-          <View style={styles.horizontalPriceContainer}>
-            <Text style={styles.horizontalSalePrice}>
-              ₹{item.sale_price || item.price || 'N/A'}
-            </Text>
-            {item.regular_price > item.sale_price && (
-              <Text style={styles.horizontalRegularPrice}>
-                ₹{item.regular_price}
-              </Text>
-            )}
-          </View>
-          
-          {/* Additional Tags */}
-          <View style={styles.horizontalTagsContainer}>
-            {item.Newproducts === "yes" && (
-              <Text style={styles.newTag}>NEW</Text>
-            )}
-            {item.bestSeller === "yes" && (
-              <Text style={styles.bestSellerTag}>BEST SELLER</Text>
-            )}
-            {item.Trending === "yes" && (
-              <Text style={styles.trendingTag}>TRENDING</Text>
-            )}
-          </View>
-          
-          {/* Cart Actions */}
-          <View style={styles.actionButtons}>
-            {isInCart ? (
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity 
-                  style={styles.quantityButton}
-                  onPress={() => handleQuantityDecrease(item.name)}
-                >
-                  <Text style={styles.quantityText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{quantity}</Text>
-                <TouchableOpacity 
-                  style={styles.quantityButton}
-                  onPress={() => handleQuantityIncrease(item.name)}
-                >
-                  <Text style={styles.quantityText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity 
-                style={styles.addToCartButton}
-                onPress={() => handleAddToCart(item)}
-              >
-                <Text style={styles.addToCartText}>Add to Cart</Text>
-              </TouchableOpacity>
-            )}
-            
-            {/* Buy Now Button */}
-            <TouchableOpacity 
-              style={styles.buyNowButton}
-              onPress={() => handleBuyNow(item)}
-            >
-              <Text style={styles.buyNowText}>Buy Now</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  // Cart Icon Component
-  const CartIcon = () => (
-    <TouchableOpacity 
-      style={styles.cartIcon}
-      onPress={() => navigation.navigate('Cart')}
-    >
-      <Text style={styles.cartIconText}>
-        Cart ({getCartItemsCount()})
-      </Text>
-    </TouchableOpacity>
-  );
-
-  // Filter Buttons Component
-  const FilterButtons = () => (
-    <View style={styles.filterContainer}>
-      <TouchableOpacity 
-        style={[
-          styles.filterButton, 
-          selectedFilter === 'all' && styles.filterButtonActive
-        ]}
-        onPress={() => setSelectedFilter('all')}
-      >
-        <Text style={[
-          styles.filterButtonText, 
-          selectedFilter === 'all' && styles.filterButtonTextActive
-        ]}>
-          All Products
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={[
-          styles.filterButton, 
-          selectedFilter === 'Facepowder' && styles.filterButtonActive
-        ]}
-        onPress={() => setSelectedFilter('Facepowder')}
-      >
-        <Text style={[
-          styles.filterButtonText, 
-          selectedFilter === 'Facepowder' && styles.filterButtonTextActive
-        ]}>
-          Face Powder
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={[
-          styles.filterButton, 
-          selectedFilter === 'nightroutine' && styles.filterButtonActive
-        ]}
-        onPress={() => setSelectedFilter('nightroutine')}
-      >
-        <Text style={[
-          styles.filterButtonText, 
-          selectedFilter === 'nightroutine' && styles.filterButtonTextActive
-        ]}>
-          Night Routine
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={[
-          styles.filterButton, 
-          selectedFilter === 'hairpack' && styles.filterButtonActive
-        ]}
-        onPress={() => setSelectedFilter('hairpack')}
-      >
-        <Text style={[
-          styles.filterButtonText, 
-          selectedFilter === 'hairpack' && styles.filterButtonTextActive
-        ]}>
-          Hair Pack
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  // Horizontal Slider Section
-  const HorizontalSliderSection = ({ category }) => {
-    const productsList = categoryProducts[category];
-    const categoryTitle = category === 'Facepowder' ? 'Face Powder' : 
-                         category === 'nightroutine' ? 'Night Routine' : 'Hair Pack';
-
-    if (!productsList || productsList.length === 0) return null;
-
-    const onViewableItemsChanged = useRef(({ viewableItems }) => {
-      if (viewableItems.length > 0) {
-        currentIndices.current[category] = viewableItems[0].index;
-      }
-    }).current;
-
-    const viewabilityConfig = useRef({
-      itemVisiblePercentThreshold: 50
-    }).current;
-
-    return (
-      <View style={styles.horizontalSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{categoryTitle} Products</Text>
-          <Text style={styles.sectionSubtitle}>
-            {productsList.length} products • Auto-scrolling
-          </Text>
-        </View>
-        
-        <Animated.FlatList
-          ref={ref => flatListRefs.current[category] = ref}
-          horizontal
-          data={productsList}
-          renderItem={({ item }) => (
-            <HorizontalProductCard 
-              item={item} 
-              category={category} 
-            />
-          )}
-          keyExtractor={(item, index) => `horizontal-${category}-${item.id || item.name}-${index}`}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalList}
-          snapToInterval={width * 0.7 + 16}
-          decelerationRate="fast"
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: true }
-          )}
-          scrollEventThrottle={16}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig}
-          getItemLayout={(data, index) => ({
-            length: width * 0.7 + 16,
-            offset: (width * 0.7 + 16) * index,
-            index,
-          })}
-        />
-      </View>
-    );
-  };
-
-  // Loading State
-  const renderLoading = () => (
-    <View style={styles.centered}>
-      <ActivityIndicator size="large" color="#000" />
-      <Text style={styles.loadingText}>Loading products...</Text>
-    </View>
-  );
-
-  // Error State
-  const renderError = () => (
-    <View style={styles.centered}>
-      <Text style={styles.errorText}>Error: {error}</Text>
-      <TouchableOpacity 
-        style={styles.retryButton}
-        onPress={fetchProducts}
-      >
-        <Text style={styles.retryText}>Retry</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  // Empty State
-  const renderEmpty = () => (
-    <View style={styles.centered}>
-      <Text style={styles.emptyText}>No products found</Text>
-      <TouchableOpacity 
-        style={styles.retryButton}
-        onPress={fetchProducts}
-      >
-        <Text style={styles.retryText}>Refresh</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  // Render horizontal sliders for all categories
-  const renderHorizontalSliders = () => {
-    if (products.length === 0 && !loading) {
-      return renderEmpty();
-    }
-
-    return (
-      <>
-        <HorizontalSliderSection category="Facepowder" />
-        <HorizontalSliderSection category="nightroutine" />
-        <HorizontalSliderSection category="hairpack" />
-      </>
-    );
-  };
-
-  // Main content based on selected filter
-  const renderMainContent = () => {
-    if (loading) return renderLoading();
-    if (error) return renderError();
-
-    if (selectedFilter === 'all') {
-      // When "all" is selected, only show horizontal sliders in a ScrollView
-      return (
-        <View style={styles.scrollContainer}>
-          {renderHorizontalSliders()}
-        </View>
-      );
-    } else {
-      // For specific category filters, only show that category's horizontal slider
-      return (
-        <View style={styles.scrollContainer}>
-          <HorizontalSliderSection category={selectedFilter} />
-        </View>
-      );
-    }
-  };
+  // Don't show if no products in any category
+  if (facePowderProducts.length === 0 && nightRoutineProducts.length === 0 && hairPackProducts.length === 0) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <View>
-            <Text style={styles.headerTitle}>7Miles Products</Text>
-            <Text style={styles.headerSubtitle}>
-              Specialized Face Powder, Night Routine & Hair Pack Products
-            </Text>
-          </View>
-          <CartIcon />
+      {/* Main Header */}
+      <View style={styles.mainHeader}>
+        <View style={styles.headerContent}>
+          <Text style={styles.mainTitle}>Routine Products</Text>
+          <Text style={styles.mainSubtitle}>Specialized collections for your daily routine</Text>
         </View>
-        
-        {/* Filter Buttons */}
-        <FilterButtons />
       </View>
-      
-      {/* Main Content */}
-      {renderMainContent()}
+
+      {/* Category Sections */}
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Face Powder Section */}
+        {facePowderProducts.length > 0 && (
+          <CategorySection
+            title="Face Powder"
+            subtitle="Specialized face care products"
+            products={facePowderProducts}
+            addedItems={addedItems}
+            quantities={quantities}
+            onAdd={handleAddToCart}
+            onQuantityChange={handleQuantityChange}
+            navigation={navigation}
+            flatListRef={facePowderRef}
+            currentIndices={currentIndices}
+            categoryKey="facePowder"
+          />
+        )}
+
+        {/* Night Routine Section */}
+        {nightRoutineProducts.length > 0 && (
+          <CategorySection
+            title="Night Routine"
+            subtitle="Products for your night care routine • Auto-scrolling"
+            products={nightRoutineProducts}
+            addedItems={addedItems}
+            quantities={quantities}
+            onAdd={handleAddToCart}
+            onQuantityChange={handleQuantityChange}
+            navigation={navigation}
+            flatListRef={nightRoutineRef}
+            currentIndices={currentIndices}
+            categoryKey="nightRoutine"
+          />
+        )}
+
+        {/* Hair Pack Section */}
+        {hairPackProducts.length > 0 && (
+          <CategorySection
+            title="Hair Pack"
+            subtitle="Specialized hair care treatments • Auto-scrolling"
+            products={hairPackProducts}
+            addedItems={addedItems}
+            quantities={quantities}
+            onAdd={handleAddToCart}
+            onQuantityChange={handleQuantityChange}
+            navigation={navigation}
+            flatListRef={hairPackRef}
+            currentIndices={currentIndices}
+            categoryKey="hairPack"
+          />
+        )}
+      </ScrollView>
     </View>
   );
 };
+
+// Category Section Component with Animated FlatList
+const CategorySection = ({
+  title,
+  subtitle,
+  products,
+  addedItems,
+  quantities,
+  onAdd,
+  onQuantityChange,
+  navigation,
+  flatListRef,
+  currentIndices,
+  categoryKey
+}) => {
+  // Track viewable items for auto-scroll
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      currentIndices.current[categoryKey] = viewableItems[0].index;
+    }
+  }).current;
+
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50
+  }).current;
+
+  return (
+    <View style={styles.categorySection}>
+      {/* Category Header */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
+        </View>
+
+      </View>
+
+      {/* Animated Horizontal Products List */}
+      <Animated.FlatList
+        ref={flatListRef}
+        horizontal
+        data={products}
+        renderItem={({ item, index }) => (
+          <ProductCard
+            product={item}
+            index={index}
+            quantity={quantities[item.name] || 0}
+            isAdded={addedItems[item.name]}
+            onAdd={() => onAdd(item)}
+            onQuantityChange={(change) => onQuantityChange(item, change)}
+            onPress={() => navigation.navigate("ProductDetails", { product: item })}
+            category={title}
+          />
+        )}
+        keyExtractor={(item, index) => `${categoryKey}-${item.name}-${index}`}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        snapToInterval={TOTAL_CARD_WIDTH}
+        decelerationRate="fast"
+        scrollEventThrottle={16}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+        getItemLayout={(data, index) => ({
+          length: TOTAL_CARD_WIDTH,
+          offset: TOTAL_CARD_WIDTH * index,
+          index,
+        })}
+      />
+    </View>
+  );
+};
+
+// Product Card Component
+const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress, category }) => {
+  const discount = Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100);
+  const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
+  const bgColor = colors[index % colors.length];
+
+  return (
+    <TouchableOpacity
+      style={[styles.productCard, { backgroundColor: bgColor }]}
+      onPress={onPress}
+      activeOpacity={0.9}
+    >
+      {/* Discount Badge */}
+      <View style={styles.discountBadge}>
+        <Text style={styles.discountText}>Save ₹{product.save}.00</Text>
+      </View>
+
+      {/* Wishlist Icon */}
+      <TouchableOpacity style={styles.wishlistBtn}>
+        <Ionicons name="heart-outline" size={16} color="#666" />
+      </TouchableOpacity>
+
+      {/* Product Image */}
+      <View style={styles.imageContainer}>
+        <Image
+          source={typeof product.image === 'string' ? { uri: product.image } : product.image}
+          style={styles.productImage}
+          resizeMode="cover"
+        />
+      </View>
+
+      {/* Product Info */}
+      <View style={styles.productInfo}>
+        <Text style={styles.category} numberOfLines={1}>{category}</Text>
+        <Text style={styles.productName} numberOfLines={2}>{product.name}</Text>
+
+        <View style={styles.priceContainer}>
+          <Text style={styles.salePrice}>₹{product.sale_price}</Text>
+          <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
+        </View>
+
+        {/* Cart Actions */}
+        {isAdded ? (
+          <View style={styles.quantityControls}>
+            <TouchableOpacity
+              style={styles.qtyBtn}
+              onPress={() => onQuantityChange(-1)}
+            >
+              <Text style={styles.qtyBtnText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantity}>{quantity}</Text>
+            <TouchableOpacity
+              style={styles.qtyBtn}
+              onPress={() => onQuantityChange(1)}
+            >
+              <Text style={styles.qtyBtnText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.addBtn}
+            onPress={onAdd}
+          >
+            <Ionicons name="cart" size={14} color="#fff" />
+            <Text style={styles.addBtnText}>Add to Cart</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 const styles = StyleSheet.create({
+  // Main Container
   container: {
-    flex: 1,
-    backgroundColor: '#f8f8f8',
-    marginVertical: 8,
+    backgroundColor: '#fff',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    marginTop: 8,
   },
-  scrollContainer: {
-    flex: 1,
+
+  // Main Header
+  mainHeader: {
+    marginBottom: 20,
   },
-  header: {
-    padding: 16,
-    backgroundColor: '#f8f8f8',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
+  mainTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1F2937',
     marginBottom: 4,
   },
-  headerSubtitle: {
-    fontSize: 12,
-    color: '#000',
-    opacity: 0.7,
+  mainSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
   },
-  cartIcon: {
-    backgroundColor: '#000',
-    paddingHorizontal: 12,
+
+  // Category Section
+  categorySection: {
+    marginBottom: 30,
+  },
+
+  // Header for each category
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginBottom: 20,
+  },
+  headerContent: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: '#6B7280',
+  },
+  viewAllBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F3FF',
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    minWidth: 50,
-    alignItems: 'center',
   },
-  cartIconText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 12,
+  viewAllText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#8B5CF6',
+    marginRight: 4,
   },
-  // Filter Buttons
-  filterContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
+
+  // Scroll Content
+  scrollContent: {
+    paddingRight: 16,
   },
-  filterButton: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+
+  // Product Card
+  productCard: {
+    width: CARD_WIDTH,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  filterButtonActive: {
-    backgroundColor: '#000',
-    borderColor: '#000',
-  },
-  filterButtonText: {
-    fontSize: 12,
-    color: '#000',
-    fontWeight: '500',
-  },
-  filterButtonTextActive: {
-    color: '#fff',
-  },
-  // Horizontal Slider Styles
-  horizontalSection: {
-    backgroundColor: '#fff',
-    paddingVertical: 12,
-    marginBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  sectionHeader: {
-    paddingHorizontal: 16,
-    marginBottom: 8,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 2,
-  },
-  sectionSubtitle: {
-    fontSize: 10,
-    color: '#000',
-    opacity: 0.6,
-  },
-  horizontalList: {
-    paddingHorizontal: 16,
-  },
-  horizontalCard: {
-    width: width * 0.65,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginRight: 12,
+    marginRight: CARD_MARGIN,
+    position: 'relative',
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginBottom: 8,
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    overflow: 'hidden',
   },
-  horizontalImageContainer: {
-    position: 'relative',
-    padding: 12,
-  },
-  horizontalProductImage: {
-    width: '100%',
-    height: 120,
-    borderRadius: 8,
-    backgroundColor: '#f8f8f8',
-  },
-  categoryBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: '#000',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  categoryBadgeText: {
-    color: '#f8f8f8',
-    fontSize: 8,
-    fontWeight: 'bold',
-  },
-  horizontalProductInfo: {
-    padding: 12,
-    paddingTop: 0,
-  },
-  horizontalProductName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 4,
-    lineHeight: 18,
-  },
-  horizontalCategory: {
-    fontSize: 12,
-    color: '#000',
-    opacity: 0.6,
-    marginBottom: 6,
-  },
-  horizontalPriceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 6,
-  },
-  horizontalSalePrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-    marginRight: 6,
-  },
-  horizontalRegularPrice: {
-    fontSize: 12,
-    color: '#000',
-    opacity: 0.5,
-    textDecorationLine: 'line-through',
-  },
-  horizontalTagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 8,
-  },
-  newTag: {
-    fontSize: 8,
-    color: '#000',
-    fontWeight: 'bold',
-    backgroundColor: '#f8f8f8',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: '#000',
-    marginRight: 3,
-    marginBottom: 3,
-  },
-  bestSellerTag: {
-    fontSize: 8,
-    color: '#000',
-    fontWeight: 'bold',
-    backgroundColor: '#f8f8f8',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: '#000',
-    marginRight: 3,
-    marginBottom: 3,
-  },
-  trendingTag: {
-    fontSize: 8,
-    color: '#000',
-    fontWeight: 'bold',
-    backgroundColor: '#f8f8f8',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: '#000',
-    marginRight: 3,
-    marginBottom: 3,
-  },
+
+  // Discount Badge
   discountBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#000',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 3,
+    top: 12,
+    left: 12,
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    zIndex: 2,
   },
   discountText: {
-    color: '#f8f8f8',
-    fontSize: 8,
-    fontWeight: 'bold',
-  },
-  // Action Buttons
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 6,
-  },
-  addToCartButton: {
-    backgroundColor: '#000',
-    paddingVertical: 8,
-    borderRadius: 6,
-    alignItems: 'center',
-    flex: 1,
-  },
-  addToCartText: {
     color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 10,
+    fontWeight: '800',
   },
-  buyNowButton: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 8,
-    borderRadius: 6,
+
+  // Wishlist Button
+  wishlistBtn: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 2,
+    padding: 4,
+  },
+
+  // Image Container
+  imageContainer: {
+    width: CARD_WIDTH,
+    height: CARD_WIDTH * 0.75,
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  // Product Info
+  productInfo: {
+    padding: 12,
+    paddingTop: 8,
+  },
+  category: {
+    fontSize: 11,
+    color: '#6B7280',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginBottom: 4,
+  },
+  productName: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+    height: 36,
+    lineHeight: 18,
+  },
+  priceContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
+    marginBottom: 12,
   },
-  buyNowText: {
-    color: '#000',
-    fontWeight: 'bold',
+  salePrice: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginRight: 6,
+  },
+  regularPrice: {
     fontSize: 12,
+    color: '#9CA3AF',
+    textDecorationLine: 'line-through',
   },
-  quantityContainer: {
+
+  // Quantity Controls
+  quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f8f8f8',
-    borderRadius: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 4,
-    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
-  quantityButton: {
+  qtyBtn: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#000',
-    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  quantityText: {
-    color: '#fff',
+  qtyBtnText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#374151',
   },
   quantity: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#000',
-    minWidth: 25,
+    fontWeight: '600',
+    color: '#1F2937',
+    minWidth: 20,
     textAlign: 'center',
+  },
+
+  // Add Button
+  addBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000',
+    borderRadius: 20,
+    paddingVertical: 10,
+    gap: 6,
+  },
+  addBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
 

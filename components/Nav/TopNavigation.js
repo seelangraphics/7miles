@@ -8,7 +8,8 @@ import {
     Image,
     ScrollView,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    TextInput
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
@@ -27,10 +28,10 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+
     const navigation = useNavigation();
     const { getCartItemsCount } = useCart();
-
-    const mainCategories = ['All', 'Hair Care', 'Skin Care', 'Body Care', 'Wellness & Edibles'];
 
     // Fetch products from AWS
     useEffect(() => {
@@ -41,15 +42,12 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
         try {
             setLoading(true);
             setError(null);
-            
             const response = await fetch(PRODUCTS_API);
-            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
             const data = await response.json();
-            
+
             // Transform the data to match the expected format
             if (Array.isArray(data)) {
                 setProducts(data);
@@ -73,7 +71,6 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     // Memoized filtered products for better performance
     const filteredProducts = useMemo(() => {
         if (!searchQuery.trim()) return [];
-
         const query = searchQuery.toLowerCase();
         return products.filter(product => {
             const matchesSearch =
@@ -87,19 +84,9 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
             if (activeCategory !== 'All') {
                 return matchesSearch && product.category === activeCategory;
             }
-
             return matchesSearch;
         });
     }, [searchQuery, activeCategory, products]);
-
-    const handleSearchPress = () => {
-        setSearchVisible(true);
-    };
-
-    const handleCategorySelect = (category) => {
-        setActiveCategory(category);
-        onCategoryPress?.(category, 'main');
-    };
 
     const handleRetry = () => {
         fetchProducts();
@@ -125,8 +112,9 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
 
     return (
         <View style={styles.container}>
-            {/* Logo and Cart Row */}
-            <View style={styles.topRow}>
+            {/* Top Bar with Logo and Icons */}
+            <View style={styles.topBar}>
+                {/* Logo */}
                 <View style={styles.logoContainer}>
                     <Image
                         source={{ uri: LOGO_URL }}
@@ -135,42 +123,71 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
                     />
                 </View>
 
-                <CartButton
-                    onPress={onCartPress}
-                    itemCount={getCartItemsCount()}
-                />
+                {/* Action Icons */}
+                <View style={styles.iconsContainer}>
+                    {/* Wishlist Icon */}
+                    <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => navigation.navigate('Wishlist')}
+                    >
+                        <Ionicons name="heart-outline" size={24} color="#333" />
+                    </TouchableOpacity>
+
+                    {/* Cart Icon with Badge */}
+                    <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={onCartPress}
+                    >
+                        <View style={styles.cartIconContainer}>
+                            <Ionicons name="bag-handle-outline" size={26} color="#333" />
+
+
+                            {getCartItemsCount() > 0 && (
+                                <View style={styles.badge}>
+                                    <Text style={styles.badgeText}>
+                                        {getCartItemsCount() > 99 ? '99+' : getCartItemsCount()}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                    </TouchableOpacity>
+                </View>
             </View>
 
             {/* Search Bar */}
-            <TouchableOpacity style={styles.searchContainer} onPress={handleSearchPress}>
-                <Ionicons name="search" size={18} color="#666" />
-                <Text style={styles.searchPlaceholder}>Search "Powder"</Text>
-            </TouchableOpacity>
-
-            {/* Main Categories */}
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.mainCategoriesContainer}
-            >
-                {mainCategories.map((category, index) => (
+            <View style={[
+                styles.searchContainer,
+                isSearchFocused && styles.searchContainerFocused
+            ]}>
+                <Ionicons
+                    name="search"
+                    size={20}
+                    color={isSearchFocused ? "#007AFF" : "#999"}
+                    style={styles.searchIcon}
+                />
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search products..."
+                    placeholderTextColor="#999"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    onFocus={() => {
+                        setIsSearchFocused(true);
+                        setSearchVisible(true);
+                    }}
+                    onBlur={() => setIsSearchFocused(false)}
+                    returnKeyType="search"
+                    clearButtonMode="while-editing"
+                />
+                {searchQuery.length > 0 && (
                     <TouchableOpacity
-                        key={category}
-                        style={[
-                            styles.mainCategory,
-                            activeCategory === category && styles.activeMainCategory
-                        ]}
-                        onPress={() => handleCategorySelect(category)}
+                        onPress={() => setSearchQuery('')}
+                        style={styles.clearButton}
                     >
-                        <Text style={[
-                            styles.mainCategoryText,
-                            activeCategory === category && styles.activeMainCategoryText
-                        ]}>
-                            {category}
-                        </Text>
+                        <Ionicons name="close-circle" size={18} color="#999" />
                     </TouchableOpacity>
-                ))}
-            </ScrollView>
+                )}
+            </View>
 
             {/* Loading or Error State */}
             {loading && renderLoading()}
@@ -186,7 +203,6 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
                 setActiveCategory={setActiveCategory}
                 filteredProducts={filteredProducts}
                 onCategoryPress={onCategoryPress}
-                categories={mainCategories}
                 loading={loading}
                 error={error}
                 onRetry={handleRetry}
@@ -195,70 +211,143 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#d0c9c4',
+        backgroundColor: '#f3eeea',
+        paddingTop: Constants.statusBarHeight + 10,
+        paddingHorizontal: 16,
+        paddingBottom: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
-        paddingTop: 40,
+        borderBottomColor: '#f0f0f0',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 3,
+        elevation: 3,
     },
-    topRow: {
+
+    topBar: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+        marginBottom: 16,
     },
+
     logoContainer: {
         flex: 1,
-        marginLeft: -20
     },
+
     logo: {
-        width: 120,
+        width: 90,
         height: 40,
     },
+
+    iconsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+    },
+
+    iconButton: {
+        padding: 4,
+    },
+
+    cartIconContainer: {
+        position: 'relative',
+    },
+
+    badge: {
+        position: 'absolute',
+        top: -6,
+        right: -6,
+        backgroundColor: '#FF3B30',
+        borderRadius: 10,
+        minWidth: 18,
+        height: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 4,
+    },
+
+    badgeText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold',
+    },
+
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f8f8f8',
-        marginHorizontal: 16,
-        marginVertical: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderRadius: 8,
+        backgroundColor: '#f5f5f7',
+        borderRadius: 12,
+        paddingHorizontal: 14,
+        paddingVertical: 10,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: 'transparent',
     },
-    searchPlaceholder: {
-        marginLeft: 8,
+
+    searchContainerFocused: {
+        backgroundColor: '#fff',
+        borderColor: '#007AFF',
+        shadowColor: '#007AFF',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+
+    searchIcon: {
+        marginRight: 10,
+    },
+
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        color: '#333',
+        padding: 0,
+    },
+
+    clearButton: {
+        padding: 4,
+    },
+
+    loadingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        gap: 8,
+    },
+
+    loadingText: {
         fontSize: 14,
         color: '#666',
-        flex: 1,
     },
-    mainCategoriesContainer: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+
+    errorContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        gap: 12,
     },
-    mainCategory: {
+
+    errorText: {
+        fontSize: 14,
+        color: '#FF3B30',
+    },
+
+    retryButton: {
         paddingHorizontal: 16,
         paddingVertical: 6,
-        marginRight: 12,
-        borderRadius: 16,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#007AFF',
+        borderRadius: 6,
     },
-    activeMainCategory: {
-        backgroundColor: '#000000FF',
-    },
-    mainCategoryText: {
+
+    retryText: {
+        color: '#fff',
         fontSize: 14,
         fontWeight: '500',
-        color: '#666',
-    },
-    activeMainCategoryText: {
-        color: '#fff',
     },
 });
 
