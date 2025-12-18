@@ -92,7 +92,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
           <View style={[styles.summaryItem, styles.totalItem]}>
             <Text style={styles.totalLabel}>Total Amount</Text>
             <Text style={styles.totalAmount}>
-              ₹{order?.priceDetails?.total?.toFixed(2) || "0.00"}
+              ₹{order?.priceDetails?.total || "0.00"}
             </Text>
           </View>
         </View>
@@ -188,7 +188,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.footerBtn, styles.continueBtn]}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("MainTabs")}
         >
           <Ionicons name="home-outline" size={18} color="#fff" />
           <Text style={styles.continueBtnText}>Continue Shopping</Text>

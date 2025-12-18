@@ -29,6 +29,7 @@ const NewProducts = () => {
             try {
                 const response = await fetch(PRODUCTS_API);
                 const data = await response.json();
+                console.log('Data',JSON.stringify(data,null,2))
                 setProducts(data);
             } catch (error) {
                 console.error("Error fetching products:", error);

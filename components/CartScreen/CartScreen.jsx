@@ -1,53 +1,117 @@
-import React from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
+import { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
   Image,
-  Alert // Don't forget to import Alert
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useCart } from '../context/CartContext';
+  Alert,
+  Animated,
+  TextInput,
+  Dimensions,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useCart } from "../context/CartContext";
+import { Dropdown } from "react-native-element-dropdown";
+
+const { width } = Dimensions.get("window");
 
 const CartScreen = ({ navigation }) => {
-  // Use the correct structure from your CartContext
-  const { 
-    cartItems, // This should be cartItems from context
-    updateQuantity, 
-    removeFromCart, 
-    getCartTotal, 
-    clearCart, 
-    getCartItemsCount 
-  } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
 
-  const handleCheckout = () => {
-    if (cartItems.length === 0) { // Fixed: cartItems.length, not cartItems.items.length
-      Alert.alert('Cart Empty', 'Please add items to cart before checkout');
+  const cartTotal = getCartTotal();
+  const FREE_SHIPPING_LIMIT = 200;
+  const shippingCharge = cartTotal >= FREE_SHIPPING_LIMIT ? 0 : 40;
+  const finalTotal = cartTotal + shippingCharge;
+
+  // Calculate shipping progress percentage
+  const shippingProgress = Math.min(
+    (cartTotal / FREE_SHIPPING_LIMIT) * 100,
+    100
+  );
+  const amountNeeded = Math.max(FREE_SHIPPING_LIMIT - cartTotal, 0);
+
+  const [state, setState] = useState("Tamil Nadu");
+  const [pincode, setPincode] = useState("");
+  const [estimatedShipping, setEstimatedShipping] = useState(null);
+
+  const countries = [{ label: "India", value: "India" }];
+  const states = [
+    { label: "Tamil Nadu", value: "Tamil Nadu" },
+    { label: "Kerala", value: "Kerala" },
+    { label: "Karnataka", value: "Karnataka" },
+  ];
+
+  const calculateEstimatedShipping = () => {
+    if (!pincode || pincode.length !== 6) {
+      Alert.alert("Invalid Pincode", "Please enter a valid 6-digit pincode");
       return;
     }
-    navigation.navigate('delivery');
+
+    // Calculate based on cart total
+    if (cartTotal >= FREE_SHIPPING_LIMIT) {
+      setEstimatedShipping({
+        method: "Standard Shipping",
+        price: 0,
+        message: "🎉 Free Shipping Unlocked!",
+        delivery: "3-5 business days",
+      });
+    } else {
+      setEstimatedShipping({
+        method: "Standard Shipping",
+        price: 40,
+        message: "Add ₹" + amountNeeded.toFixed(2) + " more for free shipping",
+        delivery: "3-5 business days",
+      });
+    }
   };
 
-  const handlelogin = () => {
-    navigation.navigate("login");
+
+
+const handleCheckout = () => {
+  if (cartItems.length === 0) {
+    Alert.alert("Cart Empty", "Please add items to cart before checkout");
+    return;
+  }
+
+ 
+  const finalTotalWithTax = cartTotal + shippingCharge;
+
+  // Pass only price details to delivery page
+  const priceDetails = {
+    subtotal: cartTotal.toFixed(2),
+    shipping: shippingCharge.toFixed(2),
+    finalTotal: finalTotalWithTax.toFixed(2),
+    freeShippingLimit: FREE_SHIPPING_LIMIT,
+    isFreeShipping: cartTotal >= FREE_SHIPPING_LIMIT,
+    itemsCount: cartItems.length,
   };
 
-  // Check cartItems.length
+  console.log("Passing price details to delivery:", priceDetails);
+  navigation.navigate("delivery", { priceDetails });
+};
+
+
+
+
+
+
+
   if (cartItems.length === 0) {
     return (
       <View style={styles.container}>
-        {/* Top Bar for Cart Screen */}
-   
-        
         <View style={styles.emptyCart}>
-          <Ionicons name="cart-outline" size={80} color="#ccc" />
+          <Ionicons name="cart-outline" size={80} color="#d2c1e2" />
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
-          <TouchableOpacity 
+          <Text style={styles.emptyCartSubtext}>
+            Add some products to get started
+          </Text>
+          <TouchableOpacity
             style={styles.continueShoppingButton}
-            onPress={() => navigation.navigate('MainTabs')}
+            onPress={() => navigation.navigate("MainTabs")}
           >
+            <Ionicons name="arrow-back" size={18} color="#fff" />
             <Text style={styles.continueShoppingText}>Continue Shopping</Text>
           </TouchableOpacity>
         </View>
@@ -57,232 +121,675 @@ const CartScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Top Bar for Cart Screen */}
-
-      <ScrollView style={styles.cartItems}>
-        {/* Map over cartItems */}
-        {cartItems.map((item, index) => (
-          <View key={item.name + index} style={styles.cartItem}>
+      <ScrollView style={styles.cartItems} showsVerticalScrollIndicator={false}>
+        {/* Cart Items */}
+        {cartItems.map((item) => (
+          <View key={item.name} style={styles.cartItem}>
             <Image
-  source={
-    typeof item.image === 'string'
-      ? { uri: item.image }
-      : item.image
-  }
-  style={styles.cartItemImage}
-/>
+              source={
+                typeof item.image === "string"
+                  ? { uri: item.image }
+                  : item.image
+              }
+              style={styles.cartItemImage}
+            />
 
             <View style={styles.cartItemDetails}>
-              <Text style={styles.cartItemName}>{item.name}</Text>
+              <Text style={styles.cartItemName} numberOfLines={2}>
+                {item.name}
+              </Text>
               <Text style={styles.cartItemCategory}>{item.category}</Text>
               <Text style={styles.cartItemPrice}>₹{item.sale_price}</Text>
             </View>
+
             <View style={styles.cartItemActions}>
               <View style={styles.quantityContainer}>
                 <TouchableOpacity
                   style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.name, item.quantity - 1)}
+                  onPress={() => updateQuantity(item.name, item.cartQty - 1)}
+                  disabled={item.cartQty <= 1}
                 >
-                  <Text style={styles.quantityText}>-</Text>
+                  <Text
+                    style={[
+                      styles.quantityText,
+                      item.cartQty <= 1 && styles.disabledButton,
+                    ]}
+                  >
+                    -
+                  </Text>
                 </TouchableOpacity>
-                <Text style={styles.quantity}>{item.quantity}</Text>
+
+                <Text style={styles.quantity}>{item.cartQty}</Text>
+
                 <TouchableOpacity
                   style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.name, item.quantity + 1)}
+                  onPress={() => updateQuantity(item.name, item.cartQty + 1)}
                 >
                   <Text style={styles.quantityText}>+</Text>
                 </TouchableOpacity>
               </View>
+
+              <Text style={styles.itemTotal}>
+                ₹{(item.sale_price * item.cartQty).toFixed(2)}
+              </Text>
+
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => removeFromCart(item.name)}
               >
-                <Ionicons name="trash-outline" size={20} color="#ff4444" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.checkoutButton}
-                onPress={handlelogin}
-              >
-                <Text style={styles.checkoutText}>Proceed to login</Text>
+                <Ionicons name="trash-outline" size={18} color="#d6433c" />
               </TouchableOpacity>
             </View>
           </View>
         ))}
+
+        {/* Free Shipping Progress */}
+        <View style={styles.shippingProgressSection}>
+          <View style={styles.progressHeader}>
+            <Ionicons name="rocket-outline" size={20} color="#d6433c" />
+            <Text style={styles.progressTitle}>Free Shipping Progress</Text>
+            <Text style={styles.progressPercentage}>
+              {shippingProgress.toFixed(0)}%
+            </Text>
+          </View>
+
+          <View style={styles.progressBarContainer}>
+            <View style={styles.progressBar}>
+              <Animated.View
+                style={[styles.progressFill, { width: `${shippingProgress}%` }]}
+              />
+            </View>
+            <View style={styles.progressLabels}>
+              <Text style={styles.progressAmount}>₹{cartTotal.toFixed(2)}</Text>
+              <Text style={styles.progressTarget}>₹{FREE_SHIPPING_LIMIT}</Text>
+            </View>
+          </View>
+
+          {shippingProgress < 100 ? (
+            <Text style={styles.progressMessage}>
+              Add{" "}
+              <Text style={styles.highlight}>₹{amountNeeded.toFixed(2)}</Text>{" "}
+              more for free shipping
+            </Text>
+          ) : (
+            <View style={styles.freeShippingAchieved}>
+              <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+              <Text style={styles.freeShippingText}>
+                🎉 Free Shipping Unlocked!
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Estimate Shipping */}
+        <View style={styles.estimateSection}>
+          <Text style={styles.sectionTitle}>Estimate Shipping</Text>
+
+          <View style={styles.inputRow}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>State</Text>
+              <Dropdown
+                data={states}
+                labelField="label"
+                valueField="value"
+                value={state}
+                style={styles.dropdown}
+                placeholder="Select"
+                placeholderStyle={styles.placeholder}
+                selectedTextStyle={styles.selectedText}
+                onChange={(item) => setState(item.value)}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Pincode</Text>
+              <TextInput
+                style={styles.pincodeInput}
+                placeholder="Enter 6-digit"
+                placeholderTextColor="#9CA3AF"
+                keyboardType="numeric"
+                maxLength={6}
+                value={pincode}
+                onChangeText={setPincode}
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.calcButton,
+              pincode.length !== 6 && styles.calcButtonDisabled,
+            ]}
+            onPress={calculateEstimatedShipping}
+            disabled={pincode.length !== 6}
+          >
+            <Ionicons name="calculator-outline" size={16} color="#fff" />
+            <Text style={styles.calcButtonText}>Calculate Shipping</Text>
+          </TouchableOpacity>
+
+          {estimatedShipping && (
+            <View style={styles.estimateResult}>
+              <View style={styles.resultRow}>
+                {/* <Text style={resultMethod}>{estimatedShipping.method}</Text> */}
+                <Text
+                  style={
+                    estimatedShipping.price === 0
+                      ? styles.freePrice
+                      : styles.price
+                  }
+                >
+                  {estimatedShipping.price === 0
+                    ? "FREE"
+                    : `₹${estimatedShipping.price}`}
+                </Text>
+              </View>
+              <Text style={styles.resultMessage}>
+                {estimatedShipping.message}
+              </Text>
+              <Text style={styles.resultDelivery}>
+                <Ionicons name="time-outline" size={12} color="#6B7280" />{" "}
+                {estimatedShipping.delivery}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Price Details Section */}
+        <View style={styles.priceDetailsSection}>
+          <Text style={styles.sectionTitle}>Price Details</Text>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>
+              Subtotal ({cartItems.length} items)
+            </Text>
+            <Text style={styles.detailValue}>₹{cartTotal.toFixed(2)}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <View style={styles.shippingDetail}>
+              <Text style={styles.detailLabel}>Shipping Charges</Text>
+              {shippingCharge === 0 && (
+                <View style={styles.freeBadge}>
+                  <Text style={styles.freeBadgeText}>FREE</Text>
+                </View>
+              )}
+            </View>
+            <Text
+              style={[
+                styles.detailValue,
+                shippingCharge === 0 && styles.freeText,
+              ]}
+            >
+              {shippingCharge === 0 ? "FREE" : `₹${shippingCharge.toFixed(2)}`}
+            </Text>
+          </View>
+
+          <View style={styles.separator} />
+
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Order Total</Text>
+            <Text style={styles.totalValue}>₹{finalTotal.toFixed(2)}</Text>
+          </View>
+        </View>
       </ScrollView>
 
-      <View style={styles.cartFooter}>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>
-            Total: ₹{getCartTotal().toFixed(2)}
-          </Text>
+      {/* Footer */}
+      <View style={styles.footer}>
+        <View style={styles.footerLeft}>
+          <Text style={styles.footerTotalLabel}>Total</Text>
+          <Text style={styles.footerTotal}>₹{finalTotal.toFixed(2)}</Text>
         </View>
 
         <TouchableOpacity
           style={styles.checkoutButton}
           onPress={handleCheckout}
         >
-          <Text style={styles.checkoutText}>Proceed to Checkout</Text>
+          <Text style={styles.checkoutText}>CONTINUE</Text>
+          <Ionicons name="arrow-forward" size={16} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#fff" ,
-  },
+export default CartScreen;
 
-  leftSection: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  backButton: {
-    marginRight: 12,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-  },
-  iconContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  iconButton: {
-    marginLeft: 18,
-    position: 'relative',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: '#ff4444',
-    borderRadius: 10,
-    minWidth: 18,
-    height: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cartBadgeText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  emptyCart: {
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyCartText: {
-    fontSize: 18,
-    color: '#666',
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  continueShoppingButton: {
-    backgroundColor: '#000',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  continueShoppingText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    backgroundColor: "#f3eeea",
   },
   cartItems: {
     flex: 1,
-    padding: 16,
+    padding: 10,
+    paddingBottom:30,
   },
   cartItem: {
-    flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
+    flexDirection: "row",
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 12,
-    marginBottom: 12,
-    alignItems: 'center',
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
   cartItemImage: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
     borderRadius: 8,
+    backgroundColor: "#f3eeea",
   },
   cartItemDetails: {
     flex: 1,
     marginLeft: 12,
+    justifyContent: "center",
   },
   cartItemName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 13.5,
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 4,
   },
   cartItemCategory: {
     fontSize: 12,
-    color: '#666',
-    marginBottom: 4,
+    color: "#6B7280",
+    marginBottom: 6,
   },
   cartItemPrice: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#000',
+    fontSize: 13.5,
+    fontWeight: "700",
+    color: "#d6433c",
   },
   cartItemActions: {
-    alignItems: 'center',
+    alignItems: "flex-end",
+    justifyContent: "space-between",
   },
   quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   quantityButton: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#ddd',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#f3eeea",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  disabledButton: {
+    color: "#9CA3AF",
   },
   quantityText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
+    color: "#333",
   },
   quantity: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginHorizontal: 12,
+    fontSize: 14,
+    fontWeight: "600",
+    marginHorizontal: 10,
+    color: "#333",
     minWidth: 20,
-    textAlign: 'center',
+    textAlign: "center",
+  },
+  itemTotal: {
+    fontSize: 13.5,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 8,
   },
   removeButton: {
     padding: 4,
   },
-  cartFooter: {
+  shippingProgressSection: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
     padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#d2c1e2",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
-  totalContainer: {
+  progressHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    gap: 8,
+  },
+  progressTitle: {
+    fontSize: 13.5,
+    fontWeight: "700",
+    color: "#111827",
+    flex: 1,
+  },
+  progressPercentage: {
+    fontSize: 13.5,
+    fontWeight: "700",
+    color: "#d6433c",
+  },
+  progressBarContainer: {
+    marginBottom: 8,
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: "#f3eeea",
+    borderRadius: 3,
+    marginBottom: 6,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#d6433c",
+    borderRadius: 3,
+  },
+  progressLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  progressAmount: {
+    fontSize: 12,
+    color: "#6B7280",
+  },
+  progressTarget: {
+    fontSize: 12,
+    color: "#6B7280",
+  },
+  progressMessage: {
+    fontSize: 13.5,
+    color: "#6B7280",
+    textAlign: "center",
+    marginTop: 4,
+  },
+  highlight: {
+    color: "#d6433c",
+    fontWeight: "700",
+  },
+  freeShippingAchieved: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#D1FAE5",
+    padding: 8,
+    borderRadius: 6,
+    marginTop: 4,
+    gap: 8,
+  },
+  freeShippingText: {
+    fontSize: 13.5,
+    color: "#065F46",
+    fontWeight: "600",
+  },
+  estimateSection: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 16,
   },
-  totalText: {
+  inputRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 12,
+  },
+  inputGroup: {
+    flex: 1,
+  },
+  inputLabel: {
+    fontSize: 12,
+    color: "#6B7280",
+    marginBottom: 6,
+    fontWeight: "600",
+  },
+  dropdown: {
+    height: 44,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#d2c1e2",
+    paddingHorizontal: 12,
+    backgroundColor: "#F9FAFB",
+  },
+  placeholder: {
+    fontSize: 13.5,
+    color: "#9CA3AF",
+  },
+  selectedText: {
+    fontSize: 13.5,
+    color: "#333",
+  },
+  pincodeInput: {
+    height: 44,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#d2c1e2",
+    paddingHorizontal: 12,
+    fontSize: 13.5,
+    color: "#333",
+    backgroundColor: "#F9FAFB",
+  },
+  calcButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#333",
+    paddingVertical: 12,
+    borderRadius: 8,
+    gap: 8,
+    marginTop: 4,
+  },
+  calcButtonDisabled: {
+    backgroundColor: "#9CA3AF",
+  },
+  calcButtonText: {
+    color: "#fff",
+    fontSize: 13.5,
+    fontWeight: "600",
+  },
+  estimateResult: {
+    backgroundColor: "#F9FAFB",
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  resultRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  resultMethod: {
+    fontSize: 13.5,
+    fontWeight: "600",
+    color: "#111827",
+  },
+  price: {
+    fontSize: 13.5,
+    fontWeight: "700",
+    color: "#d6433c",
+  },
+  freePrice: {
+    fontSize: 13.5,
+    fontWeight: "700",
+    color: "#10B981",
+  },
+  resultMessage: {
+    fontSize: 12,
+    color: "#6B7280",
+    marginBottom: 4,
+  },
+  resultDelivery: {
+    fontSize: 12,
+    color: "#6B7280",
+  },
+  priceDetailsSection: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  detailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  detailLabel: {
+    fontSize: 13.5,
+    color: "#6B7280",
+  },
+  detailValue: {
+    fontSize: 13.5,
+    fontWeight: "600",
+    color: "#111827",
+  },
+  shippingDetail: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  freeBadge: {
+    backgroundColor: "#D1FAE5",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  freeBadgeText: {
+    fontSize: 11,
+    color: "#065F46",
+    fontWeight: "700",
+  },
+  freeText: {
+    color: "#10B981",
+    fontWeight: "700",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 12,
+  },
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  totalLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#111827",
+  },
+  totalValue: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#d6433c",
+  },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 8,
+  },
+  footerLeft: {
+    flex: 1,
+  },
+  footerTotalLabel: {
+    fontSize: 12,
+    color: "#6B7280",
+    marginBottom: 2,
+  },
+  footerTotal: {
     fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center',
+    fontWeight: "700",
+    color: "#d6433c",
   },
   checkoutButton: {
-    backgroundColor: '#000',
-    paddingVertical: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#333",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    gap: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   checkoutText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: "#fff",
+    fontSize: 13.5,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  emptyCart: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyCartText: {
+    fontSize: 15,
+    color: "#6B7280",
+    marginTop: 16,
+    fontWeight: "700",
+  },
+  emptyCartSubtext: {
+    fontSize: 13.5,
+    color: "#9CA3AF",
+    marginTop: 4,
+  },
+  continueShoppingButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#333",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 20,
+    gap: 8,
+  },
+  continueShoppingText: {
+    color: "#fff",
+    fontSize: 13.5,
+    fontWeight: "600",
   },
 });
-
-export default CartScreen;

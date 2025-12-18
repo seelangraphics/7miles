@@ -21,19 +21,23 @@ import { useNavigation } from "@react-navigation/native";
 
 const { height, width } = Dimensions.get("window");
 
-const AddressPage = () => {
+const AddressPage = ({ route }) => {
   const [addresses, setAddresses] = useState([]);
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
-
-  const { cartItems = [], getCartTotal, clearCart } = useCart();
+  const { priceDetails } = route.params || {};
+  const { cartItems = [], getCartTotal } = useCart();
   const navigation = useNavigation();
 
-  const shippingCharge = 40;
-  const tax = getCartTotal() * 0.18;
-  const finalTotal = getCartTotal() + shippingCharge + tax;
+  const subtotal = priceDetails?.subtotal || getCartTotal().toFixed(2);
+  const shipping =
+    priceDetails?.shipping || (getCartTotal() >= 200 ? "0.00" : "40.00");
+
+  const finalTotal =
+    priceDetails?.finalTotal
+  
 
   const emptyForm = {
     firstName: "",
@@ -249,7 +253,6 @@ const AddressPage = () => {
 
   return (
     <>
-    
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Delivery Address Section */}
@@ -276,7 +279,7 @@ const AddressPage = () => {
                       <Ionicons
                         name="create-outline"
                         size={14}
-                        color="#4F46E5"
+                        color="#d6433c"
                       />
                     </TouchableOpacity>
                     {/* <TouchableOpacity
@@ -338,7 +341,7 @@ const AddressPage = () => {
                 style={styles.emptyCard}
                 onPress={handleAddAddress}
               >
-                <Ionicons name="add-circle-outline" size={24} color="#4F46E5" />
+                <Ionicons name="add-circle-outline" size={24} color="#d6433c" />
                 <Text style={styles.emptyText}>Add Delivery Address</Text>
               </TouchableOpacity>
             )}
@@ -353,20 +356,24 @@ const AddressPage = () => {
               {cartItems.map((item, index) => (
                 <View key={index} style={styles.itemCard}>
                   <View style={styles.itemImageContainer}>
-                    <Image source={item.image} style={styles.itemImage} />
-                    <View style={styles.quantityBadge}>
-                      <Text style={styles.quantityText}>{item.quantity}</Text>
-                    </View>
+                    <Image
+                      source={
+                        typeof item.image === "string"
+                          ? { uri: item.image }
+                          : item.image
+                      }
+                      style={styles.itemImage}
+                    />
                   </View>
                   <View style={styles.itemDetails}>
                     <Text style={styles.itemName} numberOfLines={2}>
                       {item.name}
                     </Text>
                     <Text style={styles.itemCategory}>{item.category}</Text>
-                    <Text style={styles.itemPrice}>₹{item.sale_price}</Text>
+                    <Text style={styles.itemPrice}>₹{item.quantity}</Text>
                   </View>
                   <Text style={styles.itemTotal}>
-                    ₹{(item.sale_price * item.quantity).toFixed(2)}
+                    ₹{getCartTotal().toFixed(2)}
                   </Text>
                 </View>
               ))}
@@ -384,18 +391,13 @@ const AddressPage = () => {
             </View>
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Shipping</Text>
-              <Text style={styles.priceValue}>
-                ₹{shippingCharge.toFixed(2)}
-              </Text>
+              <Text style={styles.priceValue}>₹{shipping}</Text>
             </View>
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Tax (18% GST)</Text>
-              <Text style={styles.priceValue}>₹{tax.toFixed(2)}</Text>
-            </View>
+
             <View style={styles.divider} />
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total Amount</Text>
-              <Text style={styles.totalValue}>₹{finalTotal.toFixed(2)}</Text>
+              <Text style={styles.totalValue}>₹{finalTotal}</Text>
             </View>
           </View>
         </ScrollView>
@@ -403,7 +405,7 @@ const AddressPage = () => {
         {/* Bottom Action Bar */}
         <View style={styles.bottomBar}>
           <View style={styles.priceContainer}>
-            <Text style={styles.bottomPrice}>₹{finalTotal.toFixed(2)}</Text>
+            <Text style={styles.bottomPrice}>₹{finalTotal}</Text>
             <Text style={styles.bottomLabel}>Total</Text>
           </View>
           <TouchableOpacity
@@ -473,7 +475,7 @@ const AddressPage = () => {
                             : "radio-button-off"
                         }
                         size={12}
-                        color="#4F46E5"
+                        color="#d6433c"
                       />
                       <Text style={styles.optionName}>
                         {address.firstName} {address.lastName}
@@ -496,7 +498,7 @@ const AddressPage = () => {
                         <Ionicons
                           name="create-outline"
                           size={12}
-                          color="#4F46E5"
+                          color="#d6433c"
                         />
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -664,14 +666,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     color: "#111827",
     letterSpacing: 0.5,
   },
   changeText: {
-    fontSize: 12,
-    color: "#4F46E5",
+    fontSize: 14,
+    color: "#d6433c",
     fontWeight: "600",
   },
   selectedCard: {
@@ -689,7 +691,7 @@ const styles = StyleSheet.create({
   defaultTag: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#10B981",
+    backgroundColor: "#d6433c",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -705,7 +707,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   name: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
     marginBottom: 2,
@@ -716,7 +718,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   detailText: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#6B7280",
     flex: 1,
     lineHeight: 16,
@@ -732,8 +734,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   emptyText: {
-    fontSize: 12,
-    color: "#4F46E5",
+    fontSize: 14,
+    color: "#d6433c",
     fontWeight: "600",
   },
   itemCard: {
@@ -757,7 +759,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -4,
     right: -4,
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#d6433c",
     width: 16,
     height: 16,
     borderRadius: 8,
@@ -773,7 +775,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemName: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
     marginBottom: 2,
@@ -784,12 +786,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   itemPrice: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#4F46E5",
+    color: "#d6433c",
   },
   itemTotal: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     color: "#111827",
   },
@@ -800,11 +802,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   priceLabel: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#6B7280",
   },
   priceValue: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
   },
@@ -820,14 +822,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   totalLabel: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     color: "#111827",
   },
   totalValue: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#4F46E5",
+    color: "#d6433c",
   },
   bottomBar: {
     flexDirection: "row",
@@ -850,7 +852,7 @@ const styles = StyleSheet.create({
   bottomPrice: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#4F46E5",
+    color: "#d6433c",
   },
   bottomLabel: {
     fontSize: 11,
@@ -859,12 +861,12 @@ const styles = StyleSheet.create({
   continueButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#d6433c",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
     gap: 8,
-    shadowColor: "#4F46E5",
+    shadowColor: "#d6433c",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -876,7 +878,7 @@ const styles = StyleSheet.create({
   },
   continueText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
@@ -908,7 +910,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sheetTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     color: "#111827",
     marginBottom: 12,
@@ -916,7 +918,7 @@ const styles = StyleSheet.create({
   addAddressButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#d6433c",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
@@ -944,7 +946,7 @@ const styles = StyleSheet.create({
     borderColor: "#E5E7EB",
   },
   defaultOption: {
-    borderColor: "#4F46E5",
+    borderColor: "#d6433c",
     backgroundColor: "#F5F3FF",
   },
   optionHeader: {
@@ -959,7 +961,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   optionName: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
   },
@@ -980,18 +982,18 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   optionPhone: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#6B7280",
     marginBottom: 4,
   },
   optionAddress: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#4B5563",
     lineHeight: 16,
     marginBottom: 2,
   },
   optionLocation: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#6B7280",
     marginTop: 2,
   },
@@ -1004,7 +1006,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#d6433c",
     paddingVertical: 10,
     borderRadius: 8,
     gap: 8,
@@ -1012,7 +1014,7 @@ const styles = StyleSheet.create({
   },
   deliverText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
@@ -1022,7 +1024,7 @@ const styles = StyleSheet.create({
   },
   closeText: {
     color: "#6B7280",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
   },
   formSheet: {
@@ -1040,7 +1042,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#F3F4F6",
   },
   formTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     color: "#111827",
   },
@@ -1052,7 +1054,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   inputLabel: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
     color: "#374151",
     marginBottom: 6,
@@ -1062,7 +1064,7 @@ const styles = StyleSheet.create({
     borderColor: "#D1D5DB",
     borderRadius: 8,
     padding: 10,
-    fontSize: 12,
+    fontSize: 14,
     color: "#111827",
     backgroundColor: "#F9FAFB",
   },
@@ -1083,7 +1085,7 @@ const styles = StyleSheet.create({
   },
   cancelBtnText: {
     color: "#6B7280",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
@@ -1091,12 +1093,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#d6433c",
     alignItems: "center",
   },
   saveBtnText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.5,
   },

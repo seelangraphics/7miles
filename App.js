@@ -20,6 +20,7 @@ import Address from "./components/Deliveryaddress/Address";
 import Payment from "./components/Payment/Payment";
 import { Youraddress } from "./components/Youraddress/Youraddress";
 import TopBar from "./components/Topbar/Topbar";
+import OrdersHistory from "./components/Yourorders/Yourorder";
 
 const Stack = createNativeStackNavigator();
 
@@ -106,7 +107,11 @@ function AppContent() {
             options={{ title: "Your Address", headerShown: true }}
           />
           {/* My Orders */}
-     
+          <Stack.Screen
+            name="orders"
+            component={OrdersHistory}
+            options={{ title: "Your Orders", headerShown: true }}
+          />
 
           {/* Payment */}
           <Stack.Screen

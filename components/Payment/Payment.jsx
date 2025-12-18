@@ -18,9 +18,11 @@ import { auth, db } from "../Firebase/Firebase";
 import { doc, updateDoc, getDoc, collection, addDoc } from "firebase/firestore";
 import axios from "axios";
 
+import RazorpayCheckout from "react-native-razorpay";
+import { Dimensions } from "react-native";
+
 const MAIL_ENDPOINT =
   "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
-
 
 const Payment = () => {
   const navigation = useNavigation();
@@ -31,16 +33,16 @@ const Payment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-  const [username, setUsername] = useState('');
-  const [useremail, setuserEmail] = useState('');
+  const [username, setUsername] = useState("");
+  const [useremail, setuserEmail] = useState("");
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
-
+  const [orderId, SetOrderId] = useState("");
   const { address, totalAmount } = route.params || {};
 
   const shippingCharge = 40;
   const tax = getCartTotal() * 0.18;
-  const finalTotal = totalAmount || getCartTotal() + shippingCharge + tax;
+  const finalTotal = totalAmount;
 
   useEffect(() => {
     // Animation on mount
@@ -56,6 +58,25 @@ const Payment = () => {
         useNativeDriver: true,
       }),
     ]).start();
+  }, []);
+
+  const RAZORPAY_API_KEY =
+    "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/order";
+  const PAYMENT_API_KEY = "nb7yqBXPNZ8RDEsa0s7sS8OxEn9bujNV1c1VK3vc";
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userRef = doc(db, "milesusers", auth.currentUser.uid);
+      const snap = await getDoc(userRef);
+
+      if (snap.exists()) {
+        setUserData(snap.data());
+      }
+    };
+
+    fetchUser();
   }, []);
 
   // Payment Methods Data
@@ -90,56 +111,63 @@ const Payment = () => {
   ) => {
     if (!auth.currentUser?.uid) return null;
 
-    const orderId = generateOrderId();
-    const orderData = {
-      orderId,
-      items: cartItems.map((item) => ({
-        id: item.id,
-        name: item.name,
-        image: item.image,
-        price: item.sale_price,
-        quantity: item.quantity,
-        category: item.category,
-      })),
-      address: {
-        name: `${address.firstName} ${address.lastName}`,
-        phone: address.phone,
-        address: address.addressLine1,
-        address2: address.addressLine2 || "",
-        city: address.city,
-        state: address.state,
-        pincode: address.pincode,
-      },
-      payment: {
-        method: paymentMethod,
-        status: paymentStatus,
-        transactionId: paymentMethod === "razorpay" ? `TXN${Date.now()}` : null,
-      },
-      priceDetails: {
-        subtotal: getCartTotal(),
-        shipping: shippingCharge,
-        tax: tax,
-        total: finalTotal,
-      },
-      status:
-        paymentMethod === "cod"
-          ? "confirmed"
-          : paymentStatus === "success"
-            ? "confirmed"
-            : "pending",
-      createdAt: new Date().toISOString(),
-      estimatedDelivery: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
-      ).toISOString(), // 7 days from now
-    };
-
     try {
       const userRef = doc(db, "milesusers", auth.currentUser.uid);
       const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) return null;
+
       const userData = userSnap.data();
-      setUsername(userData.name || '');
-      setuserEmail(userData.email || '');
-      // Create orders array if it doesn't exist
+
+      const orderId = generateOrderId();
+
+      const orderData = {
+        orderId,
+        userEmail: userData.email,
+        userName: userData.name,
+
+        items: cartItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+          image: item.image,
+          price: item.sale_price,
+          quantity: item.quantity,
+          category: item.category,
+        })),
+
+        address: {
+          name: `${address.firstName} ${address.lastName}`,
+          phone: address.phone,
+          address: address.addressLine1,
+          address2: address.addressLine2 || "",
+          city: address.city,
+          state: address.state,
+          pincode: address.pincode,
+        },
+
+        payment: {
+          method: paymentMethod,
+          status: paymentStatus,
+        },
+
+        priceDetails: {
+          subtotal: getCartTotal(),
+          shipping: shippingCharge,
+          tax: tax,
+          total: finalTotal,
+        },
+
+        status:
+          paymentMethod === "cod"
+            ? "confirmed"
+            : paymentStatus === "success"
+            ? "confirmed"
+            : "pending",
+
+        createdAt: new Date().toISOString(),
+      };
+
+      // Save to Firestore
       const currentOrders = userData.orders || [];
 
       await updateDoc(userRef, {
@@ -148,130 +176,156 @@ const Payment = () => {
 
       return orderData;
     } catch (error) {
-      console.error("Error saving order:", error);
-      Toast.show({
-        type: "error",
-        text1: "Failed to save order",
-        text2: "Please try again",
-      });
+      console.log("Error saving order:", error);
       return null;
     }
   };
-
-
 
   const sendOrderPlacedEmail = async (order) => {
     try {
       const payload = {
         storeType: "tinykarts",
-        to: useremail,
-        username: username,
+        to: order.userEmail,
+        username: order.userName,
         subject: `Order Placed Successfully #${order.orderId}`,
+
         message: `
         <div style="font-family:Arial;">
-          <h2>Your order is confirmed! 🎉</h2>
-          <p>Hello ${username},</p>
+          <h2>Your order is confirmed!</h2>
+          <p>Hello ${order.userName},</p>
           <p>Thanks for shopping with <strong>7miles</strong>.</p>
 
-          <p>Your order <strong>#${order.orderId}</strong> has been successfully placed.</p>
-
-          <p>We will start preparing your products and notify you when shipped!</p>
-
-          <br />
+          <p>Your order <strong>#${
+            order.orderId
+          }</strong> has been successfully placed.</p>
 
           <p><strong>Payment Method:</strong> ${order.payment.method.toUpperCase()}</p>
-          <p><strong>Order Total:</strong> ₹${order.priceDetails.total}</p>
-
-          <br />
-          <p>We hope you enjoy shopping with us!</p>
-          <p><strong>Team 7miles</strong></p>
+          <p><strong>Total:</strong> ₹${order.priceDetails.total}</p>
+          
+          <br/>
+          <p>Team 7miles</p>
         </div>
       `,
+
         orderid: order.orderId,
       };
 
+      console.log("Payload", JSON.stringify(payload, null, 2));
       await axios.post(MAIL_ENDPOINT, payload, {
         headers: { "Content-Type": "application/json" },
       });
 
+      console.log("Order placed email sent!");
       return true;
-
-    } catch (err) {
-      console.log("❌ Order placed email error →", err.response?.data || err.message);
+    } catch (e) {
+      console.log("Email error → ", e);
       return false;
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-  const handleRazorpayPayment = async () => {
-    setIsLoading(true);
-
+  const paymenthandler = async () => {
     try {
-      // Simulate Razorpay API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsLoading(true);
 
-      // In real implementation, integrate Razorpay SDK
-      // const options = {
-      //   description: 'Order Payment',
-      //   currency: 'INR',
-      //   amount: finalTotal * 100, // in paise
-      //   name: 'Miles Store',
-      //   order_id: 'order_123', // from your server
-      //   prefill: {
-      //     email: auth.currentUser?.email,
-      //     contact: address?.phone,
-      //     name: `${address?.firstName} ${address?.lastName}`
-      //   },
-      //   theme: {color: '#4F46E5'}
-      // }
+      const orderbody = {
+        amount: Math.round(finalTotal * 100),
+        currency: "INR",
+        receipt: `receipt_${Date.now()}`,
+      };
+      console.log("rder", orderbody);
 
-      // const data = await RazorpayCheckout.open(options);
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": PAYMENT_API_KEY,
+      };
 
-      // For demo, simulate success
-      const orderData = await saveOrderToFirebase("razorpay", "success");
-
-      if (orderData) {
-        setOrderDetails(orderData);
-        setOrderPlaced(true);
-        clearCart();
-
-        Toast.show({
-          type: "success",
-          text1: "Payment Successful!",
-          text2: "Your order has been placed successfully.",
-        });
-
-        // Navigate to order confirmation after delay
-        setTimeout(() => {
-          navigation.navigate("OrderConfirmation", { order: orderData });
-        }, 2000);
-      }
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Payment Failed",
-        text2: "Please try another payment method.",
+      const response = await axios.post(RAZORPAY_API_KEY, orderbody, {
+        headers,
       });
+
+      if (!response.data?.id) {
+        throw new Error("Order ID missing in response");
+      }
+
+      return response.data.id;
+    } catch (error) {
+      console.error("Payment API error:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleRazorpayPayment = async () => {
+    try {
+      setIsLoading(true);
 
+      // Step 1: Generate backend razorpay order first
+      const razorpayOrderId = await paymenthandler();
+      console.log("razorepay", razorpayOrderId);
+      if (!razorpayOrderId) throw new Error("Order creation failed");
 
+      // Step 2: Open Razorpay checkout
+      const options = {
+        description: "TinyKarts Order Payment",
+        currency: "INR",
+        key: "rzp_live_b0fy47YNnCNRK8",
+        name: "TinyKarts",
+        orderId: razorpayOrderId,
+        amount: Math.round(finalTotal * 100),
+        prefill: {
+          email: userData?.email || "",
+          contact: userData?.phone || "",
+          name: userData?.name || "",
+        },
 
+        theme: { color: "#007AFF" },
+      };
 
+      console.log("options", options);
+
+      const paymentData = await RazorpayCheckout.open(options);
+      console.log("[5] Payment response:", paymentData);
+
+      if (!paymentData.razorpay_payment_id) {
+        throw new Error("Payment verification failed");
+      }
+      // Step 3: Check success
+      if (!paymentData.razorpay_payment_id) {
+        return;
+      }
+
+      console.log("Payment Success ✔️");
+
+      // Step 4: Save order to Firestore
+      const orderData = await saveOrderToFirebase("razorpay", "success");
+
+      if (!orderData) throw new Error("Order save failed");
+
+      // Step 5: Trigger email
+      await sendOrderPlacedEmail(orderData);
+
+      // Step 6 UI
+      clearCart();
+      setOrderDetails(orderData);
+      setOrderPlaced(true);
+
+      Toast.show({
+        type: "success",
+        text1: "Payment Successful",
+      });
+
+      navigation.navigate("OrderConfirmation", { order: orderData });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Payment Failed",
+        text2: "Try again",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCashOnDelivery = async () => {
     setIsLoading(true);
@@ -279,25 +333,33 @@ const Payment = () => {
     try {
       const orderData = await saveOrderToFirebase("cod", "pending");
 
-      if (orderData) {
-
-        // send mail
-        await sendOrderPlacedEmail(orderData);
-
-        setOrderDetails(orderData);
-        setOrderPlaced(true);
-        clearCart();
-
+      // ❌ If saving failed, stop here
+      if (!orderData) {
         Toast.show({
-          type: "success",
-          text1: "Order Placed!",
-          text2: "Your order has been confirmed.",
+          type: "error",
+          text1: "Order Failed",
+          text2: "Could not save order. Try again.",
         });
 
-        setTimeout(() => {
-          navigation.navigate("OrderSuccess", { order: orderData });
-        }, 2000);
+        setIsLoading(false);
+        return;
       }
+      await sendOrderPlacedEmail(orderData);
+
+      // Update UI
+      setOrderDetails(orderData);
+      setOrderPlaced(true);
+      clearCart();
+
+      Toast.show({
+        type: "success",
+        text1: "Order Placed!",
+        text2: "Your order has been confirmed.",
+      });
+
+      setTimeout(() => {
+        navigation.navigate("OrderSuccess", { order: orderData });
+      }, 2000);
     } catch (error) {
       Toast.show({
         type: "error",
@@ -308,31 +370,6 @@ const Payment = () => {
       setIsLoading(false);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const handlePayment = () => {
     if (!selectedMethod) {
@@ -346,7 +383,8 @@ const Payment = () => {
 
     Alert.alert(
       "Confirm Order",
-      `Proceed with ${selectedMethod === "razorpay" ? "Razorpay Payment" : "Cash on Delivery"
+      `Proceed with ${
+        selectedMethod === "razorpay" ? "Razorpay Payment" : "Cash on Delivery"
       }?`,
       [
         { text: "Cancel", style: "cancel" },
@@ -404,16 +442,7 @@ const Payment = () => {
         },
       ]}
     >
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={20} color="#111827" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Select Payment</Text>
-        <View style={styles.headerRight} />
-      </View>
+
 
       <ScrollView
         style={styles.scrollView}
@@ -430,7 +459,14 @@ const Payment = () => {
 
           {cartItems.map((item, index) => (
             <View key={index} style={styles.itemRow}>
-              <Image source={item.image} style={styles.itemImage} />
+              <Image
+                source={
+                  typeof item.image === "string"
+                    ? { uri: item.image }
+                    : item.image
+                }
+                style={styles.itemImage}
+              />
               <View style={styles.itemDetails}>
                 <Text style={styles.itemName} numberOfLines={1}>
                   {item.name}
@@ -466,7 +502,7 @@ const Payment = () => {
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Amount</Text>
-            <Text style={styles.totalValue}>₹{finalTotal.toFixed(2)}</Text>
+            <Text style={styles.totalValue}>₹{finalTotal}</Text>
           </View>
         </View>
 
@@ -480,7 +516,7 @@ const Payment = () => {
                   {address.firstName} {address.lastName}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Address")}
+                  onPress={() => navigation.navigate("delivery")}
                 >
                   <Text style={styles.changeAddressText}>Change</Text>
                 </TouchableOpacity>
@@ -565,13 +601,12 @@ const Payment = () => {
         </View>
 
         {/* Terms & Conditions */}
-
       </ScrollView>
 
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
         <View style={styles.bottomLeft}>
-          <Text style={styles.totalAmount}>₹{finalTotal.toFixed(2)}</Text>
+          <Text style={styles.totalAmount}>₹{finalTotal}</Text>
           <Text style={styles.totalLabelBottom}>Total Payable</Text>
         </View>
 

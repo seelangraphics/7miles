@@ -12,11 +12,14 @@ export const CartProvider = ({ children }) => {
       if (existingItem) {
         return prevItems.map(item =>
           item.name === product.name
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, cartQty
+: item.cartQty
+ + 1 }
             : item
         );
       }
-      return [...prevItems, { ...product, quantity: 1 }];
+    return [...prevItems, { ...product, cartQty: 1 }];
+
     });
   }, []);
 
@@ -24,14 +27,19 @@ export const CartProvider = ({ children }) => {
     setCartItems(prevItems => prevItems.filter(item => item.name !== productName));
   }, []);
 
-  const updateQuantity = useCallback((productName, newQuantity) => {
-    if (newQuantity < 1) {
+  const updateQuantity
+ = useCallback((productName, newcartQty
+) => {
+    if (newcartQty
+ < 1) {
       removeFromCart(productName);
       return;
     }
     setCartItems(prevItems =>
       prevItems.map(item =>
-        item.name === productName ? { ...item, quantity: newQuantity } : item
+        item.name === productName ? { ...item, cartQty
+: newcartQty
+ } : item
       )
     );
   }, [removeFromCart]);
@@ -41,42 +49,53 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const getCartItemsCount = useCallback(() => {
-    return cartItems.reduce((count, item) => count + item.quantity, 0);
+    return cartItems.reduce((count, item) => count + item.cartQty
+, 0);
   }, [cartItems]);
 
   const getCartTotal = useCallback(() => {
-    return cartItems.reduce((total, item) => total + (item.sale_price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + (item.sale_price * item.cartQty
+), 0);
   }, [cartItems]);
 
   const isInCart = useCallback((productName) => {
     return cartItems.some(item => item.name === productName);
   }, [cartItems]);
 
-  const getItemQuantity = useCallback((productName) => {
+  const getItemQuantity
+
+ = useCallback((productName) => {
     const item = cartItems.find(item => item.name === productName);
-    return item ? item.quantity : 0;
+    return item ? item.cartQty
+ : 0;
   }, [cartItems]);
 
   const value = useMemo(() => ({
     cartItems,
     addToCart,
     removeFromCart,
-    updateQuantity,
+   updateQuantity
+,
     clearCart,
     getCartItemsCount,
     getCartTotal,
     isInCart,
-    getItemQuantity
+   getItemQuantity
+
+
   }), [
     cartItems,
     addToCart,
     removeFromCart,
-    updateQuantity,
+   updateQuantity
+,
     clearCart,
     getCartItemsCount,
     getCartTotal,
     isInCart,
-    getItemQuantity
+   getItemQuantity
+
+
   ]);
 
   return (
