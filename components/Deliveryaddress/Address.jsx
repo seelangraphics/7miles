@@ -846,9 +846,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 8,
+ 
+    height:100,
+    
   },
   priceContainer: {
     alignItems: "flex-start",
+       bottom: 20,
+    
   },
   bottomPrice: {
     fontSize: 16,
@@ -871,6 +876,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    bottom: 20,
     elevation: 3,
   },
   disabledButton: {

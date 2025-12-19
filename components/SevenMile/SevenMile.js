@@ -32,7 +32,7 @@ const SevenMile = () => {
         categories: [
             {
                 name: "EDIBLE FOODS",
-                routeName: "edibleFoods", // Screen name for navigation
+                routeName: "ediblefoods", // Screen name for navigation
                 count: "10 items",
                 image: img1,
                 color: '#ffffff',

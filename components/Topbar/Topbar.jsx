@@ -11,6 +11,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import SearchModal from '../Nav/Search/SearchModal';
 import { useCart } from '../context/CartContext';
+import { Navigation } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // Get the URLs from environment variables
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
@@ -31,6 +33,7 @@ const TopBar = ({
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigation = useNavigation()
   
   // Use cart context inside the component
   const { getCartItemsCount } = useCart();
@@ -167,7 +170,7 @@ const TopBar = ({
               <Ionicons name="heart-outline" size={22} color="#000" />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={onCartPress} style={styles.iconBox}>
+            <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.iconBox}>
               <Ionicons name="cart-outline" size={22} color="#000" />
               {cartItemsCount > 0 && (
                 <View style={styles.badge}>

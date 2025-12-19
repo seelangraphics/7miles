@@ -718,17 +718,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#fff",
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    // paddingVertical: 14,
     borderTopWidth: 1,
     borderTopColor: "#E5E7EB",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
+    shadowOffset: { width: 0,  },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 8,
+    height: 100,
+    
   },
   footerLeft: {
     flex: 1,
+    bottom: 20
   },
   footerTotalLabel: {
     fontSize: 12,
@@ -753,6 +756,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+     bottom:20
   },
   checkoutText: {
     color: "#fff",
@@ -784,8 +788,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
-    marginTop: 20,
     gap: 8,
+  
+    
   },
   continueShoppingText: {
     color: "#fff",

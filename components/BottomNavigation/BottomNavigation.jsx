@@ -18,8 +18,9 @@ export default function BottomNavigation({ navigation }) {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 60,
-          paddingBottom: 6,
+           height: 100,
+  paddingBottom: 20,
+     
           borderTopWidth: 1,
           borderTopColor: "#eee",
         },
@@ -32,25 +33,26 @@ export default function BottomNavigation({ navigation }) {
         tabBarIcon: ({ focused, color }) => {
           let iconName;
 
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          }
+         if (route.name === "Home") {
+  iconName = focused ? "home-sharp" : "home-outline";
+}
 
-          if (route.name === "Categories") {
-            iconName = focused ? "grid" : "grid-outline";
-          }
+if (route.name === "Categories") {
+  iconName = focused ? "apps" : "apps-outline";
+}
 
-          if (route.name === "Orders") {
-            iconName = focused ? "receipt" : "receipt-outline";
-          }
+if (route.name === "Orders") {
+  iconName = focused ? "bag-check" : "bag-check-outline";
+}
 
-          if (route.name === "Help") {
-            iconName = focused ? "help-circle" : "help-circle-outline";
-          }
+if (route.name === "Help") {
+  iconName = focused ? "headset" : "headset-outline";
+}
 
-          if (route.name === "Account") {
-            iconName = focused ? "person" : "person-outline";
-          }
+if (route.name === "Account") {
+  iconName = focused ? "person-circle" : "person-circle-outline";
+}
+
 
           return <Ionicons name={iconName} size={22} color={color} />;
         },

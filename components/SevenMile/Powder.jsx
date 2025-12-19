@@ -102,18 +102,7 @@ export const Powder = () => {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.container}>
                 {/* Header */}
-                <View style={styles.header}>
-                    <TouchableOpacity 
-                        style={styles.backButton}
-                        onPress={() => navigation.goBack()}
-                    >
-                        <Ionicons name="arrow-back" size={24} color="#000" />
-                    </TouchableOpacity>
-                    <View style={styles.headerContent}>
-                        <Text style={styles.title}>Powder Products</Text>
-                        <Text style={styles.subtitle}>Finely ground quality powders</Text>
-                    </View>
-                </View>
+            
 
                 {/* Products Grid */}
                 <FlatList

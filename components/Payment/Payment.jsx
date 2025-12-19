@@ -924,9 +924,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 8,
+    height: 100,
   },
   bottomLeft: {
     alignItems: "flex-start",
+    bottom:20
   },
   totalAmount: {
     fontSize: 18,
@@ -950,6 +952,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
+    bottom:20
+    
   },
   payButtonDisabled: {
     backgroundColor: "#9CA3AF",
