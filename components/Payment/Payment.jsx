@@ -438,18 +438,15 @@ const Payment = () => {
         },
       ]}
     >
-
-
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Order Summary */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Order Summary</Text>
             <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
-              <Text style={styles.editText}>Edit</Text>
+              <Text style={styles.editText}>More Items</Text>
             </TouchableOpacity>
           </View>
 
@@ -468,17 +465,13 @@ const Payment = () => {
                   {item.name}
                 </Text>
                 <Text style={styles.itemCategory}>{item.category}</Text>
-                <Text style={styles.itemQuantity}>
-                  Qty: {item.quantity} × ₹{item.sale_price}
-                </Text>
+                <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
               </View>
-              <Text style={styles.itemPrice}>
-                ₹{(item.sale_price * item.quantity).toFixed(2)}
-              </Text>
+              <Text style={styles.itemPrice}>₹{item.sale_price}</Text>
             </View>
           ))}
 
-          <View style={styles.divider} />
+          <Text style={styles.priceDetailsHeading}>Price Details</Text>
 
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Subtotal</Text>
@@ -488,18 +481,15 @@ const Payment = () => {
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Shipping</Text>
-            <Text style={styles.summaryValue}>
-              ₹{shippingCharge}
-            </Text>
+            <Text style={styles.shippingValue}>₹{shippingCharge}</Text>
           </View>
-       
+
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Amount</Text>
             <Text style={styles.totalValue}>₹{finalTotal}</Text>
           </View>
         </View>
 
-        {/* Delivery Address */}
         {address && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Delivery Address</Text>
@@ -526,7 +516,6 @@ const Payment = () => {
           </View>
         )}
 
-        {/* Payment Methods */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Choose Payment Method</Text>
 
@@ -592,228 +581,312 @@ const Payment = () => {
             </Text>
           </View>
         </View>
+        <View style={styles.bottomBar}>
+          <View style={styles.bottomLeft}>
+            <Text style={styles.totalAmount}>₹{finalTotal}</Text>
+            <Text style={styles.totalLabelBottom}>Total Payable</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.payButton,
+              (!selectedMethod || isLoading) && styles.payButtonDisabled,
+            ]}
+            onPress={handlePayment}
+            disabled={!selectedMethod || isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <>
+                <Text style={styles.payButtonText}>
+                  {selectedMethod === "cod" ? "PLACE ORDER" : "PAY NOW"}
+                </Text>
+                <Ionicons name="lock-closed" size={15} color="#fff" />
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
 
         {/* Terms & Conditions */}
       </ScrollView>
 
       {/* Bottom Action Bar */}
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomLeft}>
-          <Text style={styles.totalAmount}>₹{finalTotal}</Text>
-          <Text style={styles.totalLabelBottom}>Total Payable</Text>
-        </View>
-
-        <TouchableOpacity
-          style={[
-            styles.payButton,
-            (!selectedMethod || isLoading) && styles.payButtonDisabled,
-          ]}
-          onPress={handlePayment}
-          disabled={!selectedMethod || isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <>
-              <Text style={styles.payButtonText}>
-                {selectedMethod === "cod" ? "PLACE ORDER" : "PAY NOW"}
-              </Text>
-              <Ionicons name="lock-closed" size={14} color="#fff" />
-            </>
-          )}
-        </TouchableOpacity>
-      </View>
     </Animated.View>
   );
 };
 
 export default Payment;
 
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#f8f6f4",
+  },
+  gradientBg: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 120,
+    backgroundColor: "#ff4757",
+    opacity: 0.05,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 12,
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 5,
+    zIndex: 10,
   },
   backButton: {
-    padding: 4,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#f0f0f0",
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#111827",
+    fontSize: 15, // Header font size
+    fontWeight: "800",
+    color: "#222",
+    letterSpacing: -0.2,
   },
   headerRight: {
-    width: 28,
+    width: 36,
   },
   scrollView: {
     flex: 1,
-    paddingBottom: 100,
+    paddingBottom: 140,
   },
+
   section: {
     backgroundColor: "#fff",
-    marginHorizontal: 12,
+    marginHorizontal: 16,
     marginTop: 12,
-    borderRadius: 8,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    borderRadius: 16,
+    padding: 20,
   },
+
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: "#ff4757",
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#111827",
+    fontSize: 15, // Header font size
+    fontWeight: "800",
+    color: "#222",
+    letterSpacing: -0.2,
   },
   editText: {
-    fontSize: 12,
-    color: "#4F46E5",
-    fontWeight: "600",
+    fontSize: 13.5, // Normal font size
+    color: "#ff4757",
+    fontWeight: "700",
+    backgroundColor: "#fff1f0",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ffcccb",
   },
   itemRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#f8f6f4",
   },
   itemImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 6,
-    backgroundColor: "#F3F4F6",
-    marginRight: 12,
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    backgroundColor: "#f8f6f4",
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: "#eee",
   },
   itemDetails: {
     flex: 1,
   },
   itemName: {
-    fontSize: 12,
+    fontSize: 13.5, // Normal font size
     fontWeight: "600",
-    color: "#111827",
-    marginBottom: 2,
+    color: "#222",
+    marginBottom: 4,
+    lineHeight: 18,
   },
   itemCategory: {
-    fontSize: 11,
-    color: "#6B7280",
-    marginBottom: 4,
-  },
-  itemQuantity: {
-    fontSize: 11,
-    color: "#4F46E5",
+    fontSize: 11.5,
+    color: "#666",
+    backgroundColor: "#f0f0f0",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+    alignSelf: "flex-start",
+    marginBottom: 6,
     fontWeight: "500",
   },
-  itemPrice: {
+  itemQuantity: {
     fontSize: 12,
+    color: "#ff4757",
+    fontWeight: "600",
+  },
+  itemPrice: {
+    fontSize: 13.5, // Normal font size
     fontWeight: "700",
-    color: "#111827",
+    color: "#ff4757",
   },
   divider: {
-    height: 1,
-    backgroundColor: "#F3F4F6",
-    marginVertical: 12,
+    height: 2,
+    backgroundColor: "#ff4757",
+    marginVertical: 16,
+    borderRadius: 1,
+    opacity: 0.3,
+  },
+  priceDetailsHeading: {
+    fontSize: 14.5,
+    fontWeight: "700",
+    color: "#222",
+    marginTop: 15,
+    textAlign: "center",
+    marginBottom: 8,
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
   summaryRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    marginVertical: 2,
   },
+
   summaryLabel: {
-    fontSize: 12,
-    color: "#6B7280",
+    fontSize: 13.5,
+    color: "#555",
+    fontWeight: "500",
   },
+
   summaryValue: {
-    fontSize: 12,
+    fontSize: 13.5,
     fontWeight: "600",
-    color: "#111827",
+    color: "#555",
   },
+
+  shippingValue: {
+    fontSize: 13.5,
+    fontWeight: "600",
+  },
+
   totalRow: {
     marginTop: 8,
-    paddingTop: 8,
+    paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: "#eee",
   },
   totalLabel: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#111827",
+    fontSize: 15, // Header font size
+    fontWeight: "800",
+    color: "#222",
+    letterSpacing: 0.3,
   },
   totalValue: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#4F46E5",
+    fontSize: 15,
+    fontWeight: "900",
+    color: "#ff4757",
+    letterSpacing: 0.5,
   },
+
   addressCard: {
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: "#fafafa",
+    borderRadius: 14,
+    padding: 16,
     marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   addressHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 8,
   },
   addressName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#111827",
+    fontSize: 14.5,
+    fontWeight: "700",
+    color: "#222",
+    letterSpacing: -0.1,
   },
   changeAddressText: {
-    fontSize: 12,
-    color: "#4F46E5",
-    fontWeight: "600",
+    fontSize: 13.5, // Normal font size
+    color: "#ff4757",
+    fontWeight: "700",
+    backgroundColor: "#fff1f0",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
   },
   addressPhone: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginBottom: 4,
+    fontSize: 13.5, // Normal font size
+    color: "#444",
+    marginBottom: 6,
+    fontWeight: "500",
   },
   addressText: {
-    fontSize: 12,
-    color: "#4B5563",
-    lineHeight: 16,
+    fontSize: 13.5, // Normal font size
+    color: "#555",
+    lineHeight: 18,
     marginBottom: 2,
   },
   addressLocation: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginTop: 2,
+    fontSize: 13.5, // Normal font size
+    color: "#777",
+    marginTop: 4,
+    fontStyle: "italic",
   },
   methodCard: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 8,
-    marginBottom: 8,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: "#eee",
+    borderRadius: 14,
+    marginBottom: 12,
     backgroundColor: "#fff",
   },
   methodCardSelected: {
-    borderColor: "#4F46E5",
-    backgroundColor: "#F5F3FF",
+    borderColor: "#ff4757",
+    backgroundColor: "#fff9f9",
+    shadowColor: "#ff4757",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   methodCardDisabled: {
     opacity: 0.5,
@@ -824,87 +897,114 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   methodIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
+    marginRight: 14,
+    backgroundColor: "#fff",
+    borderWidth: 2,
+    borderColor: "#eee",
+  },
+  methodIconContainerSelected: {
+    borderColor: "#ff4757",
+    backgroundColor: "#fff9f9",
   },
   methodInfo: {
     flex: 1,
   },
   methodName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 2,
+    fontSize: 14.5,
+    fontWeight: "700",
+    color: "#222",
+    marginBottom: 4,
   },
   methodDescription: {
-    fontSize: 12,
-    color: "#6B7280",
+    fontSize: 12.5,
+    color: "#666",
+    lineHeight: 16,
   },
   methodRight: {
     marginLeft: 12,
   },
   radioOuter: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 2,
-    borderColor: "#D1D5DB",
+    borderColor: "#ddd",
     alignItems: "center",
     justifyContent: "center",
   },
   radioInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
   soonText: {
     fontSize: 11,
-    color: "#9CA3AF",
-    fontWeight: "600",
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    color: "#fff",
+    fontWeight: "700",
+    backgroundColor: "#999",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 12,
   },
   securityInfo: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 16,
-    padding: 12,
-    backgroundColor: "#F0FDF4",
-    borderRadius: 8,
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: "#f0fff7",
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#BBF7D0",
+    borderColor: "#bbf7d0",
+  },
+  securityIcon: {
+    backgroundColor: "#10b981",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   securityText: {
-    fontSize: 12,
-    color: "#065F46",
-    marginLeft: 8,
-    fontWeight: "500",
+    fontSize: 13, // Normal font size
+    color: "#065f46",
+    marginLeft: 12,
+    fontWeight: "600",
+    flex: 1,
   },
   termsSection: {
     backgroundColor: "#fff",
-    marginHorizontal: 12,
+    marginHorizontal: 16,
     marginTop: 12,
-    marginBottom: 20,
-    borderRadius: 8,
-    padding: 16,
+    marginBottom: 24,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 5,
   },
   termsTitle: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#111827",
-    marginBottom: 8,
+    fontSize: 15, // Header font size
+    fontWeight: "800",
+    color: "#222",
+    marginBottom: 12,
+    letterSpacing: -0.2,
   },
   termsText: {
-    fontSize: 12,
-    color: "#6B7280",
-    lineHeight: 18,
-    marginBottom: 4,
+    fontSize: 13, // Normal font size
+    color: "#666",
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  highlightText: {
+    color: "#ff4757",
+    fontWeight: "600",
   },
   bottomBar: {
     position: "absolute",
@@ -914,93 +1014,63 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
+    backgroundColor: "#f3eeea", // changed background
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 8,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 15,
   },
+
   bottomLeft: {
     alignItems: "flex-start",
   },
+
   totalAmount: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#4F46E5",
+    fontSize: 15, // unified font size
+    fontWeight: "800",
+    color: "#111",
+    letterSpacing: 0.5,
   },
+
   totalLabelBottom: {
-    fontSize: 12,
-    color: "#6B7280",
+    fontSize: 15,
+    color: "#555",
+    fontWeight: "500",
+    marginTop: 4,
   },
+
   payButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#4F46E5",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: "#000", // changed to black
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 20, // more unique rounded design
     gap: 8,
-    shadowColor: "#4F46E5",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 1.5,
+    borderColor: "#333", // subtle border for uniqueness
   },
+
   payButtonDisabled: {
-    backgroundColor: "#9CA3AF",
-    shadowColor: "#9CA3AF",
+    backgroundColor: "#aaa",
+    shadowColor: "#aaa",
   },
+
   payButtonText: {
     color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  successContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  successContent: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  successIcon: {
-    marginBottom: 20,
-  },
-  successTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#10B981",
-    marginBottom: 8,
-  },
-  successOrderId: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 16,
-  },
-  successText: {
-    fontSize: 14,
-    color: "#6B7280",
-    textAlign: "center",
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  loader: {
-    marginVertical: 20,
-  },
-  redirectText: {
-    fontSize: 12,
-    color: "#9CA3AF",
-    marginTop: 8,
+    fontSize: 15, // unified font size
+    fontWeight: "800",
+    letterSpacing: 0.8,
+    textTransform: "uppercase", // unique design touch
   },
 });

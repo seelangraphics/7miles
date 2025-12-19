@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../context/CartContext";
 import { Dropdown } from "react-native-element-dropdown";
 
-const { width } = Dimensions.get("window");
+
 
 const CartScreen = ({ navigation }) => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
@@ -25,7 +25,6 @@ const CartScreen = ({ navigation }) => {
   const shippingCharge = cartTotal >= FREE_SHIPPING_LIMIT ? 0 : 40;
   const finalTotal = cartTotal + shippingCharge;
 
-  // Calculate shipping progress percentage
   const shippingProgress = Math.min(
     (cartTotal / FREE_SHIPPING_LIMIT) * 100,
     100
@@ -36,7 +35,6 @@ const CartScreen = ({ navigation }) => {
   const [pincode, setPincode] = useState("");
   const [estimatedShipping, setEstimatedShipping] = useState(null);
 
-  const countries = [{ label: "India", value: "India" }];
   const states = [
     { label: "Tamil Nadu", value: "Tamil Nadu" },
     { label: "Kerala", value: "Kerala" },
@@ -49,7 +47,6 @@ const CartScreen = ({ navigation }) => {
       return;
     }
 
-    // Calculate based on cart total
     if (cartTotal >= FREE_SHIPPING_LIMIT) {
       setEstimatedShipping({
         method: "Standard Shipping",
@@ -78,7 +75,7 @@ const handleCheckout = () => {
  
   const finalTotalWithTax = cartTotal + shippingCharge;
 
-  // Pass only price details to delivery page
+
   const priceDetails = {
     subtotal: cartTotal.toFixed(2),
     shipping: shippingCharge.toFixed(2),
@@ -102,7 +99,7 @@ const handleCheckout = () => {
     return (
       <View style={styles.container}>
         <View style={styles.emptyCart}>
-          <Ionicons name="cart-outline" size={80} color="#d2c1e2" />
+          <Ionicons name="cart-outline" size={80} color="#d6433c" />
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
           <Text style={styles.emptyCartSubtext}>
             Add some products to get started
@@ -122,9 +119,9 @@ const handleCheckout = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.cartItems} showsVerticalScrollIndicator={false}>
-        {/* Cart Items */}
         {cartItems.map((item) => (
-          <View key={item.name} style={styles.cartItem}>
+          <View style={styles.cartItem}>
+            {/* Left Side Image */}
             <Image
               source={
                 typeof item.image === "string"
@@ -134,51 +131,65 @@ const handleCheckout = () => {
               style={styles.cartItemImage}
             />
 
+            {/* Right Side Details */}
             <View style={styles.cartItemDetails}>
+              {/* Name */}
               <Text style={styles.cartItemName} numberOfLines={2}>
                 {item.name}
               </Text>
-              <Text style={styles.cartItemCategory}>{item.category}</Text>
+
+              {/* Price */}
               <Text style={styles.cartItemPrice}>₹{item.sale_price}</Text>
-            </View>
 
-            <View style={styles.cartItemActions}>
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.name, item.cartQty - 1)}
-                  disabled={item.cartQty <= 1}
-                >
-                  <Text
-                    style={[
-                      styles.quantityText,
-                      item.cartQty <= 1 && styles.disabledButton,
-                    ]}
+              {/* Quantity Controls */}
+              <View style={styles.quantitysection}>
+                <Text style={styles.quantityLabel}>Qty: {item.quantity}</Text>
+
+                <View style={styles.quantityContainer}>
+                  <TouchableOpacity
+                    style={styles.quantityButton}
+                    onPress={() => updateQuantity(item.name, item.cartQty - 1)}
+                    disabled={item.cartQty <= 1}
                   >
-                    -
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={[
+                        styles.quantityText,
+                        item.cartQty <= 1 && styles.disabledButton,
+                      ]}
+                    >
+                      -
+                    </Text>
+                  </TouchableOpacity>
 
-                <Text style={styles.quantity}>{item.cartQty}</Text>
+                  <Text style={styles.quantity}>{item.cartQty}</Text>
 
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.name, item.cartQty + 1)}
-                >
-                  <Text style={styles.quantityText}>+</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.quantityButton}
+                    onPress={() => updateQuantity(item.name, item.cartQty + 1)}
+                  >
+                    <Text style={styles.quantityText}>+</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
 
-              <Text style={styles.itemTotal}>
-                ₹{(item.sale_price * item.cartQty).toFixed(2)}
-              </Text>
+              {/* Divider Line */}
+              <View style={styles.divider} />
 
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => removeFromCart(item.name)}
-              >
-                <Ionicons name="trash-outline" size={18} color="#d6433c" />
-              </TouchableOpacity>
+              {/* Wishlist + Remove Row */}
+              <View style={styles.actionRow}>
+                <TouchableOpacity style={styles.wishlistButton}>
+                  <Ionicons name="heart-outline" size={18} color="#d6433c" />
+                  <Text style={styles.actionText}>Wishlist</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => removeFromCart(item.name)}
+                >
+                  <Ionicons name="trash-outline" size={18} color="#d6433c" />
+                  <Text style={styles.actionText}>Remove</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         ))}
@@ -215,7 +226,7 @@ const handleCheckout = () => {
             <View style={styles.freeShippingAchieved}>
               <Ionicons name="checkmark-circle" size={16} color="#10B981" />
               <Text style={styles.freeShippingText}>
-                🎉 Free Shipping Unlocked!
+                Free Shipping Unlocked!
               </Text>
             </View>
           )}
@@ -362,98 +373,135 @@ const styles = StyleSheet.create({
   cartItems: {
     flex: 1,
     padding: 10,
-    paddingBottom:30,
+    paddingBottom: 30,
   },
+
   cartItem: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#f0f0f0",
   },
+
   cartItemImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 8,
-    backgroundColor: "#f3eeea",
+    width: 90,
+    height: 90,
+    borderRadius: 10,
+    backgroundColor: "#fafafa",
+    borderWidth: 1,
+    borderColor: "#eee",
   },
+
   cartItemDetails: {
     flex: 1,
-    marginLeft: 12,
-    justifyContent: "center",
+    marginLeft: 14,
+    justifyContent: "flex-start",
   },
+
   cartItemName: {
-    fontSize: 13.5,
+    fontSize: 15,
     fontWeight: "600",
     color: "#111827",
     marginBottom: 4,
   },
-  cartItemCategory: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginBottom: 6,
-  },
+
   cartItemPrice: {
-    fontSize: 13.5,
+    fontSize: 15,
     fontWeight: "700",
     color: "#d6433c",
+    marginBottom: 8,
   },
-  cartItemActions: {
-    alignItems: "flex-end",
-    justifyContent: "space-between",
+
+  quantitysection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", 
+    marginBottom: 10,
   },
+  quantityLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+  },
+
   quantityContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 10,
   },
+
   quantityButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: "#f3eeea",
     alignItems: "center",
     justifyContent: "center",
   },
+
   disabledButton: {
     color: "#9CA3AF",
   },
+
   quantityText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     color: "#333",
   },
+
   quantity: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
-    marginHorizontal: 10,
+    marginHorizontal: 12,
     color: "#333",
-    minWidth: 20,
+    minWidth: 24,
     textAlign: "center",
   },
-  itemTotal: {
-    fontSize: 13.5,
-    fontWeight: "700",
-    color: "#111827",
-    marginBottom: 8,
+
+  divider: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 10,
   },
+
+  actionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  wishlistButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
   removeButton: {
-    padding: 4,
+    flexDirection: "row",
+    alignItems: "center",
   },
+
+  actionText: {
+    fontSize: 13,
+    fontWeight: "600",
+    marginLeft: 6,
+    color: "#111827",
+  },
+
   shippingProgressSection: {
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#d2c1e2",
+    borderColor: "#d6433c",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -566,7 +614,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#d2c1e2",
+    borderColor: "#d6433c",
     paddingHorizontal: 12,
     backgroundColor: "#F9FAFB",
   },
@@ -582,7 +630,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#d2c1e2",
+    borderColor: "#d6433c",
     paddingHorizontal: 12,
     fontSize: 13.5,
     color: "#333",

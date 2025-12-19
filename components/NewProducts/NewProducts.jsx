@@ -137,7 +137,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                     <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
                 </View>
 
-                {/* Add to Cart / Quantity Controls */}
+            
                 {isAdded ? (
                     <View style={styles.quantityControls}>
                         <TouchableOpacity 

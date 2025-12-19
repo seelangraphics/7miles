@@ -13,7 +13,7 @@ import CategoriesScreen from "./components/Categories/CategoriesScreen";
 import ProductDetailsScreen from "./components/ProductDetails/ProductDetailsScreen";
 import CartScreen from "./components/CartScreen/CartScreen";
 import OrderSuccessScreen from "./components/Success/OrderSuccessScreen";
-import { CartProvider } from "./components/context/CartContext";
+import { CartProvider, useCart } from "./components/context/CartContext";
 import AuthScreen from "./components/AuthScreen/Login";
 import Toast from "react-native-toast-message";
 import Address from "./components/Deliveryaddress/Address";
@@ -43,7 +43,6 @@ function AppContent() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-
           {/* Bottom Tabs */}
           <Stack.Screen
             name="MainTabs"
@@ -76,18 +75,26 @@ function AppContent() {
           <Stack.Screen
             name="ProductDetails"
             options={{
-              header: ({ navigation }) => (
-                <TopBar
-                  title="Product Details"
-                  showBackButton
-                  onBackPress={() => navigation.goBack()}
-                />
-              ),
+              header: ({ navigation, route }) => {
+                // Get cart count from context or pass as prop
+                const { getCartItemsCount } = useCart();
+                const cartItemsCount = getCartItemsCount();
+
+                return (
+                  <TopBar
+                    title="Product Details"
+                    showBackButton
+                    onBackPress={() => navigation.goBack()}
+                    cartItemsCount={cartItemsCount}
+                    onCartPress={() => navigation.navigate("Cart")}
+                    onWishlistPress={() => navigation.navigate("Wishlist")}
+                  />
+                );
+              },
             }}
           >
             {(props) => <ProductDetailsScreen {...props} />}
           </Stack.Screen>
-
           {/* Cart */}
           <Stack.Screen
             name="Cart"
@@ -101,7 +108,7 @@ function AppContent() {
             component={Address}
             options={{ title: "Delivery Address", headerShown: true }}
           />
-            <Stack.Screen
+          <Stack.Screen
             name="address"
             component={Youraddress}
             options={{ title: "Your Address", headerShown: true }}
@@ -126,7 +133,6 @@ function AppContent() {
             component={OrderSuccessScreen}
             options={{ headerShown: false }}
           />
-
         </Stack.Navigator>
       </NavigationContainer>
 
