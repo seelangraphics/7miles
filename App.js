@@ -21,6 +21,10 @@ import Payment from "./components/Payment/Payment";
 import { Youraddress } from "./components/Youraddress/Youraddress";
 import TopBar from "./components/Topbar/Topbar";
 import OrdersHistory from "./components/Yourorders/Yourorder";
+import { useCart } from "./components/context/CartContext";
+import Ediblefoods from "./components/SevenMile/Ediblefoods";
+import Oil from "./components/SevenMile/Oil";
+import Powder from "./components/SevenMile/Powder";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,13 +80,22 @@ function AppContent() {
           <Stack.Screen
             name="ProductDetails"
             options={{
-              header: ({ navigation }) => (
-                <TopBar
-                  title="Product Details"
-                  showBackButton
-                  onBackPress={() => navigation.goBack()}
-                />
-              ),
+              header: ({ navigation, route }) => {
+                // Get cart count from context or pass as prop
+                const { getCartItemsCount } = useCart();
+                const cartItemsCount = getCartItemsCount();
+
+                return (
+                  <TopBar
+                    title="Product Details"
+                    showBackButton
+                    onBackPress={() => navigation.goBack()}
+                    cartItemsCount={cartItemsCount}
+                    onCartPress={() => navigation.navigate('Cart')}
+                    onWishlistPress={() => navigation.navigate('Wishlist')}
+                  />
+                );
+              },
             }}
           >
             {(props) => <ProductDetailsScreen {...props} />}
@@ -101,7 +114,7 @@ function AppContent() {
             component={Address}
             options={{ title: "Delivery Address", headerShown: true }}
           />
-            <Stack.Screen
+          <Stack.Screen
             name="address"
             component={Youraddress}
             options={{ title: "Your Address", headerShown: true }}
@@ -118,6 +131,21 @@ function AppContent() {
             name="payment"
             component={Payment}
             options={{ title: "Payment", headerShown: true }}
+          />
+          <Stack.Screen
+            name="ediblefoods"
+            component={Ediblefoods}
+            options={{ title: "ediblefoods", headerShown: true }}
+          />
+          <Stack.Screen
+            name="oil"
+            component={Oil}
+            options={{ title: "Oil", headerShown: true }}
+          />
+          <Stack.Screen
+            name="powder"
+            component={Powder}
+            options={{ title: "Powder", headerShown: true }}
           />
 
           {/* Checkout */}

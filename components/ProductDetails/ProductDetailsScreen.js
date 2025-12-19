@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  ScrollView
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from 'expo-constants';
@@ -20,21 +21,18 @@ const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
 
 const ProductDetailsScreen = ({ route, navigation }) => {
   const { product } = route.params;
-  const { addToCart, updateQuantity, cartItems } = useCart();
+  const {
+    addToCart,
+    updateQuantity,
+    getItemQuantity,  // Changed from getCartItemQuantity
+    isInCart,
+    cartItems
+  } = useCart();
 
-  // Check if product is already in cart
-  const cartItem = cartItems.find(item => item.name === product.name);
-  const initialQuantity = cartItem ? cartItem.quantity : 1;
-  const isInCart = cartItem !== undefined;
-
-  const [quantity, setQuantity] = useState(initialQuantity);
+  const [quantity, setQuantity] = useState(1);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // State for added items and quantities for similar products
-  const [addedItems, setAddedItems] = useState({});
-  const [similarQuantities, setSimilarQuantities] = useState({});
 
   const COLORS = {
     primary: "black",
@@ -49,31 +47,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     fetchProducts();
-
-    // Initialize similar products quantities from cart
-    const similarInCart = cartItems.filter(item =>
-      item.category === product.category && item.name !== product.name
-    );
-
-    const initialAdded = {};
-    const initialQuantities = {};
-
-    similarInCart.forEach(item => {
-      initialAdded[item.name] = true;
-      initialQuantities[item.name] = item.quantity;
-    });
-
-    setAddedItems(initialAdded);
-    setSimilarQuantities(initialQuantities);
   }, []);
-
-  useEffect(() => {
-    // Update quantity when cart changes
-    const updatedCartItem = cartItems.find(item => item.name === product.name);
-    if (updatedCartItem) {
-      setQuantity(updatedCartItem.quantity);
-    }
-  }, [cartItems]);
 
   const fetchProducts = async () => {
     try {
@@ -113,20 +87,19 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   // Handle add to cart for main product
   const handleAddToCart = () => {
-    if (isInCart) {
-      // If already in cart, increase quantity by 1
-      updateQuantity(product.name, quantity + 1);
-      setQuantity(prev => prev + 1);
-    } else {
-      // If not in cart, add with current quantity
-      addToCart(product, quantity);
+    // Add product multiple times based on quantity
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
     }
+    // Optional: Show feedback to user
+    alert(`${product.name} added to cart! (Quantity: ${quantity})`);
   };
 
   // Handle buy now
   const handleBuyNow = () => {
-    if (!isInCart) {
-      addToCart(product, quantity);
+    // Add product multiple times based on quantity
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
     }
     navigation.navigate('Cart');
   };
@@ -135,30 +108,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   const handleQuantityChange = (change) => {
     const newQty = Math.max(1, quantity + change);
     setQuantity(newQty);
-
-    if (isInCart) {
-      updateQuantity(product.name, newQty);
-    }
-  };
-
-  // Handle add to cart for similar products
-  const handleSimilarAddToCart = (similarProduct) => {
-    setAddedItems(prev => ({ ...prev, [similarProduct.name]: true }));
-    setSimilarQuantities(prev => ({ ...prev, [similarProduct.name]: 1 }));
-    addToCart(similarProduct, 1);
-  };
-
-  // Handle quantity change for similar products
-  const handleSimilarQuantityChange = (similarProduct, change) => {
-    const currentQty = similarQuantities[similarProduct.name] || 0;
-    const newQty = Math.max(0, currentQty + change);
-
-    setSimilarQuantities(prev => ({ ...prev, [similarProduct.name]: newQty }));
-    updateQuantity(similarProduct.name, newQty);
-
-    if (newQty === 0) {
-      setAddedItems(prev => ({ ...prev, [similarProduct.name]: false }));
-    }
   };
 
   // Format slider images
@@ -173,7 +122,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     .filter(
       (item) =>
         item.category === product.category &&
-        item.name !== product.name
+        item.id !== product.id
     )
     .slice(0, 6);
 
@@ -184,10 +133,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   };
 
   const renderSimilarProduct = ({ item, index }) => {
-    const isAdded = addedItems[item.name] || cartItems.some(cartItem => cartItem.name === item.name);
-    const productQuantity = isAdded
-      ? (similarQuantities[item.name] || cartItems.find(cartItem => cartItem.name === item.name)?.quantity || 1)
-      : 0;
+    const cartItemQuantity = getItemQuantity(item.name); // Use correct function name
+    const isInCartItem = isInCart(item.name); // Use isInCart function
     const discount = calculateDiscount(item.regular_price, item.sale_price);
     const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
     const bgColor = colors[index % colors.length];
@@ -233,18 +180,18 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             </View>
 
             {/* Add to Cart / Quantity Controls */}
-            {isAdded ? (
+            {isInCartItem ? (
               <View style={styles.quantityControls}>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() => handleSimilarQuantityChange(item, -1)}
+                  onPress={() => updateQuantity(item.name, cartItemQuantity - 1)}
                 >
                   <Text style={styles.qtyBtnText}>-</Text>
                 </TouchableOpacity>
-                <Text style={styles.quantity}>{productQuantity}</Text>
+                <Text style={styles.quantity}>{cartItemQuantity}</Text>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() => handleSimilarQuantityChange(item, 1)}
+                  onPress={() => updateQuantity(item.name, cartItemQuantity + 1)}
                 >
                   <Text style={styles.qtyBtnText}>+</Text>
                 </TouchableOpacity>
@@ -252,7 +199,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             ) : (
               <TouchableOpacity
                 style={styles.addBtn}
-                onPress={() => handleSimilarAddToCart(item)}
+                onPress={() => addToCart(item)}
                 activeOpacity={0.8}
               >
                 <Ionicons name="cart" size={14} color="#fff" />
@@ -420,35 +367,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
-        {/* Cart/Quantity Controls Button */}
-        {isInCart ? (
-          <View style={styles.bottomQuantityControls}>
-            <TouchableOpacity
-              style={styles.bottomQtyBtn}
-              onPress={() => handleQuantityChange(-1)}
-            >
-              <Text style={styles.bottomQtyBtnText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.bottomQuantity}>{quantity} in cart</Text>
-            <TouchableOpacity
-              style={styles.bottomQtyBtn}
-              onPress={() => handleQuantityChange(1)}
-            >
-              <Text style={styles.bottomQtyBtnText}>+</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={[styles.bottomButton, styles.cartBtn]}
-            onPress={handleAddToCart}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="cart-outline" size={20} color={COLORS.primary} />
-            <Text style={styles.cartText}>Add to Cart</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* Buy Now Button */}
+        <TouchableOpacity
+          style={[styles.bottomButton, styles.cartBtn]}
+          onPress={handleAddToCart}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="cart-outline" size={20} color={COLORS.primary} />
+          <Text style={styles.cartText}>Add to Cart</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.bottomButton, styles.buyBtn]}
           onPress={handleBuyNow}
@@ -801,7 +727,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 
-  // Bottom Action Bar
+  // Bottom Bar
   bottomBar: {
     position: "absolute",
     bottom: 0,
@@ -844,41 +770,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "700",
     fontSize: 15
-  },
-
-  // Bottom Quantity Controls (when item is in cart)
-  bottomQuantityControls: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#EFF6FF',
-    marginRight: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  bottomQtyBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  bottomQtyBtnText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  bottomQuantity: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: 'black',
-    minWidth: 80,
-    textAlign: 'center',
   },
 
   // Loading States

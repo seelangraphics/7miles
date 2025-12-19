@@ -155,6 +155,7 @@
         "name": "SWEET ALMOND OIL",
         "sale_price": 470,
         "regular_price": 499,
+        "oil": "yes",
         "save": 29,
         "category": "Hair Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h5.webp",
@@ -203,6 +204,7 @@
         "sale_price": 340,
         "regular_price": 390,
         "save": 50,
+        "oil": "yes",
         "category": "Hair Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h6.webp",
         "sub_images": [
@@ -251,6 +253,7 @@
         "regular_price": 290,
         "save": 57,
         "category": "Hair Care",
+        "ediblefoods": "yes",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h7.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/GINGELLY-OIL-01.webp",
@@ -298,6 +301,7 @@
         "name": "COCONUT OIL",
         "sale_price": 210,
         "regular_price": 260,
+        "oil": "yes",
         "save": 50,
         "category": "Hair Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h8.webp",
@@ -348,6 +352,7 @@
         "sale_price": 90,
         "regular_price": 140,
         "save": 50,
+        "oil": "yes",
         "category": "Hair Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h9.webp",
         "sub_images": [
@@ -482,6 +487,7 @@
         "name": "AMLA POWDER",
         "sale_price": 93,
         "regular_price": 125,
+        "ediblefoods": "yes",
         "save": 32,
         "category": "Hair Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h12.webp",
@@ -530,6 +536,7 @@
         "sale_price": 190,
         "regular_price": 220,
         "save": 30,
+        "oil": "yes",
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s1.webp",
         "sub_images": [
@@ -888,11 +895,10 @@
         "save": 70,
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp",
-         "sub_images": [
+        "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SALICYLIC-FACEWASH-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SALICYLIC-FACEWASH-02.webp"
         ],
-        
         "quantity": "100ml",
         "short_benefit": "Removes acne and controls oil",
         "benefits": [
@@ -946,6 +952,7 @@
             "Helps reduce pigmentation and dark spots",
             "Supports overall skin health and healing"
         ],
+        "ediblefoods": "yes",
         "description": "Pure turmeric powder with natural antiseptic and healing properties.",
         "detailed_description": "Our 100% Pure Turmeric Powder is made from carefully selected turmeric roots and finely ground to preserve its active compound, curcumin. Known for its powerful antioxidant, anti-inflammatory, and antibacterial properties, turmeric is widely used in skincare routines, face packs, and traditional wellness practices for clear, healthy, and glowing skin.",
         "key_ingredients": [
@@ -1055,6 +1062,7 @@
         "name": "KUMKUMATHI NIGHT ROUTINE",
         "sale_price": 270,
         "regular_price": 310,
+        "oil": "yes",
         "save": 40,
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp",
@@ -1175,7 +1183,7 @@
         "save": 75,
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp",
-          "sub_images": [
+        "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"
         ],
         "powder": "yes",
@@ -1299,6 +1307,7 @@
         "name": "ALOEVERA GEL",
         "sale_price": 160,
         "regular_price": 175,
+        "oil": "yes",
         "save": 15,
         "category": "Body Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b3.webp",
@@ -1457,6 +1466,7 @@
         "name": "GROUNDNUT OIL",
         "sale_price": 160,
         "regular_price": 210,
+        "oil": "yes",
         "save": 50,
         "category": "Wellness & Edibles",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp",
@@ -1492,6 +1502,7 @@
     {
         "id": 36,
         "name": "ROSE GULKAND",
+        "ediblefoods": "yes",
         "sale_price": 120,
         "regular_price": 180,
         "save": 60,
@@ -1532,6 +1543,7 @@
         "name": "JAGGERY",
         "sale_price": 70,
         "regular_price": 130,
+        "ediblefoods": "yes",
         "save": 60,
         "category": "Wellness & Edibles",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w3.webp",
@@ -1570,6 +1582,7 @@
         "name": "HONEY",
         "sale_price": 190,
         "regular_price": 270,
+        "ediblefoods": "yes",
         "save": 80,
         "category": "Wellness & Edibles",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w4.webp",
@@ -1610,6 +1623,7 @@
         "name": "GHEE",
         "sale_price": 200,
         "regular_price": 295,
+        "ediblefoods": "yes",
         "save": 95,
         "category": "Wellness & Edibles",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w5.webp",
@@ -1658,6 +1672,7 @@
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-CANDY-02.webp"
         ],
         "Newproducts": "yes",
+        "ediblefoods": "yes",
         "quantity": "200gm",
         "short_benefit": "Improves immunity and digestion",
         "benefits": [
@@ -1692,6 +1707,7 @@
         "sale_price": 120,
         "regular_price": 195,
         "save": 75,
+        "ediblefoods": "yes",
         "category": "Wellness & Edibles",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w7.webp",
         "sub_images": [
@@ -1722,6 +1738,48 @@
         "suitable_for": [
             "Oral hygiene",
             "Digestive health",
+            "Immunity support"
+        ]
+    },
+    {
+        "id": 42,
+        "name": "JAMUN SEED POWDER",
+        "sale_price": 90,
+        "regular_price": 140,
+        "save": 50,
+        "ediblefoods": "yes",
+        "category": "Wellness & Edibles",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/JAMUN-SEED-POWDER.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/JAMUN-SEED-POWDER-01.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/JAMUN-SEED-POWDER-02.webp"
+        ],
+        "quantity": "200gm",
+        "short_benefit": "Helps regulate blood sugar and improves digestion",
+        "benefits": [
+            "Regulates Blood Sugar Levels – Helps manage diabetes naturally",
+            "Improves Digestion – Supports gut health and relieves acidity",
+            "Rich in Antioxidants – Fights free radicals and boosts immunity",
+            "Supports Heart Health – Helps maintain healthy cholesterol levels",
+            "Promotes Healthy Skin – Detoxifies the body and prevents skin breakouts",
+            "Boosts Metabolism – Supports weight management and energy levels"
+        ],
+        "description": "Pure Ayurvedic powder made from Jamun (Indian Blackberry) seeds.",
+        "detailed_description": "Jamun Seed Powder is derived from carefully selected and sun-dried Jamun seeds. Widely used in Ayurveda, it is known for its powerful blood sugar regulating properties, digestive support, and antioxidant benefits. Regular consumption supports overall wellness, metabolism, and immunity naturally.",
+        "free_from": [
+            "Artificial preservatives",
+            "Synthetic colors",
+            "Harmful chemicals"
+        ],
+        "usage_notes": [
+            "Consume 1/2 teaspoon daily with warm water or as advised",
+            "Best taken before meals",
+            "Store in a cool, dry place"
+        ],
+        "suitable_for": [
+            "Blood sugar management",
+            "Digestive health",
+            "Heart health",
             "Immunity support"
         ]
     }
