@@ -1,5 +1,5 @@
 // src/Component/Login/AuthScreen.jsx
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import {
   StatusBar,
   ScrollView,
   Image,
-
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Toast from "react-native-toast-message";
@@ -27,10 +26,6 @@ import {
   setDoc,
   getDoc,
   serverTimestamp,
-  collection,
-  query,
-  where,
-  getDocs,
 } from "firebase/firestore";
 
 const Checkbox = ({ value, onValueChange }) => {
@@ -44,11 +39,6 @@ const Checkbox = ({ value, onValueChange }) => {
   );
 };
 
-
-
-
-
-
 const AuthScreen = () => {
   const navigation = useNavigation();
   const [mode, setMode] = useState("login");
@@ -60,438 +50,433 @@ const AuthScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-useEffect(() => {
-  setName("");
-  setEmail("");
-  setPhone("");
-  setPassword("");
-  setConfirmPassword("");
-  setRememberMe(false);
-}, [mode]);
+  useEffect(() => {
+    setName("");
+    setEmail("");
+    setPhone("");
+    setPassword("");
+    setConfirmPassword("");
+    setRememberMe(false);
+  }, [mode]);
 
-
-  const navigateToCart = () => {
+  const navigateToHome = () => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: "Cart" }],
+        routes: [{ name: "MainTabs" }], // Changed from "Cart" to "Home"
       })
     );
   };
 
-
-
-
-const handleSignup = async () => {
-  // ---------- VALIDATION ----------
-  if (!name || !email || !phone || !password || !confirmPassword) {
-    return Toast.show({
-      type: "error",
-      text1: "All fields required",
-      text2: "Please fill in every detail",
-    });
-  }
-
-  if (!/^\S+@\S+\.\S+$/.test(email)) {
-    return Toast.show({
-      type: "error",
-      text1: "Invalid Email",
-    });
-  }
-
-  if (!/^[0-9]{10}$/.test(phone)) {
-    return Toast.show({
-      type: "error",
-      text1: "Invalid Phone Number",
-      text2: "Enter a valid 10-digit number",
-    });
-  }
-
-  if (password.length < 6) {
-    return Toast.show({
-      type: "error",
-      text1: "Weak Password",
-      text2: "Password must be at least 6 characters",
-    });
-  }
-
-  if (password !== confirmPassword) {
-    return Toast.show({
-      type: "error",
-      text1: "Password Mismatch",
-      text2: "Both passwords should match",
-    });
-  }
-
-  try {
-    setLoading(true);
-
-    // ---------- CREATE AUTH USER ----------
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email.trim(),
-      password
-    );
-
-    const user = userCredential.user;
-
-    // ---------- SAVE USER DATA ----------
-    await setDoc(doc(db, "milesusers", user.uid), {
-      name: name.trim(),
-      email: user.email,
-      phone: phone.trim(),
-      createdAt: serverTimestamp(),
-    });
-
-    // ---------- SUCCESS ----------
-    Toast.show({
-      type: "success",
-      text1: "Signup Successful 🎉",
-      text2: `Welcome, ${name}!`,
-    });
-
-    // ---------- NAVIGATION ----------
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Cart" }],
-      })
-    );
-  } catch (error) {
-    console.error("Signup Error:", error);
-
-    let message = "Something went wrong";
-
-    if (error.code === "auth/email-already-in-use") {
-      message = "Email already registered. Please login.";
-    } else if (error.code === "auth/invalid-email") {
-      message = "Invalid email address.";
-    } else if (error.code === "auth/weak-password") {
-      message = "Password should be at least 6 characters.";
-    }
-
-    Toast.show({
-      type: "error",
-      text1: "Signup Failed",
-      text2: message,
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-
-
-  // ✅ Login
-
-const handleLogin = async () => {
-  if (!email || !password) {
-    return Toast.show({
-      type: "error",
-      text1: "Missing Fields",
-      text2: "Please enter email and password",
-    });
-  }
-
-  try {
-    setLoading(true);
-
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email.trim(),
-      password
-    );
-
-    const user = userCredential.user;
-    const userRef = doc(db, "milesusers", user.uid);
-    const userSnap = await getDoc(userRef);
-
-    // 🔥 If Firestore doc missing, CREATE it
-    if (!userSnap.exists()) {
-      await setDoc(userRef, {
-        email: user.email,
-        createdAt: serverTimestamp(),
+  const handleSignup = async () => {
+    if (!name || !email || !phone || !password || !confirmPassword) {
+      return Toast.show({
+        type: "error",
+        text1: "All fields required",
+        text2: "Please fill in every detail",
       });
     }
 
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return Toast.show({
+        type: "error",
+        text1: "Invalid Email",
+      });
+    }
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+      return Toast.show({
+        type: "error",
+        text1: "Invalid Phone Number",
+        text2: "Enter a valid 10-digit number",
+      });
+    }
+
+    if (password.length < 6) {
+      return Toast.show({
+        type: "error",
+        text1: "Weak Password",
+        text2: "Password must be at least 6 characters",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return Toast.show({
+        type: "error",
+        text1: "Password Mismatch",
+        text2: "Both passwords should match",
+      });
+    }
+
+    try {
+      setLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "milesusers", user.uid), {
+        name: name.trim(),
+        email: user.email,
+        phone: phone.trim(),
+        createdAt: serverTimestamp(),
+      });
+
+      Toast.show({
+        type: "success",
+        text1: "Signup Successful 🎉",
+        text2: `Welcome, ${name}!`,
+      });
+
+      navigateToHome(); // Changed to navigate to home
+    } catch (error) {
+      console.error("Signup Error:", error);
+      let message = "Something went wrong";
+
+      if (error.code === "auth/email-already-in-use") {
+        message = "Email already registered. Please login.";
+      } else if (error.code === "auth/invalid-email") {
+        message = "Invalid email address.";
+      } else if (error.code === "auth/weak-password") {
+        message = "Password should be at least 6 characters.";
+      }
+
+      Toast.show({
+        type: "error",
+        text1: "Signup Failed",
+        text2: message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      return Toast.show({
+        type: "error",
+        text1: "Missing Fields",
+        text2: "Please enter email and password",
+      });
+    }
+
+    try {
+      setLoading(true);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+      const user = userCredential.user;
+      const userRef = doc(db, "milesusers", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          email: user.email,
+          createdAt: serverTimestamp(),
+        });
+      }
+
+      Toast.show({
+        type: "success",
+        text1: "Login Successful",
+        text2: `Welcome back!`,
+      });
+
+      navigateToHome(); // Changed to navigate to home
+    } catch (err) {
+      console.error("Login Error:", err);
+      let msg = "Invalid credentials";
+      if (err.code === "auth/user-not-found")
+        msg = "No account found. Please signup.";
+      if (err.code === "auth/wrong-password")
+        msg = "Incorrect password. Try again.";
+
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: msg,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSkipLogin = () => {
     Toast.show({
-      type: "success",
-      text1: "Login Successful",
-      text2: `Welcome back!`,
+      type: "info",
+      text1: "Skipped Login",
+      text2: "You can login later from profile",
     });
+    navigateToHome();
+  };
 
-    navigateToCart();
-  } catch (err) {
-    console.error("Login Error:", err);
-
-    let msg = "Invalid credentials";
-    if (err.code === "auth/user-not-found")
-      msg = "No account found. Please signup.";
-    if (err.code === "auth/wrong-password")
-      msg = "Incorrect password. Try again.";
-
-    Toast.show({
-      type: "error",
-      text1: "Login Failed",
-      text2: msg,
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-
-return (
-  <KeyboardAvoidingView
-    style={styles.container}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-  >
-    <StatusBar barStyle="light-content" />
-
-    <LinearGradient
-      colors={["#0EA5E9", "#1E40AF", "#3730A3"]}
-      style={styles.gradient}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/* Animated Background Elements */}
-      <View style={styles.backgroundBubbles}>
-        <View style={[styles.bubble, styles.bubble1]} />
-        <View style={[styles.bubble, styles.bubble2]} />
-        <View style={[styles.bubble, styles.bubble3]} />
-      </View>
+      <StatusBar barStyle="dark-content" backgroundColor="#f3eeea" />
 
-      {/* Top Logo Section */}
-      <View style={styles.topSection}>
-        <View style={styles.logoContainer}>
-          <View style={styles.logoBackground}>
-            {/* <Image
-              source={require("../assets/logo.png")}
-              style={styles.logoImage}
-              resizeMode="contain"
-            /> */}
-          </View>
-          <Text style={styles.appName}>Welcome</Text>
-          <Text style={styles.appTagline}>
-            {mode === "signup" ? "Create your account" : "Sign in to your account"}
-          </Text>
+      <LinearGradient
+        colors={["#f3eeea", "#f3eeea", "#f3eeea"]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        {/* Background Elements */}
+        <View style={styles.backgroundBubbles}>
+          <View style={[styles.bubble, styles.bubble1]} />
+          <View style={[styles.bubble, styles.bubble2]} />
+          <View style={[styles.bubble, styles.bubble3]} />
         </View>
-      </View>
 
-      {/* Modern Card Design */}
-      <View style={styles.bottomSection}>
-        <View style={styles.curve} />
-        <View style={styles.cardContainer}>
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.card}>
-              {/* Header with Icon */}
-              <View style={styles.header}>
-                <View style={styles.iconContainer}>
-                  <Text style={styles.icon}>
-                    {mode === "signup" ? "👤" : "🔐"}
+        {/* Top Logo Section */}
+        <View style={styles.topSection}>
+          <View style={styles.logoContainer}>
+            <Text style={styles.appName}>Welcome to 7 Miles</Text>
+            <Text style={styles.appTagline}>
+              {mode === "signup" ? "Create your account" : "Sign in to your account"}
+            </Text>
+          </View>
+        </View>
+
+        {/* Modern Card Design */}
+        <View style={styles.bottomSection}>
+          <View style={styles.cardContainer}>
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              style={styles.scrollView}
+            >
+              <View style={styles.card}>
+                {/* Header with Icon */}
+                <View style={styles.header}>
+                  <View style={styles.iconContainer}>
+                    <View style={styles.logoBackground}>
+                      <Image
+                        source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png" }}
+                        style={styles.logoImage}
+                        resizeMode="contain"
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.title}>
+                    {mode === "signup" ? "Create Account" : "Welcome Back"}
+                  </Text>
+                  <Text style={styles.subtitle}>
+                    {mode === "signup"
+                      ? "Please fill in your details to continue"
+                      : "Enter your credentials to continue"
+                    }
                   </Text>
                 </View>
-                <Text style={styles.title}>
-                  {mode === "signup" ? "Create Account" : "Welcome Back"}
-                </Text>
-                <Text style={styles.subtitle}>
-                  {mode === "signup"
-                    ? "Please fill in your details to continue"
-                    : "Enter your credentials to continue"
-                  }
-                </Text>
-              </View>
 
-              {mode === "signup" ? (
-                // Modern Signup Form
-                <>
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Full Name</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your full name"
-                      value={name}
-                      onChangeText={setName}
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Email Address</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your email address"
-                      value={email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Phone Number</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your phone number"
-                      value={phone}
-                      onChangeText={setPhone}
-                      keyboardType="phone-pad"
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Password</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      secureTextEntry
-                      value={password}
-                      onChangeText={setPassword}
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Confirm Password</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Confirm your password"
-                      secureTextEntry
-                      value={confirmPassword}
-                      onChangeText={setConfirmPassword}
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <TouchableOpacity
-                    style={[styles.button, loading && styles.buttonDisabled]}
-                    onPress={handleSignup}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <ActivityIndicator color="#fff" />
-                    ) : (
-                      <>
-                        <Text style={styles.buttonText}>Create Account</Text>
-                        <Text style={styles.buttonIcon}>→</Text>
-                      </>
-                    )}
-                  </TouchableOpacity>
-
-                  <View style={styles.switchContainer}>
-                    <Text style={styles.switchText}>
-                      Already have an account?{" "}
-                    </Text>
-                    <TouchableOpacity onPress={() => setMode("login")}>
-                      <Text style={styles.link}>Sign In</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
-                // Modern Login Form
-                <>
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Email</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your Email"
-                      value={email}
-                      onChangeText={setEmail}
-                      autoCapitalize="none"
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Password</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      secureTextEntry
-                      value={password}
-                      onChangeText={setPassword}
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
-
-                  <View style={styles.loginOptions}>
-                    <View style={styles.rememberMeContainer}>
-                      <Checkbox
-                        value={rememberMe}
-                        onValueChange={setRememberMe}
-                        color={rememberMe ? "#0EA5E9" : undefined}
+                {mode === "signup" ? (
+                  // Modern Signup Form
+                  <>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Full Name</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your full name"
+                        value={name}
+                        onChangeText={setName}
+                        placeholderTextColor="#94A3B8"
                       />
-                      <Text style={styles.rememberMeText}>Remember me</Text>
                     </View>
-                    <TouchableOpacity>
-                      <Text style={styles.forgotPassword}>
-                        Forgot password?
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
 
-                  <TouchableOpacity
-                    style={[styles.button, loading && styles.buttonDisabled]}
-                    onPress={handleLogin}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <ActivityIndicator color="#fff" />
-                    ) : (
-                      <>
-                        <Text style={styles.buttonText}>Sign In</Text>
-                        <Text style={styles.buttonIcon}>→</Text>
-                      </>
-                    )}
-                  </TouchableOpacity>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Email Address</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your email address"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
 
-                  <View style={styles.divider}>
-                    <View style={styles.dividerLine} />
-                    <Text style={styles.dividerText}>or continue with</Text>
-                    <View style={styles.dividerLine} />
-                  </View>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Phone Number</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your phone number"
+                        value={phone}
+                        onChangeText={setPhone}
+                        keyboardType="phone-pad"
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
 
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Password</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Confirm Password</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Confirm your password"
+                        secureTextEntry
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+
+                    {/* Fixed Bottom Button Container for Signup */}
+                    <View style={styles.bottomButtonContainer}>
+                      <TouchableOpacity
+                        style={[styles.button, loading && styles.buttonDisabled]}
+                        onPress={handleSignup}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <ActivityIndicator color="#fff" />
+                        ) : (
+                          <>
+                            <Text style={styles.buttonText}>Create Account</Text>
+                            <Text style={styles.buttonIcon}>→</Text>
+                          </>
+                        )}
+                      </TouchableOpacity>
+
+                      {/* Skip Login Button - Added for signup */}
+                      <TouchableOpacity
+                        style={styles.skipButton}
+                        onPress={handleSkipLogin}
+                      >
+                        <Text style={styles.skipButtonText}>Skip for now</Text>
+                      </TouchableOpacity>
+
+                      <View style={styles.switchContainer}>
+                        <Text style={styles.switchText}>
+                          Already have an account?{" "}
+                        </Text>
+                        <TouchableOpacity onPress={() => setMode("login")}>
+                          <Text style={styles.link}>Sign In</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </>
+                ) : (
+                  // Modern Login Form
+                  <>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Email</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        autoCapitalize="none"
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.inputLabel}>Password</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                        placeholderTextColor="#94A3B8"
+                      />
+                    </View>
+
+                    <View style={styles.loginOptions}>
+                      <View style={styles.rememberMeContainer}>
+                        <Checkbox
+                          value={rememberMe}
+                          onValueChange={setRememberMe}
+                          color={rememberMe ? "#d6433c" : undefined}
+                        />
+                        <Text style={styles.rememberMeText}>Remember me</Text>
+                      </View>
+                      <TouchableOpacity>
+                        <Text style={styles.forgotPassword}>
+                          Forgot password?
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Fixed Bottom Button Container for Login */}
+                    <View style={styles.bottomButtonContainer}>
+                      <TouchableOpacity
+                        style={[styles.button, loading && styles.buttonDisabled]}
+                        onPress={handleLogin}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <ActivityIndicator color="#fff" />
+                        ) : (
+                          <>
+                            <Text style={styles.buttonText}>Sign In</Text>
+                            <Text style={styles.buttonIcon}>→</Text>
+                          </>
+                        )}
+                      </TouchableOpacity>
+
+                      {/* Skip Login Button - Added for login */}
+                      <TouchableOpacity
+                        style={styles.skipButton}
+                        onPress={handleSkipLogin}
+                      >
+                        <Text style={styles.skipButtonText}>Skip Login</Text>
+                      </TouchableOpacity>
+
+                      <View style={styles.divider}>
+                        <View style={styles.dividerLine} />
+                        <Text style={styles.dividerText}>or continue with</Text>
+                        <View style={styles.dividerLine} />
+                      </View>
+
+                      <View style={styles.switchContainer}>
+                        <Text style={styles.switchText}>
+                          Don't have an account?{" "}
+                        </Text>
+                        <TouchableOpacity onPress={() => setMode("signup")}>
+                          <Text style={styles.link}>Sign Up</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </>
+                )}
+              </View>
               
-
-                  <View style={styles.switchContainer}>
-                    <Text style={styles.switchText}>
-                      Don't have an account?{" "}
-                    </Text>
-                    <TouchableOpacity onPress={() => setMode("signup")}>
-                      <Text style={styles.link}>Sign Up</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              )}
-            </View>
-          </ScrollView>
+              {/* Extra padding at bottom for better mobile touch */}
+              <View style={styles.bottomPadding} />
+            </ScrollView>
+          </View>
         </View>
-      </View>
-    </LinearGradient>
-  </KeyboardAvoidingView>
-);
+      </LinearGradient>
+    </KeyboardAvoidingView>
+  );
+};
 
-}
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   gradient: {
-    flex: 1
+    flex: 1,
   },
   backgroundBubbles: {
     position: 'absolute',
@@ -503,7 +488,7 @@ const styles = StyleSheet.create({
   bubble: {
     position: 'absolute',
     borderRadius: 100,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(214, 67, 60, 0.05)',
   },
   bubble1: {
     width: 200,
@@ -524,143 +509,121 @@ const styles = StyleSheet.create({
     right: 50,
   },
   topSection: {
-    height: '30%',
+    height: '28%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
   },
   logoContainer: {
     alignItems: "center",
+    width: '100%',
   },
   logoBackground: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 20,
-    borderRadius: 25,
+    borderRadius: 20,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoImage: {
-    width: 60,
-    height: 60,
+    width: '100%',
+    height: '100%',
   },
   appName: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 8,
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    color: "#000",
+    marginBottom: 6,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.05)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
   appTagline: {
-    fontSize: 16,
-    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 15,
+    color: "#666",
     textAlign: 'center',
     fontWeight: '500',
+    paddingHorizontal: 30,
+    lineHeight: 20,
   },
   bottomSection: {
     flex: 1,
     backgroundColor: 'transparent',
   },
-  curve: {
-    height: 40,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 5,
-  },
   cardContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f3eeea',
+  },
+  scrollView: {
+    width: '100%',
   },
   scrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: 10,
     paddingBottom: 30,
+    minHeight: '100%',
   },
   card: {
     backgroundColor: "#fff",
     paddingHorizontal: 25,
-    paddingVertical: 30,
-    borderRadius: 30,
+    paddingVertical: 25,
+    borderRadius: 25,
     width: "90%",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 8,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOpacity: 0.05,
+    shadowRadius: 15,
+    elevation: 8,
     marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    marginBottom: 20,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 30,
-  },
-  iconContainer: {
-    backgroundColor: '#F0F9FF',
-    padding: 15,
-    borderRadius: 20,
-    marginBottom: 15,
-    shadowColor: "#0EA5E9",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    marginBottom: 25,
   },
   icon: {
-    fontSize: 24,
+    fontSize: 22,
+    color: "#d6433c",
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "bold",
-    color: "#1E293B",
+    color: "#000",
     textAlign: "center",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 16,
-    color: "#64748B",
+    fontSize: 15,
+    color: "#666",
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: 20,
+    paddingHorizontal: 10,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 18,
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#374151",
-    marginBottom: 8,
-    marginLeft: 5,
+    color: "#333",
+    marginBottom: 6,
+    marginLeft: 4,
   },
   input: {
-    backgroundColor: "#F8FAFC",
-    padding: 18,
-    borderRadius: 15,
-    color: "#111",
-    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+    padding: 16,
+    borderRadius: 12,
+    color: "#000",
+    fontSize: 15,
     borderWidth: 1.5,
-    borderColor: "#F1F5F9",
+    borderColor: "#eee",
     fontWeight: '500',
   },
   loginOptions: {
@@ -674,33 +637,57 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: '#d6433c',
+    borderColor: '#d6433c',
+  },
+  checkmark: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   rememberMeText: {
-    color: "#64748B",
+    color: "#666",
     fontSize: 14,
     marginLeft: 8,
     fontWeight: '500',
   },
   forgotPassword: {
-    color: "#0EA5E9",
+    color: "#d6433c",
     fontSize: 14,
     fontWeight: "600",
   },
+  bottomButtonContainer: {
+    width: '100%',
+    marginTop: 'auto',
+    paddingTop: 20,
+  },
   button: {
-    backgroundColor: "#0EA5E9",
-    paddingVertical: 18,
-    borderRadius: 15,
+    backgroundColor: "#d6433c",
+    paddingVertical: 17,
+    borderRadius: 12,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 5,
+    marginBottom: 10, // Reduced margin for skip button
     flexDirection: 'row',
     justifyContent: 'center',
-    shadowColor: "#0EA5E9",
+    shadowColor: "#d6433c",
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 5,
+    elevation: 4,
   },
   buttonText: {
     color: "#fff",
@@ -714,57 +701,38 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonDisabled: {
-    opacity: 0.7
+    opacity: 0.7,
+  },
+  // New Skip Button Styles
+  skipButton: {
+    backgroundColor: "transparent",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: 15,
+    borderWidth: 1.5,
+    borderColor: '#d6433c',
+  },
+  skipButtonText: {
+    color: "#d6433c",
+    fontWeight: "bold",
+    fontSize: 15,
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 25,
+    marginVertical: 15,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#e0e0e0',
   },
   dividerText: {
-    color: '#64748B',
+    color: '#888',
     fontSize: 14,
     marginHorizontal: 15,
     fontWeight: '500',
-  },
-  socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 25,
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F8FAFC',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#F1F5F9',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  socialIcon: {
-    fontSize: 16,
-    marginRight: 8,
-    color: '#64748B',
-  },
-  socialText: {
-    color: '#374151',
-    fontWeight: '600',
-    fontSize: 14,
   },
   switchContainer: {
     flexDirection: 'row',
@@ -773,15 +741,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   switchText: {
-    color: "#64748B",
+    color: "#666",
     fontSize: 15,
     fontWeight: '500',
   },
   link: {
-    color: "#0EA5E9",
+    color: "#d6433c",
     fontWeight: "bold",
     fontSize: 15,
   },
+  bottomPadding: {
+    height: 30,
+  },
 });
 
-export default AuthScreen
+export default AuthScreen;

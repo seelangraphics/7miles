@@ -64,19 +64,6 @@ const BundleComponent = () => {
     }, 0);
   }, [bundleProducts]);
 
-  // Calculate total original price for bundle
-  const calculateBundleOriginalPrice = useMemo(() => {
-    return bundleProducts.reduce((total, product) => {
-      return total + (parseFloat(product.regular_price) || 0);
-    }, 0);
-  }, [bundleProducts]);
-
-  // Calculate total sale price for bundle
-  const calculateBundleSalePrice = useMemo(() => {
-    return bundleProducts.reduce((total, product) => {
-      return total + (parseFloat(product.sale_price) || 0);
-    }, 0);
-  }, [bundleProducts]);
 
   const handleAddBundle = () => {
     if (isAdding || bundleProducts.length === 0) return;
@@ -91,7 +78,7 @@ const BundleComponent = () => {
       bundleProducts.forEach(product => {
         const cartProduct = {
           ...product,
-          quantity: 1,
+          cartqty: 1,
           isFromBundle: true,
           bundleId: bundleId,
           timestamp: Date.now(),
@@ -184,9 +171,9 @@ const BundleComponent = () => {
                     {product.name || product.title}
                   </Text>
                   
-                  {product.quantity && (
+                  {product.cartqty && (
                     <Text style={styles.productQuantity}>
-                      {product.quantity}
+                      {product.cartqty}
                     </Text>
                   )}
                   

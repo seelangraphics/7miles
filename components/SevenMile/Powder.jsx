@@ -4,9 +4,12 @@ import {
     Text, 
     TouchableOpacity, 
     Image, 
-    ScrollView, 
     StyleSheet,
-    Dimensions 
+    FlatList,
+    Dimensions,
+    SafeAreaView,
+    StatusBar,
+    Platform 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -14,10 +17,10 @@ import Constants from "expo-constants";
 import { useCart } from '../context/CartContext';
 
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
-const CARD_WIDTH = 160; // Fixed card width
-const CARD_HEIGHT = 300; // Adjust height as needed
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 48) / 2;
 
-const NewProducts = () => {
+export const Powder = () => {
     const [products, setProducts] = useState([]);
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
@@ -29,7 +32,6 @@ const NewProducts = () => {
             try {
                 const response = await fetch(PRODUCTS_API);
                 const data = await response.json();
-                // console.log('Data',JSON.stringify(data,null,2))
                 setProducts(data);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -38,7 +40,7 @@ const NewProducts = () => {
         fetchProducts();
     }, []);
 
-    const newProducts = products.filter(product => product.Newproducts === "yes").slice(0, 6); // Limit to 6
+    const powderProducts = products.filter(product => product.powder === "yes");
 
     const handleAddToCart = (product) => {
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
@@ -58,47 +60,70 @@ const NewProducts = () => {
         }
     };
 
-    if (newProducts.length === 0) {
-        return null; // Don't show if no new products
+    if (powderProducts.length === 0) {
+        return (
+            <SafeAreaView style={styles.safeArea}>
+                <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <TouchableOpacity 
+                            style={styles.backButton}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <Ionicons name="arrow-back" size={24} color="#000" />
+                        </TouchableOpacity>
+                        <View style={styles.headerContent}>
+                            <Text style={styles.title}>Powder Products</Text>
+                            <Text style={styles.subtitle}>Finely ground quality powders</Text>
+                        </View>
+                    </View>
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No powder products available</Text>
+                    </View>
+                </View>
+            </SafeAreaView>
+        );
     }
 
-    return (
-        <View style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.headerContent}>
-                    <Text style={styles.title}>New Arrivals</Text>
-                    <Text style={styles.subtitle}>Freshly added to our collection</Text>
-                </View>
-                
-            </View>
+    const renderProductCard = ({ item: product, index }) => (
+        <ProductCard 
+            product={product}
+            index={index}
+            quantity={quantities[product.name] || 0}
+            isAdded={addedItems[product.name]}
+            onAdd={() => handleAddToCart(product)}
+            onQuantityChange={(change) => handleQuantityChange(product, change)}
+            onPress={() => navigation.navigate("ProductDetails", { product })}
+        />
+    );
 
-            {/* Products Horizontal Scroll */}
-            <ScrollView 
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.scrollContainer}
-                contentContainerStyle={styles.scrollContent}
-            >
-                {newProducts.map((product, index) => (
-                    <ProductCard 
-                        key={product.name + index}
-                        product={product}
-                        index={index}
-                        quantity={quantities[product.name] || 0}
-                        isAdded={addedItems[product.name]}
-                        onAdd={() => handleAddToCart(product)}
-                        onQuantityChange={(change) => handleQuantityChange(product, change)}
-                        onPress={() => navigation.navigate("ProductDetails", { product })}
-                    />
-                ))}
-            </ScrollView>
-        </View>
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <View style={styles.container}>
+                {/* Header */}
+            
+
+                {/* Products Grid */}
+                <FlatList
+                    data={powderProducts}
+                    renderItem={renderProductCard}
+                    keyExtractor={(item, index) => item.name + index}
+                    numColumns={2}
+                    columnWrapperStyle={styles.columnWrapper}
+                    contentContainerStyle={[
+                        styles.gridContent,
+                        { paddingBottom: 80 } // ADDED: Extra bottom padding
+                    ]}
+                    showsVerticalScrollIndicator={true}
+                    style={styles.listContainer}
+                />
+            </View>
+        </SafeAreaView>
     );
 };
 
 const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress }) => {
-    const discount = Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100);
     const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
     const bgColor = colors[index % colors.length];
 
@@ -118,7 +143,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                 <Ionicons name="heart-outline" size={16} color="#666" />
             </TouchableOpacity>
 
-            {/* Product Image - Now FULL WIDTH */}
+            {/* Product Image */}
             <View style={styles.imageContainer}>
                 <Image 
                     source={typeof product.image === 'string' ? { uri: product.image } : product.image}
@@ -137,7 +162,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                     <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
                 </View>
 
-            
+                {/* Add to Cart / Quantity Controls */}
                 {isAdded ? (
                     <View style={styles.quantityControls}>
                         <TouchableOpacity 
@@ -169,17 +194,25 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
 };
 
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
+        flex: 1,
         backgroundColor: '#fff',
-        paddingVertical: 20,
-        paddingHorizontal: 16,
-        marginTop: 8,
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        marginBottom: 20,
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingTop: Platform.OS === 'ios' ? 10 : 20,
+        paddingBottom: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0f0f0',
+    },
+    backButton: {
+        marginRight: 12,
     },
     headerContent: {
         flex: 1,
@@ -194,38 +227,26 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#6B7280',
     },
-    viewAllBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#F5F3FF',
-        paddingHorizontal: 14,
-        paddingVertical: 8,
-        borderRadius: 20,
+    listContainer: {
+        flex: 1,
     },
-    viewAllText: {
-        fontSize: 13,
-        fontWeight: '600',
-        color: '#8B5CF6',
-        marginRight: 4,
+    gridContent: {
+        padding: 16,
     },
-    scrollContainer: {
-        flexDirection: 'row',
-    },
-    scrollContent: {
-        paddingRight: 16,
+    columnWrapper: {
+        justifyContent: 'space-between',
+        marginBottom: 14,
     },
     productCard: {
         width: CARD_WIDTH,
         borderRadius: 16,
-        marginRight: 14,
-        // REMOVED padding from here - images will be full width
         position: 'relative',
         elevation: 3,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
-        overflow: 'hidden', // Important for full width images
+        overflow: 'hidden',
     },
     discountBadge: {
         position: 'absolute',
@@ -250,17 +271,15 @@ const styles = StyleSheet.create({
         padding: 4,
     },
     imageContainer: {
-        width: CARD_WIDTH, // Full width
-        height: CARD_WIDTH * 0.75, // 4:3 aspect ratio
-        // REMOVED margins that were creating padding
+        width: CARD_WIDTH,
+        height: CARD_WIDTH * 0.75,
     },
     productImage: {
-        width: '100%', // Full width
-        height: '100%', // Full height
-        // REMOVED borderRadius that was creating padding effect
+        width: '100%',
+        height: '100%',
     },
     productInfo: {
-        padding: 12, // Add padding only to the info section, not the image
+        padding: 12,
         paddingTop: 8,
     },
     category: {
@@ -339,6 +358,15 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#fff',
     },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#666',
+    },
 });
 
-export default NewProducts;
+export default Powder;

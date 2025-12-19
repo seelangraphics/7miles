@@ -641,36 +641,35 @@ const handleCashOnDelivery = async () => {
             </Text>
           </View>
         </View>
-        <View style={styles.bottomBar}>
-          <View style={styles.bottomLeft}>
-            <Text style={styles.totalAmount}>₹{finalTotal}</Text>
-            <Text style={styles.totalLabelBottom}>Total Payable</Text>
-          </View>
-
-          <TouchableOpacity
-            style={[
-              styles.payButton,
-              (!selectedMethod || isLoading) && styles.payButtonDisabled,
-            ]}
-            onPress={handlePayment}
-            disabled={!selectedMethod || isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <>
-                <Text style={styles.payButtonText}>
-                  {selectedMethod === "cod" ? "PLACE ORDER" : "PAY NOW"}
-                </Text>
-                <Ionicons name="lock-closed" size={15} color="#fff" />
-              </>
-            )}
-          </TouchableOpacity>
-        </View>
 
         {/* Terms & Conditions */}
       </ScrollView>
+      <View style={styles.bottomBar}>
+        <View style={styles.bottomLeft}>
+          <Text style={styles.totalAmount}>₹{finalTotal}</Text>
+          <Text style={styles.totalLabelBottom}>Total Payable</Text>
+        </View>
 
+        <TouchableOpacity
+          style={[
+            styles.payButton,
+            (!selectedMethod || isLoading) && styles.payButtonDisabled,
+          ]}
+          onPress={handlePayment}
+          disabled={!selectedMethod || isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <>
+              <Text style={styles.payButtonText}>
+                {selectedMethod === "cod" ? "PLACE ORDER" : "PAY NOW"}
+              </Text>
+              <Ionicons name="lock-closed" size={15} color="#fff" />
+            </>
+          )}
+        </TouchableOpacity>
+      </View>
       {/* Bottom Action Bar */}
     </Animated.View>
   );
@@ -1066,6 +1065,7 @@ const styles = StyleSheet.create({
     color: "#ff4757",
     fontWeight: "600",
   },
+
   bottomBar: {
     position: "absolute",
     bottom: 0,
@@ -1080,14 +1080,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 15,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 8,
+    height: 100,
   },
 
   bottomLeft: {
     alignItems: "flex-start",
+    bottom: 20,
   },
 
   totalAmount: {
@@ -1107,18 +1109,18 @@ const styles = StyleSheet.create({
   payButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#000", // changed to black
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-    borderRadius: 20, // more unique rounded design
+    backgroundColor: "#000",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
     gap: 8,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
-    borderWidth: 1.5,
-    borderColor: "#333", // subtle border for uniqueness
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    bottom: 20,
+    elevation: 3,
+  
   },
 
   payButtonDisabled: {
@@ -1133,5 +1135,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     textTransform: "uppercase", // unique design touch
   },
-
 });

@@ -94,7 +94,7 @@ export default function OrderProcessingScreen({ route, navigation }) {
 
     });
 
-  }, 5000);
+  }, 4500);
     return () => clearTimeout(timer);
   }, []);
 

@@ -8,6 +8,9 @@ import {
   FlatList,
   ActivityIndicator,
   ScrollView,
+  Platform,
+  StatusBar,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
@@ -18,6 +21,8 @@ import { useCart } from "../context/CartContext";
 
 // Get the API URL from environment variables
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const ProductDetailsScreen = ({ route, navigation }) => {
   const { product } = route.params;
@@ -89,8 +94,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   const isItemInCart = isInCart(product.name);
 
-  const showQuantityControls = isItemInCart || hasAddedToCart;
-
+  const showQuantityControls = isItemInCart;
 
   useEffect(() => {
     if (isItemInCart) {
@@ -100,27 +104,28 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     }
   }, [isItemInCart, product.name, getItemQuantity]);
 
-  
   const handleQuantityChange = (change) => {
-    const newQty = Math.max(1, quantity + change);
-    setQuantity(newQty);
+    const newQty = quantity + change;
 
-    if (showQuantityControls) {
-      updateQuantity(product.name, newQty);
-    }
-  };
-
-  const handleAddToCart = () => {
-    if (showQuantityControls) {
-
+    if (newQty <= 0) {
+      // REMOVE FROM CART
+      updateQuantity(product.name, 0);
+      setQuantity(1); // reset for next add
+      setHasAddedToCart(false);
       return;
     }
 
-
-    addToCart({ ...product, cartQty: quantity });
-    setHasAddedToCart(true); 
+    setQuantity(newQty);
+    updateQuantity(product.name, newQty);
   };
 
+  const handleAddToCart = () => {
+    if (isItemInCart) return;
+
+    addToCart({ ...product, cartQty: 1 });
+    setQuantity(1);
+    setHasAddedToCart(true);
+  };
 
   const handleBuyNow = () => {
     // Add product multiple times based on quantity
@@ -274,6 +279,12 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FFFFFF"
+        translucent={false}
+      />
+
       <FlatList
         data={similarProducts}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
@@ -336,8 +347,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                     </Text>
                   </View>
                 </View>
-
-          
               </View>
 
               <View style={styles.section}>
@@ -409,51 +418,50 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           )
         }
       />
-      <View style={styles.bottomBar}>
-        {/* Left Section: Add to Cart OR Quantity Controls */}
-        <View style={styles.leftSection}>
-          {showQuantityControls ? (
-            // Quantity Controls (after clicking Add to Cart)
-            <View style={styles.quantitySelector}>
-      
-              <View style={styles.mainQuantityControls}>
-                <TouchableOpacity
-                  style={styles.mainQtyBtn}
-                  onPress={() => handleQuantityChange(-1)}
-                >
-                  <Text style={styles.mainQtyBtnText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.mainQuantity}>{quantity}</Text>
-                <TouchableOpacity
-                  style={styles.mainQtyBtn}
-                  onPress={() => handleQuantityChange(1)}
-                >
-                  <Text style={styles.mainQtyBtnText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            // Add to Cart Button (initial state)
-            <TouchableOpacity
-              style={styles.cartBtn}
-              onPress={handleAddToCart}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="cart-outline" size={20} color="#FF4757" />
-              <Text style={styles.cartText}>ADD TO CART</Text>
-            </TouchableOpacity>
-          )}
-        </View>
 
-        {/* Right Section: Always Buy Now */}
-        <TouchableOpacity
-          style={styles.buyBtn}
-          onPress={handleBuyNow}
-          activeOpacity={0.9}
-        >
-          <Ionicons name="flash" size={20} color="#fff" />
-          <Text style={styles.buyText}>BUY NOW</Text>
-        </TouchableOpacity>
+      {/* Bottom Action Bar - Fixed Position */}
+      <View style={styles.bottomActionBar}>
+        <View style={styles.actionBarContent}>
+          <View style={styles.leftSection}>
+            {showQuantityControls ? (
+              <View style={styles.quantitySelector}>
+                <View style={styles.mainQuantityControls}>
+                  <TouchableOpacity
+                    style={styles.mainQtyBtn}
+                    onPress={() => handleQuantityChange(-1)}
+                  >
+                    <Text style={styles.mainQtyBtnText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.mainQuantity}>{quantity}</Text>
+                  <TouchableOpacity
+                    style={styles.mainQtyBtn}
+                    onPress={() => handleQuantityChange(1)}
+                  >
+                    <Text style={styles.mainQtyBtnText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.cartBtn}
+                onPress={handleAddToCart}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="cart-outline" size={20} color="#FF4757" />
+                <Text style={styles.cartText}>ADD TO CART</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <TouchableOpacity
+            style={styles.buyBtn}
+            onPress={handleBuyNow}
+            activeOpacity={0.9}
+          >
+            <Ionicons name="flash" size={20} color="#fff" />
+            <Text style={styles.buyText}>BUY NOW</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -462,23 +470,17 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 export default ProductDetailsScreen;
 
 const styles = StyleSheet.create({
-  // Main Container
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-
-  // List Content
   listContent: {
-    paddingBottom: 100,
+    paddingBottom: 120, // Extra padding for bottom bar (increased)
   },
-
-  // Details Container
   detailsContainer: {
     padding: 20,
   },
-
-  // Title Section
   titleSection: {
     marginBottom: 16,
   },
@@ -501,8 +503,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-
-  // Price Section
   priceSection: {
     backgroundColor: "#F9FAFB",
     borderRadius: 12,
@@ -537,8 +537,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-
-  // Meta Info
   metaInfo: {
     flexDirection: "row",
     alignItems: "center",
@@ -562,54 +560,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#E5E7EB",
     marginHorizontal: 12,
   },
-
-  // Quantity Selector for Main Product
-  quantitySelector: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-  },
-  quantityLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#1F2937",
-  },
-  mainQuantityControls: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-  },
-  mainQtyBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#F3F4F6",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  mainQtyBtnText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#374151",
-  },
-  mainQuantity: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1F2937",
-    marginHorizontal: 16,
-    minWidth: 20,
-    textAlign: "center",
-  },
-
-  // Sections
   section: {
     marginBottom: 24,
   },
@@ -619,8 +569,6 @@ const styles = StyleSheet.create({
     color: "#1F2937",
     marginBottom: 12,
   },
-
-  // Description
   descriptionBox: {
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
@@ -633,8 +581,6 @@ const styles = StyleSheet.create({
     color: "#4B5563",
     lineHeight: 24,
   },
-
-  // Benefits
   benefitsContainer: {
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
@@ -654,8 +600,6 @@ const styles = StyleSheet.create({
     color: "#4B5563",
     lineHeight: 20,
   },
-
-  // Similar Products Header
   similarHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -667,8 +611,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-
-  // Similar Products Cards
   cardContainer: {
     flex: 1,
     padding: 8,
@@ -798,131 +740,97 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 
-  bottomBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+
+  bottomActionBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: "#eee",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
+    borderTopColor: '#E5E7EB',
+    paddingHorizontal: 16,
+    height: 115,
+    paddingVertical: 12,
+    // Adjust for Android navigation bar
+    paddingBottom: Platform.OS === 'ios' ? 12 : (SCREEN_HEIGHT > 800 ? 30 : 20),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 15,
   },
-  // Container for left section (Add to Cart OR Quantity controls)
+  actionBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
   leftSection: {
     flex: 1,
-    marginRight: 12,
   },
-  // Add to Cart button
   cartBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
     paddingVertical: 14,
-    paddingHorizontal: 16,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#FF4757",
-    shadowColor: "#FF4757",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1.5,
+    borderColor: '#FF4757',
+    gap: 6,
   },
   cartText: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#FF4757",
-    marginLeft: 8,
-    letterSpacing: 0.3,
+    fontWeight: '700',
+    color: '#FF4757',
   },
-  // Quantity controls (replaces Add to Cart button)
   quantitySelector: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingVertical: 8,
-    paddingHorizontal: 12,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#4CAF50",
-    shadowColor: "#4CAF50",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  quantityLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#4CAF50",
-    marginRight: 8,
+    borderWidth: 1.5,
+    borderColor: '#FF4757',
   },
   mainQuantityControls: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f8f8f8",
-    borderRadius: 20,
-    padding: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
   },
   mainQtyBtn: {
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mainQtyBtnText: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: '600',
+    color: '#374151',
   },
   mainQuantity: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#333",
-    marginHorizontal: 16,
-    minWidth: 20,
-    textAlign: "center",
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginHorizontal: 20,
   },
-  // Buy Now button (always on right)
   buyBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF4757",
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 12,
     flex: 1,
-    marginLeft: 12,
-    shadowColor: "#FF4757",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 4,
+    backgroundColor: '#000',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 6,
   },
   buyText: {
     fontSize: 15,
-    fontWeight: "800",
-    color: "#fff",
-    marginLeft: 8,
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    color: '#fff',
   },
 
   // Loading States

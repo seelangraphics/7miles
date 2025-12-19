@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     Dimensions
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // Import your images (make sure paths are correct)
 const img1 = require("../../assets/skin/s3.webp");
@@ -19,6 +20,8 @@ const img3 = require("../../assets/body/b3.webp");
 const { width } = Dimensions.get('window');
 
 const SevenMile = () => {
+    const navigation = useNavigation();
+
     // Enhanced JSON data structure with images
     const appData = {
         header: {
@@ -29,6 +32,7 @@ const SevenMile = () => {
         categories: [
             {
                 name: "EDIBLE FOODS",
+                routeName: "ediblefoods", // Screen name for navigation
                 count: "10 items",
                 image: img1,
                 color: '#ffffff',
@@ -36,6 +40,7 @@ const SevenMile = () => {
             },
             {
                 name: "OIL",
+                routeName: "oil", // Screen name for navigation
                 count: "8 items",
                 image: img2,
                 color: '#ffffff',
@@ -43,6 +48,7 @@ const SevenMile = () => {
             },
             {
                 name: "POWDER",
+                routeName: "powder", // Screen name for navigation
                 count: "10 items",
                 image: img3,
                 color: '#ffffff',
@@ -51,9 +57,12 @@ const SevenMile = () => {
         ]
     };
 
-    const handleCategoryPress = (categoryName) => {
-        console.log(`Category pressed: ${categoryName}`);
-        // Add navigation logic here
+    const handleCategoryPress = (category) => {
+        console.log(`Category pressed: ${category.name}`);
+        console.log(`Navigating to: ${category.routeName}`);
+
+        // Navigate to the specific category screen
+        navigation.navigate(category.routeName);
     };
 
     return (
@@ -84,14 +93,12 @@ const SevenMile = () => {
 
                 {/* Categories Section - Grid Layout */}
                 <View style={styles.categoriesSection}>
-
-
                     <View style={styles.categoriesGrid}>
                         {appData.categories.map((category, index) => (
                             <TouchableOpacity
                                 key={index}
                                 style={styles.categoryCard}
-                                onPress={() => handleCategoryPress(category.name)}
+                                onPress={() => handleCategoryPress(category)}
                                 activeOpacity={0.8}
                             >
                                 <View style={[
@@ -117,8 +124,6 @@ const SevenMile = () => {
                         ))}
                     </View>
                 </View>
-
-
 
                 {/* Bottom Spacing */}
                 <View style={styles.bottomSpacer} />
@@ -263,39 +268,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     shopNowText: {
-        fontSize: 14,
-        fontWeight: '700',
-        color: '#000000',
-    },
-    featuredBanner: {
-        backgroundColor: '#000000',
-        marginHorizontal: 20,
-        marginTop: 10,
-        padding: 25,
-        borderRadius: 16,
-    },
-    featuredContent: {
-        alignItems: 'flex-start',
-    },
-    featuredTitle: {
-        fontSize: 20,
-        fontWeight: '800',
-        color: '#ffffff',
-        marginBottom: 8,
-    },
-    featuredSubtitle: {
-        fontSize: 14,
-        color: 'rgba(255,255,255,0.8)',
-        marginBottom: 20,
-        lineHeight: 18,
-    },
-    featuredButton: {
-        backgroundColor: '#ffffff',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 8,
-    },
-    featuredButtonText: {
         fontSize: 14,
         fontWeight: '700',
         color: '#000000',

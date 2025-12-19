@@ -4,8 +4,8 @@ import {
     Text, 
     TouchableOpacity, 
     Image, 
-    ScrollView, 
     StyleSheet,
+    FlatList,
     Dimensions 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,10 +14,10 @@ import Constants from "expo-constants";
 import { useCart } from '../context/CartContext';
 
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
-const CARD_WIDTH = 160; // Fixed card width
-const CARD_HEIGHT = 300; // Adjust height as needed
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 48) / 2; // 2 cards per row with padding
 
-const NewProducts = () => {
+export const Oil = () => {
     const [products, setProducts] = useState([]);
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
@@ -29,7 +29,7 @@ const NewProducts = () => {
             try {
                 const response = await fetch(PRODUCTS_API);
                 const data = await response.json();
-                // console.log('Data',JSON.stringify(data,null,2))
+                console.log('Oil Products Data', JSON.stringify(data, null, 2));
                 setProducts(data);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -38,7 +38,7 @@ const NewProducts = () => {
         fetchProducts();
     }, []);
 
-    const newProducts = products.filter(product => product.Newproducts === "yes").slice(0, 6); // Limit to 6
+    const oilProducts = products.filter(product => product.oil === "yes");
 
     const handleAddToCart = (product) => {
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
@@ -58,47 +58,48 @@ const NewProducts = () => {
         }
     };
 
-    if (newProducts.length === 0) {
-        return null; // Don't show if no new products
+    if (oilProducts.length === 0) {
+        return null;
     }
+
+    const renderProductCard = ({ item: product, index }) => (
+        <ProductCard 
+            product={product}
+            index={index}
+            quantity={quantities[product.name] || 0}
+            isAdded={addedItems[product.name]}
+            onAdd={() => handleAddToCart(product)}
+            onQuantityChange={(change) => handleQuantityChange(product, change)}
+            onPress={() => navigation.navigate("ProductDetails", { product })}
+        />
+    );
 
     return (
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <View style={styles.headerContent}>
-                    <Text style={styles.title}>New Arrivals</Text>
-                    <Text style={styles.subtitle}>Freshly added to our collection</Text>
+                    <Text style={styles.title}>Oil Products</Text>
+                    <Text style={styles.subtitle}>Pure & healthy cooking oils</Text>
                 </View>
-                
             </View>
 
-            {/* Products Horizontal Scroll */}
-            <ScrollView 
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.scrollContainer}
-                contentContainerStyle={styles.scrollContent}
-            >
-                {newProducts.map((product, index) => (
-                    <ProductCard 
-                        key={product.name + index}
-                        product={product}
-                        index={index}
-                        quantity={quantities[product.name] || 0}
-                        isAdded={addedItems[product.name]}
-                        onAdd={() => handleAddToCart(product)}
-                        onQuantityChange={(change) => handleQuantityChange(product, change)}
-                        onPress={() => navigation.navigate("ProductDetails", { product })}
-                    />
-                ))}
-            </ScrollView>
+            {/* Products Grid */}
+            <FlatList
+                data={oilProducts}
+                renderItem={renderProductCard}
+                keyExtractor={(item, index) => item.name + index}
+                numColumns={2}
+                columnWrapperStyle={styles.columnWrapper}
+                contentContainerStyle={styles.gridContent}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+            />
         </View>
     );
 };
 
 const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress }) => {
-    const discount = Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100);
     const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
     const bgColor = colors[index % colors.length];
 
@@ -118,7 +119,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                 <Ionicons name="heart-outline" size={16} color="#666" />
             </TouchableOpacity>
 
-            {/* Product Image - Now FULL WIDTH */}
+            {/* Product Image */}
             <View style={styles.imageContainer}>
                 <Image 
                     source={typeof product.image === 'string' ? { uri: product.image } : product.image}
@@ -137,7 +138,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                     <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
                 </View>
 
-            
+                {/* Add to Cart / Quantity Controls */}
                 {isAdded ? (
                     <View style={styles.quantityControls}>
                         <TouchableOpacity 
@@ -194,38 +195,23 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#6B7280',
     },
-    viewAllBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#F5F3FF',
-        paddingHorizontal: 14,
-        paddingVertical: 8,
-        borderRadius: 20,
+    gridContent: {
+        paddingBottom: 10,
     },
-    viewAllText: {
-        fontSize: 13,
-        fontWeight: '600',
-        color: '#8B5CF6',
-        marginRight: 4,
-    },
-    scrollContainer: {
-        flexDirection: 'row',
-    },
-    scrollContent: {
-        paddingRight: 16,
+    columnWrapper: {
+        justifyContent: 'space-between',
+        marginBottom: 14,
     },
     productCard: {
         width: CARD_WIDTH,
         borderRadius: 16,
-        marginRight: 14,
-        // REMOVED padding from here - images will be full width
         position: 'relative',
         elevation: 3,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
-        overflow: 'hidden', // Important for full width images
+        overflow: 'hidden',
     },
     discountBadge: {
         position: 'absolute',
@@ -250,17 +236,15 @@ const styles = StyleSheet.create({
         padding: 4,
     },
     imageContainer: {
-        width: CARD_WIDTH, // Full width
-        height: CARD_WIDTH * 0.75, // 4:3 aspect ratio
-        // REMOVED margins that were creating padding
+        width: CARD_WIDTH,
+        height: CARD_WIDTH * 0.75,
     },
     productImage: {
-        width: '100%', // Full width
-        height: '100%', // Full height
-        // REMOVED borderRadius that was creating padding effect
+        width: '100%',
+        height: '100%',
     },
     productInfo: {
-        padding: 12, // Add padding only to the info section, not the image
+        padding: 12,
         paddingTop: 8,
     },
     category: {
@@ -341,4 +325,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NewProducts;
+export default Oil;
