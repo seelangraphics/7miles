@@ -7,6 +7,7 @@ import {
   ScrollView,
   Share,
   Alert,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -14,26 +15,8 @@ const OrderSuccessScreen = ({ navigation, route }) => {
   const { order } = route.params || {};
   const orderId = order?.orderId || `ORD${Date.now()}`;
 
-  const handleShareInvoice = async () => {
-    try {
-      const invoiceText = `Order Invoice - 7Miles\n\nOrder ID: ${orderId}\nDate: ${new Date().toLocaleDateString()}\nTotal: ₹${
-        order?.priceDetails?.total?.toFixed(2) || "0.00"
-      }\nStatus: ${
-        order?.status || "Confirmed"
-      }\n\nThank you for shopping with 7Miles!`;
+// console.log('orders',order)
 
-      await Share.share({
-        message: invoiceText,
-        title: "Order Invoice",
-      });
-    } catch (error) {
-      Alert.alert("Error", "Failed to share invoice");
-    }
-  };
-
-  const handleViewInvoice = () => {
-    navigation.navigate("Invoice", { order });
-  };
 
   return (
     <View style={styles.container}>
@@ -42,164 +25,199 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Success Header */}
-        <View style={styles.header}>
-          <View style={styles.successIcon}>
-            <Ionicons name="checkmark-circle" size={80} color="#10B981" />
+        {/* ELEGANT HEADER SECTION */}
+        <View style={styles.headerContainer}>
+          <View style={styles.headerBackground}>
+            <View style={styles.headerDecoration}>
+              <View style={styles.circleDecoration} />
+              <View style={[styles.circleDecoration, styles.circle2]} />
+            </View>
+
+            <View style={styles.successHeader}>
+              <View style={styles.successIconContainer}>
+                <View style={styles.successIconBackground}>
+                  <Ionicons name="checkmark" size={30} color="#fff" />
+                </View>
+              </View>
+
+              <View style={styles.headerContent}>
+                <Text style={styles.headerSubtitle}>
+                  Order Placed Successfully
+                </Text>
+                <Text style={styles.headerMainTitle}>THANK YOU!</Text>
+                <View style={styles.orderIdContainer}>
+                  <Text style={styles.orderIdLabel}>Order ID:</Text>
+                  <Text style={styles.orderIdValue}>#{orderId}</Text>
+                </View>
+              </View>
+            </View>
           </View>
-          <Text style={styles.successTitle}>Order Confirmed!</Text>
-          <Text style={styles.successSubtitle}>
-            Your order has been successfully placed
-          </Text>
+
+          <View style={styles.orderConfirmationCard}>
+            <View style={styles.confirmationRow}>
+              <Ionicons name="checkmark-circle" size={22} color="#10B981" />
+              <Text style={styles.confirmationText}>
+                Your order has been confirmed
+              </Text>
+            </View>
+            <Text style={styles.orderNote}>
+              Thank you for shopping with us. Your items will be shipped soon.
+            </Text>
+          </View>
         </View>
 
-        {/* Order Summary Card */}
+        {/* PRODUCT CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>Order Items</Text>
+            <Text style={styles.itemCount}>
+              {order?.items?.length || 0} Items
+            </Text>
+          </View>
+
+          {order?.items?.map((item, index) => (
+            <View key={index} style={styles.productRow}>
+              <Image source={{ uri: item.image }} style={styles.productImg} />
+              <View style={styles.productInfo}>
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productPrice}>₹{item.price}</Text>
+                <Text style={styles.productQuantity}>Qty: {item.quantity}</Text>
+              </View>
+            </View>
+          ))}
+
+          <View style={styles.bottomRow}>
+            <TouchableOpacity
+              style={styles.addMoreBtn}
+              onPress={() => navigation.navigate("Products")}
+            >
+              <Text style={styles.addMoreText}>Add More</Text>
+            </TouchableOpacity>
+            <Text style={styles.totalText}>
+              Total: ₹{order?.priceDetails?.total}
+            </Text>
+          </View>
+        </View>
+
+        {/* DELIVERY ADDRESS CARD */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="location" size={18} color="#e55946ff" />
+            <Text style={styles.cardTitle}>Delivery Address</Text>
+          </View>
+
+          <View style={styles.addressCard}>
+            <View style={styles.addressIcon}>
+              <Ionicons name="home" size={20} color="#e54646ff" />
+            </View>
+            <View style={styles.addressDetails}>
+              <Text style={styles.addressName}>
+                {order?.address?.name || "John Doe"}
+              </Text>
+              <Text style={styles.addressLine}>
+                {order?.address?.house || "123 Main Street"}
+              </Text>
+              <Text style={styles.addressLine}>
+                {order?.address?.street || "Downtown"}
+              </Text>
+              <Text style={styles.addressLine}>
+                {order?.address?.city || "Mumbai"} -{" "}
+                {order?.address?.pincode || "400001"}
+              </Text>
+              <View style={styles.phoneRow}>
+                <Ionicons name="call" size={14} color="#666" />
+                <Text style={styles.addressPhone}>
+                  {order?.address?.phone || "+91 9876543210"}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* PAYMENT METHOD CARD */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="card" size={18} color="#e54e46ff" />
+            <Text style={styles.cardTitle}>Payment Method</Text>
+          </View>
+
+          <View style={styles.paymentCard}>
+            <View
+              style={[
+                styles.paymentIcon,
+                {
+                  backgroundColor:
+                    order?.payment?.method === "cod" ? "#FEF3C7" : "#DBEAFE",
+                },
+              ]}
+            >
+              <Ionicons
+                name={order?.payment?.method === "cod" ? "cash" : "card"}
+                size={24}
+                color={order?.payment?.method === "cod" ? "#D97706" : "#2563EB"}
+              />
+            </View>
+            <View style={styles.paymentDetails}>
+              <Text style={styles.paymentMethod}>
+                {order?.payment?.method === "cod"
+                  ? "Cash on Delivery"
+                  : "Online Payment"}
+              </Text>
+             
+            </View>
+          </View>
+        </View>
+
+        {/* PRICE DETAILS CARD */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="receipt" size={18} color="#e54646ff" />
             <Text style={styles.cardTitle}>Order Summary</Text>
-            <Text style={styles.orderId}>{orderId}</Text>
           </View>
 
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Order Date</Text>
-            <Text style={styles.summaryValue}>
-              {new Date().toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </Text>
-          </View>
+          <View style={styles.priceDetails}>
+            <View style={styles.priceRow}>
+              <Text style={styles.priceLabel}>Subtotal</Text>
+              <Text style={styles.priceValue}>
+                ₹{order?.priceDetails?.subtotal || "0"}
+              </Text>
+            </View>
 
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Payment Method</Text>
-            <Text style={styles.summaryValue}>
-              {order?.payment?.method === "cod"
-                ? "Cash on Delivery"
-                : "Razorpay"}
-            </Text>
-          </View>
+            <View style={styles.priceRow}>
+              <Text style={styles.priceLabel}>Shipping</Text>
+              <Text style={styles.priceValue}>
+                {order?.priceDetails?.shipping === 0
+                  ? "Free"
+                  : `₹${order?.priceDetails?.shipping || "0"}`}
+              </Text>
+            </View>
 
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryLabel}>Status</Text>
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>
-                {order?.status === "confirmed" ? "Confirmed" : "Pending"}
+            <View style={styles.divider} />
+
+            <View style={[styles.priceRow, styles.totalRow]}>
+              <View>
+                <Text style={styles.totalLabel}>Total Amount</Text>
+    
+              </View>
+              <Text style={styles.totalAmount}>
+                ₹{order?.priceDetails?.total || "0"}
               </Text>
             </View>
           </View>
-
-          <View style={[styles.summaryItem, styles.totalItem]}>
-            <Text style={styles.totalLabel}>Total Amount</Text>
-            <Text style={styles.totalAmount}>
-              ₹{order?.priceDetails?.total || "0.00"}
-            </Text>
-          </View>
         </View>
 
-        {/* Delivery Info */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Ionicons name="time-outline" size={20} color="#4F46E5" />
-            <Text style={styles.cardTitle}>Delivery Information</Text>
-          </View>
-
-          <Text style={styles.deliveryText}>
-            Estimated delivery: 3-5 business days
-          </Text>
-          <Text style={styles.noteText}>
-            You'll receive tracking details via SMS & email
-          </Text>
-        </View>
-
-        {/* What's Next Steps */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>What's Next?</Text>
-
-          <View style={styles.stepRow}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>1</Text>
-            </View>
-            <Text style={styles.stepText}>
-              Order confirmation sent to your email
-            </Text>
-          </View>
-
-          <View style={styles.stepRow}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>2</Text>
-            </View>
-            <Text style={styles.stepText}>
-              Your order will be processed and shipped
-            </Text>
-          </View>
-
-          <View style={styles.stepRow}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>3</Text>
-            </View>
-            <Text style={styles.stepText}>Track your order in real-time</Text>
-          </View>
-        </View>
-
-        {/* Invoice Actions */}
-        <View style={styles.invoiceCard}>
-          <View style={styles.invoiceHeader}>
-            <Ionicons name="receipt-outline" size={24} color="#4F46E5" />
-            <Text style={styles.invoiceTitle}>Order Invoice</Text>
-          </View>
-
-          <Text style={styles.invoiceText}>
-            Download or share your order invoice
-          </Text>
-
-          <View style={styles.invoiceButtons}>
-            <TouchableOpacity
-              style={[styles.invoiceBtn, styles.viewInvoiceBtn]}
-              onPress={handleViewInvoice}
-            >
-              <Ionicons name="eye-outline" size={16} color="#4F46E5" />
-              <Text style={styles.viewInvoiceText}>View Invoice</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.invoiceBtn, styles.shareInvoiceBtn]}
-              onPress={handleShareInvoice}
-            >
-              <Ionicons name="share-outline" size={16} color="#fff" />
-              <Text style={styles.shareInvoiceText}>Share Invoice</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Support Section */}
-        <View style={styles.supportSection}>
-          <Ionicons name="headset-outline" size={24} color="#4F46E5" />
-          <Text style={styles.supportTitle}>Need Help?</Text>
-          <Text style={styles.supportText}>
-            Our customer support team is here to help you
-          </Text>
-          <Text style={styles.supportContact}>support@7miles.com</Text>
-          <Text style={styles.supportContact}>+91 98765 43210</Text>
-        </View>
+   
       </ScrollView>
 
-      {/* Action Buttons */}
+      {/* ELEGANT FOOTER */}
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.footerBtn, styles.continueBtn]}
+          style={styles.continueBtn}
           onPress={() => navigation.navigate("MainTabs")}
         >
-          <Ionicons name="home-outline" size={18} color="#fff" />
+          <Ionicons name="cart" size={20} color="#fff" style={styles.btnIcon} />
           <Text style={styles.continueBtnText}>Continue Shopping</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.footerBtn, styles.ordersBtn]}
-          onPress={() => navigation.navigate("orders")}
-        >
-          <Ionicons name="list-outline" size={18} color="#4F46E5" />
-          <Text style={styles.ordersBtnText}>View My Orders</Text>
+          <Ionicons name="arrow-forward" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -209,267 +227,423 @@ const OrderSuccessScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
-  },
-  scrollView: {
-    flex: 1,
+    backgroundColor: "#f8fafc",
   },
   scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
+    paddingBottom: 160,
   },
-  header: {
+
+  // ELEGANT HEADER STYLES
+  headerContainer: {
+    marginBottom: 20,
+  },
+  headerBackground: {
+    backgroundColor: "#d2c1e2",
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    position: "relative",
+    overflow: "hidden",
+  },
+  headerDecoration: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+  circleDecoration: {
+    position: "absolute",
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    top: -50,
+    right: -50,
+  },
+  circle2: {
+    width: 150,
+    height: 150,
+    top: 50,
+    left: -50,
+  },
+  successHeader: {
     alignItems: "center",
-    paddingVertical: 32,
   },
-  successIcon: {
+  successIconContainer: {
     marginBottom: 16,
   },
-  successTitle: {
-    fontSize: 24,
+  successIconBackground: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#10B981",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 4,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
+  headerContent: {
+    alignItems: "center",
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: "rgba(255, 255, 255, 0.9)",
+    marginBottom: 4,
+  },
+  headerMainTitle: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#fff",
+    marginBottom: 12,
+    letterSpacing: 1,
+  },
+  orderIdContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  orderIdLabel: {
+    fontSize: 13,
+    color: "rgba(255, 255, 255, 0.9)",
+    marginRight: 6,
+  },
+  orderIdValue: {
+    fontSize: 14,
     fontWeight: "700",
-    color: "#111827",
+    color: "#fff",
+  },
+  orderConfirmationCard: {
+    backgroundColor: "#fff",
+    marginHorizontal: 16,
+    marginTop: -15,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#4F46E5",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  confirmationRow: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
-  successSubtitle: {
-    fontSize: 14,
-    color: "#6B7280",
-    textAlign: "center",
+  confirmationText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#111",
+    marginLeft: 10,
   },
+  orderNote: {
+    fontSize: 13,
+    color: "#666",
+    lineHeight: 18,
+  },
+
+  // CARD STYLES
   card: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: 16,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
-    gap: 8,
+    marginBottom: 20,
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#111827",
+    color: "#111",
+    marginLeft: 10,
   },
-  orderId: {
-    fontSize: 12,
+  itemCount: {
+    marginLeft: "auto",
+    fontSize: 13,
     color: "#4F46E5",
     fontWeight: "600",
-    backgroundColor: "#EEF2FF",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
   },
-  summaryItem: {
+
+  productRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
+  },
+
+  productImg: {
+    width: 65,
+    height: 65,
+    borderRadius: 12,
+    marginRight: 16,
+  },
+
+  productInfo: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
+
+  productName: {
+    fontSize: 14.5,
+    fontWeight: "600",
+    color: "#222",
+    marginBottom: 6,
+  },
+
+  productPrice: {
+    fontSize: 14.5,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 6,
+  },
+
+  productQuantity: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#4F46E5",
+  },
+
+  bottomRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  totalItem: {
-    borderBottomWidth: 0,
-    marginTop: 8,
+    marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: "#eee",
   },
-  summaryLabel: {
-    fontSize: 14,
-    color: "#6B7280",
+
+  totalText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#111",
   },
-  summaryValue: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#111827",
+
+  addMoreBtn: {
+    backgroundColor: "#1d1c23ff",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
-  statusBadge: {
-    backgroundColor: "#D1FAE5",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+
+  addMoreText: {
+    color: "#fff",
+    fontSize: 13.5,
+    fontWeight: "700",
+  },
+
+  // ADDRESS CARD
+  addressCard: {
+    flexDirection: "row",
+    backgroundColor: "#f8fafc",
     borderRadius: 12,
+    padding: 16,
   },
-  statusText: {
-    fontSize: 12,
-    color: "#065F46",
+  addressIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#EDE9FE",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  addressDetails: {
+    flex: 1,
+  },
+  addressName: {
+    fontSize: 15,
     fontWeight: "600",
+    color: "#111",
+    marginBottom: 4,
+  },
+  addressLine: {
+    fontSize: 13.5,
+    color: "#555",
+    marginBottom: 2,
+    lineHeight: 18,
+  },
+  phoneRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 6,
+  },
+  addressPhone: {
+    fontSize: 13,
+    color: "#555",
+    marginLeft: 6,
+  },
+
+  // PAYMENT CARD
+  paymentCard: {
+    flexDirection: "row",
+    backgroundColor: "#f8fafc",
+    borderRadius: 12,
+    padding: 16,
+    alignItems: "center",
+  },
+  paymentIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  paymentDetails: {
+    flex: 1,
+  },
+  paymentMethod: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#111",
+    marginBottom: 2,
+  },
+  paymentStatus: {
+    fontSize: 13,
+    color: "#666",
+  },
+
+  // PRICE DETAILS
+  priceDetails: {
+    paddingHorizontal: 4,
+  },
+  priceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  priceLabel: {
+    fontSize: 14,
+    color: "#666",
+  },
+  priceValue: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#111",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#e2e8f0",
+    marginVertical: 12,
+  },
+  totalRow: {
+    marginTop: 4,
   },
   totalLabel: {
     fontSize: 16,
+    color: "#111",
     fontWeight: "700",
-    color: "#111827",
+  },
+  taxNote: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 2,
   },
   totalAmount: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 22,
+    fontWeight: "800",
     color: "#4F46E5",
   },
-  deliveryText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 4,
-  },
-  noteText: {
-    fontSize: 12,
-    color: "#6B7280",
-  },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 12,
-  },
-  stepNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#4F46E5",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  stepNumberText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  stepText: {
-    flex: 1,
-    fontSize: 14,
-    color: "#4B5563",
-    lineHeight: 20,
-  },
-  invoiceCard: {
-    backgroundColor: "#F5F3FF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#DDD6FE",
-  },
-  invoiceHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-    gap: 8,
-  },
-  invoiceTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#4F46E5",
-  },
-  invoiceText: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginBottom: 16,
-  },
-  invoiceButtons: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  invoiceBtn: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    borderRadius: 8,
-    gap: 8,
-  },
-  viewInvoiceBtn: {
+
+  // TRACKING CARD
+  trackingCard: {
     backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#4F46E5",
-  },
-  shareInvoiceBtn: {
-    backgroundColor: "#4F46E5",
-  },
-  viewInvoiceText: {
-    color: "#4F46E5",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  shareInvoiceText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  supportSection: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  supportTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#111827",
-    marginTop: 12,
-    marginBottom: 8,
+  trackingContent: {
+    flex: 1,
+    marginLeft: 12,
   },
-  supportText: {
+  trackingTitle: {
     fontSize: 14,
-    color: "#6B7280",
-    textAlign: "center",
-    marginBottom: 12,
+    fontWeight: "600",
+    color: "#111",
+    marginBottom: 2,
   },
-  supportContact: {
-    fontSize: 14,
+  trackingDate: {
+    fontSize: 13,
     color: "#4F46E5",
     fontWeight: "600",
   },
+  trackButton: {
+    backgroundColor: "#4F46E5",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  trackButtonText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+
+  // ELEGANT FOOTER
   footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
+    width: "100%",
+    padding: 20,
     backgroundColor: "#fff",
-    padding: 16,
     borderTopWidth: 1,
     borderTopColor: "#E5E7EB",
-    gap: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 8,
+    position: "absolute",
+    bottom: 0,
   },
-  footerBtn: {
-    flex: 1,
+  continueBtn: {
+    backgroundColor: "#1d1c23ff",
+    borderRadius: 12,
+    paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
-    borderRadius: 8,
-    gap: 8,
+    marginBottom: 12,
+    shadowColor: "#4F46E5",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  continueBtn: {
-    backgroundColor: "#4F46E5",
-  },
-  ordersBtn: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#4F46E5",
+  btnIcon: {
+    marginRight: 8,
   },
   continueBtnText: {
+    fontSize: 16,
+    fontWeight: "700",
     color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
+    marginHorizontal: 8,
   },
-  ordersBtnText: {
+  secondaryBtn: {
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  secondaryBtnText: {
+    fontSize: 15,
+    fontWeight: "600",
     color: "#4F46E5",
-    fontSize: 14,
-    fontWeight: "700",
   },
 });
 

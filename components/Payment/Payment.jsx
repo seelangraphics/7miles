@@ -20,7 +20,7 @@ import axios from "axios";
 
 import RazorpayCheckout from "react-native-razorpay";
 import { Dimensions } from "react-native";
-
+import LottieView from "lottie-react-native";
 const MAIL_ENDPOINT =
   "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
 
@@ -75,6 +75,33 @@ const Payment = () => {
 
     fetchUser();
   }, []);
+
+
+
+
+
+
+useEffect(() => {
+  if (orderPlaced) {
+    const timer = setTimeout(() => {
+      navigation.navigate("OrderSuccess", { order: orderDetails });
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }
+}, [orderPlaced]);
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Payment Methods Data
   const paymentMethods = [
@@ -253,6 +280,19 @@ const Payment = () => {
   };
 
   const handleRazorpayPayment = async () => {
+
+
+
+  if (!cartItems || cartItems.length === 0) {
+    Toast.show({
+      type: "error",
+      text1: "Cart is empty!",
+      text2: "Add items to cart before placing order.",
+    });
+    return;
+  }
+
+
     try {
       setIsLoading(true);
 
@@ -300,18 +340,15 @@ const Payment = () => {
 
       // Step 5: Trigger email
       await sendOrderPlacedEmail(orderData);
-
-      // Step 6 UI
-      clearCart();
-      setOrderDetails(orderData);
-      setOrderPlaced(true);
-
+setOrderDetails(orderData);
+    
       Toast.show({
         type: "success",
         text1: "Payment Successful",
       });
 
-      navigation.navigate("OrderConfirmation", { order: orderData });
+    
+    navigation.navigate("OrderProcessingScreen", { order: orderData });
     } catch (error) {
       Toast.show({
         type: "error",
@@ -323,49 +360,63 @@ const Payment = () => {
     }
   };
 
-  const handleCashOnDelivery = async () => {
-    setIsLoading(true);
 
-    try {
-      const orderData = await saveOrderToFirebase("cod", "pending");
+  
 
-      // ❌ If saving failed, stop here
-      if (!orderData) {
-        Toast.show({
-          type: "error",
-          text1: "Order Failed",
-          text2: "Could not save order. Try again.",
-        });
+const handleCashOnDelivery = async () => {
+  if (!cartItems || cartItems.length === 0) {
+    Toast.show({
+      type: "error",
+      text1: "Cart is empty!",
+      text2: "Add items to cart before placing order.",
+    });
+    return;
+  }
 
-        setIsLoading(false);
-        return;
-      }
-      await sendOrderPlacedEmail(orderData);
+  setIsLoading(true);
 
-      // Update UI
-      setOrderDetails(orderData);
-      setOrderPlaced(true);
-      clearCart();
+  try {
+    const orderData = await saveOrderToFirebase("cod", "pending");
 
-      Toast.show({
-        type: "success",
-        text1: "Order Placed!",
-        text2: "Your order has been confirmed.",
-      });
-
-      setTimeout(() => {
-        navigation.navigate("OrderSuccess", { order: orderData });
-      }, 2000);
-    } catch (error) {
+    if (!orderData) {
       Toast.show({
         type: "error",
         text1: "Order Failed",
-        text2: "Please try again.",
+        text2: "Could not save order. Try again.",
       });
-    } finally {
+
       setIsLoading(false);
+      return;
     }
-  };
+    // await sendOrderPlacedEmail(orderData);
+    setOrderDetails(orderData);
+
+    Toast.show({
+      type: "success",
+      text1: "Order Placed!",
+      text2: "Your order has been confirmed.",
+    });
+
+    navigation.navigate("OrderProcessingScreen", { order: orderData });
+  } catch (error) {
+    Toast.show({
+      type: "error",
+      text1: "Order Failed",
+      text2: "Please try again.",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
+
+
+
+
+
+
 
   const handlePayment = () => {
     if (!selectedMethod) {
@@ -399,30 +450,39 @@ const Payment = () => {
     );
   };
 
+
+
+
+
+
+
   if (orderPlaced && orderDetails) {
     return (
       <View style={styles.successContainer}>
-        <Animated.View style={[styles.successContent, { opacity: fadeAnim }]}>
-          <View style={styles.successIcon}>
-            <Ionicons name="checkmark-circle" size={80} color="#10B981" />
-          </View>
-          <Text style={styles.successTitle}>Order Confirmed!</Text>
-          <Text style={styles.successOrderId}>
-            Order ID: {orderDetails.orderId}
-          </Text>
-          <Text style={styles.successText}>
-            {selectedMethod === "cod"
-              ? "Your order has been placed successfully. Pay when you receive your order."
-              : "Payment successful! Your order has been placed."}
-          </Text>
-          <ActivityIndicator
-            size="large"
-            color="#4F46E5"
-            style={styles.loader}
+     <View style={styles.backgroundCircles}>
+        <View style={styles.circle1} />
+        <View style={styles.circle2} />
+        <View style={styles.circle3} />
+      </View>
+
+      <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+        
+        <View style={styles.lottieContainer}>
+          <LottieView
+            source={require('../animationjson/Success.json')}
+            autoPlay
+            loop={false}
+            style={styles.lottieAnimation}
           />
-          <Text style={styles.redirectText}>
-            Redirecting to order details...
-          </Text>
+          
+          {/* Glow effect around the tick */}
+          <View style={styles.glowEffect} />
+        </View>
+
+        {/* Success Title */}
+        <Text style={styles.successTitle}>Order Confirmed!</Text>
+        
+        <Text style={styles.successSubtitle}>Thank you for your order</Text>
         </Animated.View>
       </View>
     );
@@ -1073,4 +1133,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     textTransform: "uppercase", // unique design touch
   },
+
 });

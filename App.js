@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./components/Firebase/Firebase";
 
-// ✅ Your existing components
+
 
 import BottomNavigation from "./components/BottomNavigation/BottomNavigation";
 import CategoriesScreen from "./components/Categories/CategoriesScreen";
@@ -21,12 +21,15 @@ import Payment from "./components/Payment/Payment";
 import { Youraddress } from "./components/Youraddress/Youraddress";
 import TopBar from "./components/Topbar/Topbar";
 import OrdersHistory from "./components/Yourorders/Yourorder";
+import OrderProcessingScreen from "./components/Payment/Orderprocess";
 
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -65,6 +68,7 @@ function AppContent() {
                 <TopBar
                   title="Categories"
                   onBackPress={() => navigation.goBack()}
+                  onCartPress={() => navigation.navigate("Cart")}
                 />
               ),
             }}
@@ -108,6 +112,12 @@ function AppContent() {
             component={Address}
             options={{ title: "Delivery Address", headerShown: true }}
           />
+          <Stack.Screen
+            name="OrderProcessingScreen"
+            component={OrderProcessingScreen}
+            options={{ title: "order process", headerShown: false }}
+          />
+
           <Stack.Screen
             name="address"
             component={Youraddress}
