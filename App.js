@@ -26,6 +26,8 @@ import OrderProcessingScreen from "./components/Payment/Orderprocess";
 import Ediblefoods from "./components/SevenMile/Ediblefoods";
 import Oil from "./components/SevenMile/Oil";
 import Powder from "./components/SevenMile/Powder";
+import WishlistScreen from "./components/WishlistScreen/WishlistScreen";
+import Herbalfacepack from "./components/HerbalFacePack/Herbalfacepack";
 
 const Stack = createNativeStackNavigator();
 
@@ -116,7 +118,7 @@ function AppContent() {
             component={OrderProcessingScreen}
             options={{ title: "order process", headerShown: false }}
           />
-
+          <Stack.Screen name="Wishlist" component={WishlistScreen} />
           <Stack.Screen
             name="address"
             component={Youraddress}
@@ -144,6 +146,11 @@ function AppContent() {
             name="oil"
             component={Oil}
             options={{ title: "Oil", headerShown: true }}
+          />
+          <Stack.Screen
+            name="herbalfacepack"
+            component={Herbalfacepack}
+            options={{ title: "Herbalfacepack", headerShown: true }}
           />
 
           <Stack.Screen

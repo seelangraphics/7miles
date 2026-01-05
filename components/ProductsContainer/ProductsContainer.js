@@ -78,12 +78,7 @@ const ProductsContainer = ({ products }) => {
                 )}
             />
 
-            {/* Products Count */}
-            <View style={styles.countContainer}>
-                <Text style={styles.countText}>
-                    {filteredProducts.length} products found
-                </Text>
-            </View>
+
         </View>
     );
 

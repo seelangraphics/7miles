@@ -17,7 +17,7 @@ const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
 const CARD_WIDTH = 160;
 const CARD_HEIGHT = 300;
 
-const NewProducts = () => {
+const Herbalfacepack = () => {
     const [products, setProducts] = useState([]);
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
@@ -37,7 +37,8 @@ const NewProducts = () => {
         fetchProducts();
     }, []);
 
-    const newProducts = products.filter(product => product.Newproducts === "yes").slice(0, 6);
+    // Filter products with Herbalfacepack: "yes"
+    const herbalProducts = products.filter(product => product.Herbalfacepack === "yes").slice(0, 6);
 
     const handleAddToCart = (product) => {
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
@@ -57,7 +58,7 @@ const NewProducts = () => {
         }
     };
 
-    if (newProducts.length === 0) {
+    if (herbalProducts.length === 0) {
         return null;
     }
 
@@ -65,9 +66,19 @@ const NewProducts = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.headerContent}>
-                    <Text style={styles.title}>New Arrivals</Text>
-                    <Text style={styles.subtitle}>Freshly added to our collection</Text>
+                    <Text style={styles.title}>Herbal Face Packs</Text>
+                    <Text style={styles.subtitle}>Natural ingredients for glowing skin</Text>
                 </View>
+                <TouchableOpacity 
+                    style={styles.viewAllBtn}
+                    onPress={() => navigation.navigate("Products", { 
+                        category: "Herbal Face Packs",
+                        products: herbalProducts 
+                    })}
+                >
+                    <Text style={styles.viewAllText}>View All</Text>
+                    <Ionicons name="arrow-forward" size={14} color="#8B5CF6" />
+                </TouchableOpacity>
             </View>
 
             <ScrollView 
@@ -76,9 +87,9 @@ const NewProducts = () => {
                 style={styles.scrollContainer}
                 contentContainerStyle={styles.scrollContent}
             >
-                {newProducts.map((product, index) => (
+                {herbalProducts.map((product, index) => (
                     <ProductCard 
-                        key={product.name + index}
+                        key={product.id || product.name + index}
                         product={product}
                         index={index}
                         quantity={quantities[product.name] || 0}
@@ -106,7 +117,7 @@ const ProductCard = ({
     onQuantityChange, 
     onPress 
 }) => {
-    const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
+    const colors = ['#f0f9ff', '#fef2f2', '#f0fdf4', '#fefce8', '#faf5ff', '#f0f9ff'];
     const bgColor = colors[index % colors.length];
 
     return (
@@ -142,7 +153,9 @@ const ProductCard = ({
             </View>
 
             <View style={styles.productInfo}>
-                <Text style={styles.category} numberOfLines={1}>{product.category}</Text>
+                <Text style={styles.category} numberOfLines={1}>
+                    {product.category || 'Herbal Care'}
+                </Text>
                 <Text style={styles.productName} numberOfLines={2}>{product.name}</Text>
                 
                 <View style={styles.priceContainer}>
@@ -150,45 +163,46 @@ const ProductCard = ({
                     <Text style={styles.regularPrice}>₹{product.regular_price}</Text>
                 </View>
 
-                {isAdded ? (
-                    <View style={styles.quantityControls}>
+                <View style={styles.quantitySection}>
+                    {isAdded ? (
+                        <View style={styles.quantityControls}>
+                            <TouchableOpacity 
+                                style={styles.qtyBtn}
+                                onPress={(e) => {
+                                    e.stopPropagation();
+                                    onQuantityChange(-1);
+                                }}
+                            >
+                                <Text style={styles.qtyBtnText}>-</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.quantity}>{quantity}</Text>
+                            <TouchableOpacity 
+                                style={styles.qtyBtn}
+                                onPress={(e) => {
+                                    e.stopPropagation();
+                                    onQuantityChange(1);
+                                }}
+                            >
+                                <Text style={styles.qtyBtnText}>+</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
                         <TouchableOpacity 
-                            style={styles.qtyBtn}
+                            style={styles.addBtn}
                             onPress={(e) => {
                                 e.stopPropagation();
-                                onQuantityChange(-1);
+                                onAdd();
                             }}
                         >
-                            <Text style={styles.qtyBtnText}>-</Text>
+                            <Ionicons name="cart" size={14} color="#fff" />
+                            <Text style={styles.addBtnText}>Add to Cart</Text>
                         </TouchableOpacity>
-                        <Text style={styles.quantity}>{quantity}</Text>
-                        <TouchableOpacity 
-                            style={styles.qtyBtn}
-                            onPress={(e) => {
-                                e.stopPropagation();
-                                onQuantityChange(1);
-                            }}
-                        >
-                            <Text style={styles.qtyBtnText}>+</Text>
-                        </TouchableOpacity>
-                    </View>
-                ) : (
-                    <TouchableOpacity 
-                        style={styles.addBtn}
-                        onPress={(e) => {
-                            e.stopPropagation();
-                            onAdd();
-                        }}
-                    >
-                        <Ionicons name="cart" size={14} color="#fff" />
-                        <Text style={styles.addBtnText}>Add to Cart</Text>
-                    </TouchableOpacity>
-                )}
+                    )}
+                </View>
             </View>
         </TouchableOpacity>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {
@@ -240,20 +254,19 @@ const styles = StyleSheet.create({
         width: CARD_WIDTH,
         borderRadius: 16,
         marginRight: 14,
-        // REMOVED padding from here - images will be full width
         position: 'relative',
         elevation: 3,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
-        overflow: 'hidden', // Important for full width images
+        overflow: 'hidden',
     },
     discountBadge: {
         position: 'absolute',
         top: 12,
         left: 12,
-        backgroundColor: '#EF4444',
+        backgroundColor: '#10B981',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 10,
@@ -272,17 +285,15 @@ const styles = StyleSheet.create({
         padding: 4,
     },
     imageContainer: {
-        width: CARD_WIDTH, // Full width
-        height: CARD_WIDTH * 0.75, // 4:3 aspect ratio
-        // REMOVED margins that were creating padding
+        width: CARD_WIDTH,
+        height: CARD_WIDTH * 0.75,
     },
     productImage: {
-        width: '100%', // Full width
-        height: '100%', // Full height
-        // REMOVED borderRadius that was creating padding effect
+        width: '100%',
+        height: '100%',
     },
     productInfo: {
-        padding: 12, // Add padding only to the info section, not the image
+        padding: 12,
         paddingTop: 8,
     },
     category: {
@@ -315,6 +326,9 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#9CA3AF',
         textDecorationLine: 'line-through',
+    },
+    quantitySection: {
+        minHeight: 36,
     },
     quantityControls: {
         flexDirection: 'row',
@@ -351,7 +365,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#000',
+        backgroundColor: '#059669',
         borderRadius: 20,
         paddingVertical: 10,
         gap: 6,
@@ -363,4 +377,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NewProducts;
+export default Herbalfacepack;

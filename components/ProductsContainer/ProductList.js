@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -12,17 +12,25 @@ import { useCart } from '../context/CartContext';
 import { useNavigation } from '@react-navigation/native';
 
 const ProductList = ({ products, limit = 0, title = "Products", showViewAll = false }) => {
-    const { addToCart, getItemQuantity, updateQuantity, removeFromCart } = useCart();
+    const {
+        addToCart,
+        getItemQuantity,
+        updateQuantity,
+        removeFromCart,
+        toggleWishlist,
+        isInWishlist
+    } = useCart();
     const navigation = useNavigation();
-    const [wishlist, setWishlist] = useState({});
 
     const displayProducts = limit > 0 ? products.slice(0, limit) : products;
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (product, e) => {
+        if (e) e.stopPropagation();
         addToCart(product);
     };
 
-    const handleQuantityChange = (product, change) => {
+    const handleQuantityChange = (product, change, e) => {
+        if (e) e.stopPropagation();
         const current = getItemQuantity(product.name);
         const newQty = current + change;
 
@@ -33,32 +41,37 @@ const ProductList = ({ products, limit = 0, title = "Products", showViewAll = fa
         }
     };
 
-    const toggleWishlist = (productId) => {
-        setWishlist(prev => ({ ...prev, [productId]: !prev[productId] }));
+    const handleWishlistToggle = (product, e) => {
+        if (e) e.stopPropagation();
+        toggleWishlist(product);
     };
 
     const renderProductItem = ({ item, index }) => {
         const quantity = getItemQuantity(item.name);
-        const isWishlisted = wishlist[item.id || item.name];
+        const isWishlisted = isInWishlist(item.name);
         const discount = Math.round(((item.regular_price - item.sale_price) / item.regular_price) * 100);
+
+        // Use a consistent background color
+        const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
+        const bgColor = colors[index % colors.length];
 
         return (
             <TouchableOpacity
-                style={styles.productCard}
+                style={[styles.productCard, { backgroundColor: bgColor }]}
                 onPress={() => navigation.navigate("ProductDetails", { product: item })}
                 activeOpacity={0.9}
             >
                 {/* Discount Badge */}
                 {discount > 0 && (
                     <View style={styles.discountBadge}>
-                        <Text style={styles.discountText}>Save ₹{item.save}.00</Text>
+                        <Text style={styles.discountText}>Save ₹{item.save || discount}.00</Text>
                     </View>
                 )}
 
                 {/* Wishlist Icon */}
                 <TouchableOpacity
                     style={styles.wishlistBtn}
-                    onPress={() => toggleWishlist(item.id || item.name)}
+                    onPress={(e) => handleWishlistToggle(item, e)}
                 >
                     <Ionicons
                         name={isWishlisted ? "heart" : "heart-outline"}
@@ -91,19 +104,19 @@ const ProductList = ({ products, limit = 0, title = "Products", showViewAll = fa
                         <Text style={styles.regularPrice}>₹{item.regular_price}</Text>
                     </View>
 
-                    {/* Cart Actions - Full Width at Bottom */}
+                    {/* Cart Actions */}
                     {quantity > 0 ? (
                         <View style={styles.quantityControls}>
                             <TouchableOpacity
                                 style={styles.qtyBtn}
-                                onPress={() => handleQuantityChange(item, -1)}
+                                onPress={(e) => handleQuantityChange(item, -1, e)}
                             >
                                 <Text style={styles.qtyBtnText}>-</Text>
                             </TouchableOpacity>
                             <Text style={styles.quantity}>{quantity}</Text>
                             <TouchableOpacity
                                 style={styles.qtyBtn}
-                                onPress={() => handleQuantityChange(item, 1)}
+                                onPress={(e) => handleQuantityChange(item, 1, e)}
                             >
                                 <Text style={styles.qtyBtnText}>+</Text>
                             </TouchableOpacity>
@@ -111,7 +124,7 @@ const ProductList = ({ products, limit = 0, title = "Products", showViewAll = fa
                     ) : (
                         <TouchableOpacity
                             style={styles.addBtn}
-                            onPress={() => handleAddToCart(item)}
+                            onPress={(e) => handleAddToCart(item, e)}
                         >
                             <Ionicons name="cart" size={14} color="#fff" />
                             <Text style={styles.addBtnText}>Add to Cart</Text>
@@ -141,7 +154,7 @@ const ProductList = ({ products, limit = 0, title = "Products", showViewAll = fa
             <FlatList
                 data={displayProducts}
                 renderItem={renderProductItem}
-                keyExtractor={(item, index) => `${item.id || item.name}-${index}`}
+                keyExtractor={(item, index) => `${item.name}-${index}`}
                 contentContainerStyle={styles.listContent}
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
@@ -149,6 +162,7 @@ const ProductList = ({ products, limit = 0, title = "Products", showViewAll = fa
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,15 +8,118 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
+import Constants from 'expo-constants';
 
+const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
 const { width, height } = Dimensions.get('window');
 const isSmallScreen = height < 700;
 
 export const GoldenDrop = () => {
   const videoRef = useRef(null);
+  const navigation = useNavigation();
+  const [honeyProduct, setHoneyProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    findHoneyProduct();
+  }, []);
+
+  const findHoneyProduct = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch(PRODUCTS_API);
+      const data = await response.json();
+      
+      const products = Array.isArray(data) ? data : (data.products || []);
+      
+      // Try to find honey products in this order:
+      // 1. Products with 'honey' in name
+      // 2. Products with 'honey' in category
+      // 3. Products in 'Wellness & Edibles' category
+      
+      let honeyProduct = null;
+      
+      // Priority 1: Exact honey match in name
+      honeyProduct = products.find(product => 
+        product.name && product.name.toLowerCase().includes('honey')
+      );
+      
+      // Priority 2: Products in 'Honey' category
+      if (!honeyProduct) {
+        honeyProduct = products.find(product => 
+          product.category && product.category.toLowerCase().includes('honey')
+        );
+      }
+      
+      // Priority 3: Any product in 'Wellness & Edibles' category
+      if (!honeyProduct) {
+        honeyProduct = products.find(product => 
+          product.category === 'Wellness & Edibles'
+        );
+      }
+      
+      // Priority 4: Any product with 'Wellness' in category
+      if (!honeyProduct) {
+        honeyProduct = products.find(product => 
+          product.category && product.category.includes('Wellness')
+        );
+      }
+      
+      // Priority 5: First available product as fallback
+      if (!honeyProduct && products.length > 0) {
+        honeyProduct = products[0];
+      }
+      
+      if (honeyProduct) {
+        console.log('Found honey product:', honeyProduct.name);
+        setHoneyProduct(honeyProduct);
+      } else {
+        setError('No honey products found');
+      }
+      
+    } catch (error) {
+      console.error('Error finding honey product:', error);
+      setError('Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleShopNow = () => {
+    if (honeyProduct) {
+      // Navigate directly to the product details page
+      navigation.navigate('ProductDetails', { 
+        product: honeyProduct,
+        productId: honeyProduct.id || honeyProduct.name
+      });
+    } else {
+      // Fallback - navigate to categories
+      navigation.navigate('Categories', { 
+        selectedCategory: 'Wellness & Edibles' 
+      });
+    }
+  };
+
+  // Show different button text based on what we found
+  const getButtonText = () => {
+    if (loading) return 'Loading...';
+    if (honeyProduct) {
+      if (honeyProduct.name.toLowerCase().includes('honey')) {
+        return 'Shop Now';
+      } else {
+        return 'View Product';
+      }
+    }
+    return 'Shop Wellness';
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -36,7 +139,6 @@ export const GoldenDrop = () => {
             resizeMode={ResizeMode.COVER}
             useNativeControls={false}
             isMuted={true}
-            
           />
         </View>
         
@@ -47,19 +149,39 @@ export const GoldenDrop = () => {
             Taste the richness of pure, natural honey straight from the hive. 
             Sweet, healthy, and packed with nature's nutrients for your everyday wellness.
           </Text>
-          <TouchableOpacity 
-            style={styles.button} 
-            activeOpacity={0.8}
-            onPress={() => console.log('Shop Now pressed')}
-          >
-            <Text style={styles.buttonText}>Shop Now</Text>
-          </TouchableOpacity>
+          
+          {loading ? (
+            <View style={styles.button}>
+              <ActivityIndicator size="small" color="white" />
+            </View>
+          ) : error ? (
+            <TouchableOpacity 
+              style={[styles.button, styles.errorButton]} 
+              activeOpacity={0.8}
+              onPress={findHoneyProduct}
+            >
+              <Text style={styles.buttonText}>Retry</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity 
+              style={styles.button} 
+              activeOpacity={0.8}
+              onPress={handleShopNow}
+            >
+              <Text style={styles.buttonText}>{getButtonText()}</Text>
+            </TouchableOpacity>
+          )}
+          
+     
+          
+          {error && !loading && (
+            <Text style={styles.errorText}>{error}</Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

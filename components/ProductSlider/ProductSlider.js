@@ -11,6 +11,7 @@ import {
     Animated,
     FlatList
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,6 +23,7 @@ export const products = [
         description: "Made with sun-soaked Damask roses and natural sweeteners, our Gulkand is your daily dose of calm digestion and cooling relief.",
         cta: "Shop Now",
         image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/glow/G1.webp" },
+        screen: "WellnessProducts", // or whatever screen you want to navigate to
     },
     {
         title: "Herbal Face Packs",
@@ -29,6 +31,7 @@ export const products = [
         description: "Pure, herbal face pack powders to nourish, cleanse, and enhance your skin—no chemicals, just results.",
         cta: "Shop Now",
         image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/glow/G2.webp" },
+        screen: "herbalfacepack", // This will navigate to Herbalfacepack screen
     },
     {
         title: "Charcoal Soap",
@@ -36,6 +39,7 @@ export const products = [
         description: "Activated Charcoal Soap that gently removes dirt, oil, and toxins, leaving your skin fresh and rejuvenated.",
         cta: "Shop Now",
         image: { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/glow/G3.webp" },
+        screen: "SkinProducts", // or whatever screen you want to navigate to
     },
 ];
 
@@ -44,6 +48,7 @@ const ProductSlider = () => {
     const flatListRef = useRef(null);
     const scrollX = useRef(new Animated.Value(0)).current;
     const autoPlayRef = useRef(null);
+    const navigation = useNavigation();
 
     // Auto slide functionality
     useEffect(() => {
@@ -86,6 +91,15 @@ const ProductSlider = () => {
         }, 5000);
     };
 
+    const handleShopNow = (screenName) => {
+        if (screenName === 'herbalfacepack') {
+            navigation.navigate('herbalfacepack');
+        } else {
+            // Handle other screens or navigate to a products list with filter
+            navigation.navigate('Products', { category: screenName });
+        }
+    };
+
     const renderItem = ({ item, index }) => {
         return (
             <View style={styles.slide}>
@@ -109,61 +123,14 @@ const ProductSlider = () => {
 
                         <Text style={styles.description}>{item.description}</Text>
 
-                        <TouchableOpacity style={styles.ctaButton}>
+                        <TouchableOpacity
+                            style={styles.ctaButton}
+                            onPress={() => handleShopNow(item.screen)}
+                        >
                             <Text style={styles.ctaText}>{item.cta}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
-        );
-    };
-
-    const renderDotIndicators = () => {
-        return (
-            <View style={styles.dotsContainer}>
-                {products.map((_, index) => {
-                    const inputRange = [
-                        (index - 1) * width,
-                        index * width,
-                        (index + 1) * width,
-                    ];
-
-                    const dotWidth = scrollX.interpolate({
-                        inputRange,
-                        outputRange: [8, 24, 8],
-                        extrapolate: 'clamp',
-                    });
-
-                    const opacity = scrollX.interpolate({
-                        inputRange,
-                        outputRange: [0.4, 1, 0.4],
-                        extrapolate: 'clamp',
-                    });
-
-                    const scale = scrollX.interpolate({
-                        inputRange,
-                        outputRange: [0.8, 1.2, 0.8],
-                        extrapolate: 'clamp',
-                    });
-
-                    return (
-                        <TouchableOpacity
-                            key={index}
-                            onPress={() => handleManualScroll(index)}
-                        >
-                            <Animated.View
-                                style={[
-                                    styles.dot,
-                                    {
-                                        width: dotWidth,
-                                        opacity: opacity,
-                                        transform: [{ scale }],
-                                    },
-                                ]}
-                            />
-                        </TouchableOpacity>
-                    );
-                })}
             </View>
         );
     };
@@ -196,9 +163,6 @@ const ProductSlider = () => {
                     snapToAlignment="center"
                 />
 
-                {/* Dot Indicators */}
-                {renderDotIndicators()}
-
                 {/* Slide Counter */}
                 <View style={styles.counterContainer}>
                     <Text style={styles.counterText}>
@@ -209,6 +173,7 @@ const ProductSlider = () => {
         </SafeAreaView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

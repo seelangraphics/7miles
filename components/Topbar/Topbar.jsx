@@ -24,6 +24,7 @@ const TopBar = ({
   onCartPress,
   onWishlistPress,
   cartItemsCount: propCartItemsCount,
+  wishlistItemsCount: propWishlistItemsCount, // Add prop for wishlist count
   showBackButton = true,
   onCategoryPress,
 }) => {
@@ -36,12 +37,17 @@ const TopBar = ({
   const navigation = useNavigation()
   
   // Use cart context inside the component
-  const { getCartItemsCount } = useCart();
+  const { getCartItemsCount, wishlistItems } = useCart(); // Get wishlistItems
   
   // Calculate cart items count - use prop if provided, otherwise use context
   const cartItemsCount = propCartItemsCount !== undefined 
     ? propCartItemsCount 
     : getCartItemsCount();
+  
+  // Calculate wishlist items count - use prop if provided, otherwise use context
+  const wishlistItemsCount = propWishlistItemsCount !== undefined 
+    ? propWishlistItemsCount 
+    : (wishlistItems ? wishlistItems.length : 0);
 
   const mainCategories = ['All', 'Hair Care', 'Skin Care', 'Body Care', 'Wellness & Edibles'];
 
@@ -113,6 +119,14 @@ const TopBar = ({
     }
   };
 
+  const handleWishlistPress = () => {
+    navigation.navigate('Wishlist');
+    // Call external handler if provided
+    if (onWishlistPress) {
+      onWishlistPress();
+    }
+  };
+
   const handleCategorySelect = (category) => {
     setActiveCategory(category);
     onCategoryPress?.(category, 'main');
@@ -166,19 +180,34 @@ const TopBar = ({
               <Ionicons name="search-outline" size={22} color="#000" />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={onWishlistPress} style={styles.iconBox}>
-              <Ionicons name="heart-outline" size={22} color="#000" />
+            <TouchableOpacity onPress={handleWishlistPress} style={styles.iconBox}>
+              <View style={styles.iconWithBadge}>
+                <Ionicons 
+                  name={wishlistItemsCount > 0 ? "heart" : "heart-outline"} 
+                  size={22} 
+                  color={wishlistItemsCount > 0 ? "#EF4444" : "#000"}
+                />
+                {wishlistItemsCount > 0 && (
+                  <View style={[styles.badge, styles.wishlistBadge]}>
+                    <Text style={styles.badgeText}>
+                      {wishlistItemsCount > 99 ? '99+' : wishlistItemsCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.iconBox}>
-              <Ionicons name="cart-outline" size={22} color="#000" />
-              {cartItemsCount > 0 && (
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>
-                    {cartItemsCount}
-                  </Text>
-                </View>
-              )}
+              <View style={styles.iconWithBadge}>
+                <Ionicons name="cart-outline" size={22} color="#000" />
+                {cartItemsCount > 0 && (
+                  <View style={[styles.badge, styles.cartBadge]}>
+                    <Text style={styles.badgeText}>
+                      {cartItemsCount > 99 ? '99+' : cartItemsCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </TouchableOpacity>
 
           </View>
@@ -208,7 +237,6 @@ const TopBar = ({
     </View>
   );
 };
-
 export default TopBar;
 
 const styles = StyleSheet.create({
@@ -338,4 +366,39 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '500',
   },
+  iconBox: {
+    padding: 4,
+    position: 'relative',
+  },
+  iconWithBadge: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#EF4444',
+    borderRadius: 10,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  cartBadge: {
+    minWidth: 18,
+    height: 18,
+  },
+  wishlistBadge: {
+    minWidth: 16,
+    height: 16,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+
 });

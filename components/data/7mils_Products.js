@@ -134,7 +134,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/ONION-HAIR-MASK-01.webp"),
-            
+
         ],
         quantity: "100gm",
         benefits: [
@@ -328,7 +328,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/COCONUT-OIL-01.webp"),
-           
+
         ],
         bestSeller: "yes",
         quantity: "200ml",
@@ -425,6 +425,7 @@ export const products = [
         name: "SHIKAKAI POWDER",
         sale_price: 280,
         regular_price: 325,
+        Herbalfacepack: "yes",
         save: 45,
         category: "Hair Care",
         image: {
@@ -432,7 +433,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/SHIKAKAI-POWDER-01.webp"),
-            
+
         ],
         powder: "yes",
         hairpack: "yes",
@@ -472,6 +473,7 @@ export const products = [
         name: "HENNA POWDER",
         sale_price: 100,
         regular_price: 160,
+        Herbalfacepack: "yes",
         save: 60,
         category: "Hair Care",
         image: {
@@ -479,7 +481,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/henna_powder-01.webp"),
-         
+
         ],
         powder: "yes",
         hairpack: "yes",
@@ -627,7 +629,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ROSE-POWDER-01.webp"),
-           
+
         ],
         Facepowder: "yes",
         quantity: "100gm",
@@ -863,7 +865,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/COTTONSEED-MILK-MIX-01.webp"),
-     
+
         ],
         bestSeller: "yes",
         quantity: "100gm",
@@ -1007,7 +1009,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/TURMERIC-POWDER-01.webp"),
-        
+
         ],
         powder: "yes",
         quantity: "100gm",
@@ -1093,7 +1095,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ROSE-POWDER-01.webp"),
-         
+
         ],
         powder: "yes",
         quantity: "100gm",
@@ -1138,8 +1140,8 @@ export const products = [
         regular_price: 310,
         save: 40,
         category: "Skin Care",
-        image: { 
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp" 
+        image: {
+            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-01.webp"),
@@ -1220,7 +1222,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/KASTURI-MANJAL-01.webp"),
-            
+
         ],
         Facepowder: "yes",
         quantity: "100gm",
@@ -1270,7 +1272,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"),
-          
+
         ],
         powder: "yes",
         Facepowder: "yes",
@@ -1454,7 +1456,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/FLAX-SEED-01.webp"),
-        
+
         ],
         quantity: "200gm",
         short_benefit: "Rich in omega-3 and fiber",
@@ -1497,9 +1499,11 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/AVARAMPOO-POWDER-01.webp"),
-          
+
         ],
         powder: "yes",
+        Herbalfacepack: "yes",
+
         quantity: "100gm",
         short_benefit: "Brightens skin and clears blemishes",
         benefits: [
@@ -1541,7 +1545,7 @@ export const products = [
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/ROSE-ALOVERA-SOAP-01.webp"),
-           
+
         ],
         quantity: "100gm",
         short_benefit: "Hydrates skin and gives soft texture",

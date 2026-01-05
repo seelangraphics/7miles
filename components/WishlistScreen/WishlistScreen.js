@@ -1,63 +1,58 @@
-import React from 'react';
+// screens/WishlistScreen.js
+import React, { useMemo } from 'react';
 import {
     View,
     Text,
-    StyleSheet,
-    FlatList,
-    Image,
     TouchableOpacity,
-    Dimensions
+    Image,
+    ScrollView,
+    StyleSheet,
+    SafeAreaView,
+    StatusBar,
+    FlatList
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useCart } from '../context/CartContext';
 import { useNavigation } from '@react-navigation/native';
+import { useCart } from '../context/CartContext';
 
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = (width - 40) / 2; // 2 columns with padding
+const CARD_WIDTH = 160;
 
-const ProductGrid = ({ products, limit = 0, title = "Products", showViewAll = false }) => {
-    const {
-        addToCart,
-        getItemQuantity,
-        updateQuantity,
-        removeFromCart,
-        toggleWishlist,
-        isInWishlist
-    } = useCart();
+const WishlistScreen = () => {
     const navigation = useNavigation();
-
-    const displayProducts = limit > 0 ? products.slice(0, limit) : products;
+    const {
+        wishlistItems,
+        toggleWishlist,
+        addToCart,
+        updateQuantity,
+        cartItems,
+        isInCart,
+        getItemQuantity
+    } = useCart();
 
     const handleAddToCart = (product, e) => {
-        if (e) e.stopPropagation();
+        e.stopPropagation();
         addToCart(product);
     };
 
     const handleQuantityChange = (product, change, e) => {
-        if (e) e.stopPropagation();
-        const current = getItemQuantity(product.name);
-        const newQty = current + change;
+        e.stopPropagation();
+        const currentQty = getItemQuantity(product.name);
+        const newQty = Math.max(0, currentQty + change);
 
-        if (newQty <= 0) {
-            removeFromCart(product.name);
+        if (newQty === 0) {
+            updateQuantity(product.name, 0);
+        } else if (currentQty === 0) {
+            addToCart(product);
         } else {
             updateQuantity(product.name, newQty);
         }
     };
 
-    const handleWishlistToggle = (product, e) => {
-        if (e) e.stopPropagation();
-        toggleWishlist(product);
-    };
-
-    const renderProductItem = ({ item, index }) => {
-        const quantity = getItemQuantity(item.name);
-        const isWishlisted = isInWishlist(item.name);
-        const discount = Math.round(((item.regular_price - item.sale_price) / item.regular_price) * 100);
-
-        // Use a consistent background color like NewProducts component
+    const renderProductCard = ({ item, index }) => {
         const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
         const bgColor = colors[index % colors.length];
+        const isItemInCart = isInCart(item.name);
+        const cartQuantity = getItemQuantity(item.name);
 
         return (
             <TouchableOpacity
@@ -65,40 +60,32 @@ const ProductGrid = ({ products, limit = 0, title = "Products", showViewAll = fa
                 onPress={() => navigation.navigate("ProductDetails", { product: item })}
                 activeOpacity={0.9}
             >
-                {/* Discount Badge */}
-                {discount > 0 && (
-                    <View style={styles.discountBadge}>
-                        <Text style={styles.discountText}>Save ₹{item.save || discount}.00</Text>
-                    </View>
-                )}
+                <View style={styles.discountBadge}>
+                    <Text style={styles.discountText}>Save ₹{item.save}.00</Text>
+                </View>
 
-                {/* Wishlist Icon */}
                 <TouchableOpacity
                     style={styles.wishlistBtn}
-                    onPress={(e) => handleWishlistToggle(item, e)}
+                    onPress={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(item);
+                    }}
                 >
-                    <Ionicons
-                        name={isWishlisted ? "heart" : "heart-outline"}
-                        size={16}
-                        color={isWishlisted ? "#EF4444" : "#666"}
-                    />
+                    <Ionicons name="heart" size={16} color="#EF4444" />
                 </TouchableOpacity>
 
-                {/* Product Image - FULL WIDTH */}
                 <View style={styles.imageContainer}>
                     <Image
-                        source={{ uri: item.image }}
+                        source={typeof item.image === 'string' ? { uri: item.image } : item.image}
                         style={styles.productImage}
                         resizeMode="cover"
                     />
                 </View>
 
-                {/* Product Info */}
                 <View style={styles.productInfo}>
                     <Text style={styles.category} numberOfLines={1}>
-                        {item.category || 'Category'}
+                        {item.category}
                     </Text>
-
                     <Text style={styles.productName} numberOfLines={2}>
                         {item.name}
                     </Text>
@@ -108,8 +95,7 @@ const ProductGrid = ({ products, limit = 0, title = "Products", showViewAll = fa
                         <Text style={styles.regularPrice}>₹{item.regular_price}</Text>
                     </View>
 
-                    {/* Cart Actions */}
-                    {quantity > 0 ? (
+                    {isItemInCart ? (
                         <View style={styles.quantityControls}>
                             <TouchableOpacity
                                 style={styles.qtyBtn}
@@ -117,7 +103,7 @@ const ProductGrid = ({ products, limit = 0, title = "Products", showViewAll = fa
                             >
                                 <Text style={styles.qtyBtnText}>-</Text>
                             </TouchableOpacity>
-                            <Text style={styles.quantity}>{quantity}</Text>
+                            <Text style={styles.quantity}>{cartQuantity}</Text>
                             <TouchableOpacity
                                 style={styles.qtyBtn}
                                 onPress={(e) => handleQuantityChange(item, 1, e)}
@@ -139,80 +125,169 @@ const ProductGrid = ({ products, limit = 0, title = "Products", showViewAll = fa
         );
     };
 
-    return (
-        <View style={styles.container}>
-            {title && (
-                <View style={styles.header}>
-                    <View style={styles.headerContent}>
-                        <Text style={styles.title}>{title}</Text>
-                    </View>
-                    {showViewAll && (
-                        <TouchableOpacity style={styles.viewAllBtn}>
-                            <Text style={styles.viewAllText}>View All</Text>
-                            <Ionicons name="arrow-forward" size={14} color="#8B5CF6" />
-                        </TouchableOpacity>
-                    )}
+    if (wishlistItems.length === 0) {
+        return (
+            <SafeAreaView style={styles.safeArea}>
+                <StatusBar barStyle="dark-content" />
+                <View style={styles.emptyContainer}>
+                    <Ionicons name="heart-outline" size={80} color="#E5E7EB" />
+                    <Text style={styles.emptyTitle}>Your Wishlist is Empty</Text>
+                    <Text style={styles.emptyText}>
+                        Add items you love to your wishlist
+                    </Text>
+                    <TouchableOpacity
+                        style={styles.shopButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Text style={styles.shopButtonText}>Continue Shopping</Text>
+                    </TouchableOpacity>
                 </View>
-            )}
+            </SafeAreaView>
+        );
+    }
 
-            <FlatList
-                data={displayProducts}
-                renderItem={renderProductItem}
-                keyExtractor={(item, index) => `${item.name}-${index}`}
-                numColumns={2}
-                columnWrapperStyle={styles.columnWrapper}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
-            />
-        </View>
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar barStyle="dark-content" />
+            <View style={styles.container}>
+                <View style={styles.header}>
+
+
+                </View>
+
+                <View style={styles.wishlistInfo}>
+                    <View style={styles.wishlistHeader}>
+                        <View>
+                            <Text style={styles.wishlistCount}>
+                                {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'}
+                            </Text>
+                            <Text style={styles.wishlistSubtitle}>
+                                Items you've saved for later
+                            </Text>
+                        </View>
+
+                    </View>
+                </View>
+
+                <FlatList
+                    data={wishlistItems}
+                    renderItem={renderProductCard}
+                    keyExtractor={(item) => item.name}
+                    numColumns={2}
+                    columnWrapperStyle={styles.columnWrapper}
+                    contentContainerStyle={styles.listContent}
+                    showsVerticalScrollIndicator={false}
+
+                />
+            </View>
+        </SafeAreaView>
     );
 };
 
-
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
+        flex: 1,
         backgroundColor: '#fff',
-        paddingVertical: 16,
-        paddingHorizontal: 12,
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
     },
     header: {
         flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        marginBottom: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
     },
-    headerContent: {
-        flex: 1,
+    backButton: {
+        padding: 4,
     },
-    title: {
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#1F2937',
+    },
+    cartButton: {
+        position: 'relative',
+        padding: 4,
+    },
+    cartBadge: {
+        position: 'absolute',
+        top: -2,
+        right: -2,
+        backgroundColor: '#EF4444',
+        borderRadius: 10,
+        minWidth: 16,
+        height: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 4,
+        borderWidth: 2,
+        borderColor: '#fff',
+    },
+    cartBadgeText: {
+        color: '#fff',
+        fontSize: 9,
+        fontWeight: 'bold',
+    },
+    wishlistInfo: {
+        paddingHorizontal: 16,
+        paddingVertical: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    wishlistHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    wishlistCount: {
         fontSize: 20,
         fontWeight: '700',
         color: '#1F2937',
         marginBottom: 4,
     },
-    viewAllBtn: {
+    wishlistSubtitle: {
+        fontSize: 14,
+        color: '#6B7280',
+    },
+    moveAllButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F5F3FF',
-        paddingHorizontal: 14,
-        paddingVertical: 8,
+        backgroundColor: '#000',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
         borderRadius: 20,
+        gap: 6,
     },
-    viewAllText: {
-        fontSize: 13,
+    moveAllText: {
+        color: '#fff',
+        fontSize: 12,
         fontWeight: '600',
-        color: '#8B5CF6',
-        marginRight: 4,
     },
-    scrollContent: {
-        paddingBottom: 8,
+    wishlistNote: {
+        fontSize: 12,
+        color: '#6B7280',
+        textAlign: 'center',
+        marginBottom: 16,
+        paddingHorizontal: 16,
+        fontStyle: 'italic',
+    },
+    columnWrapper: {
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
+    },
+    listContent: {
+        paddingTop: 8,
+        paddingBottom: 32,
     },
     productCard: {
         width: CARD_WIDTH,
-        margin: 6,
         borderRadius: 16,
-        backgroundColor: '#f3eeea',
+        marginBottom: 16,
         position: 'relative',
         elevation: 3,
         shadowColor: '#000',
@@ -244,8 +319,8 @@ const styles = StyleSheet.create({
         padding: 4,
     },
     imageContainer: {
-        width: '100%',
-        height: CARD_WIDTH * 0.75, // 4:3 aspect ratio
+        width: CARD_WIDTH,
+        height: CARD_WIDTH * 0.75,
     },
     productImage: {
         width: '100%',
@@ -331,6 +406,36 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#fff',
     },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 40,
+    },
+    emptyTitle: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#1F2937',
+        marginTop: 20,
+        marginBottom: 8,
+    },
+    emptyText: {
+        fontSize: 14,
+        color: '#6B7280',
+        textAlign: 'center',
+        marginBottom: 24,
+    },
+    shopButton: {
+        backgroundColor: '#000',
+        paddingHorizontal: 32,
+        paddingVertical: 12,
+        borderRadius: 24,
+    },
+    shopButtonText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '600',
+    },
 });
 
-export default ProductGrid;
+export default WishlistScreen;

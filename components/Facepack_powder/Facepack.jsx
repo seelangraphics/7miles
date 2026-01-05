@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
+import { useNavigation } from '@react-navigation/native';
 
 // Simple Marquee Component (top placement)
 const TopMarquee = () => {
@@ -43,11 +44,12 @@ const TopMarquee = () => {
   );
 };
 
-const Facepack = () => {
+const Facepack = ({ navigation }) => {
   const [imageError, setImageError] = useState(false);
   
   // Fallback gradient background
   const fallbackGradient = ['#FFF9F0', '#FEF7E6'];
+  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -71,13 +73,22 @@ const Facepack = () => {
       
       {/* Main Content Overlay */}
       <View style={styles.contentContainer}>
-        <Content />
+        <Content navigation={navigation} />
       </View>
     </SafeAreaView>
   );
 };
 
 const Content = () => {
+    const categories = [
+      { 
+        id: 'skin', 
+        name: 'Skin Care', 
+        key: 'Skin Care',
+        color: '#d2c1e2',
+      },
+    ];
+      const navigation = useNavigation();
   return (
     <>
       {/* Marquee at top - subtle but visible */}
@@ -122,20 +133,25 @@ const Content = () => {
 
         {/* CTA Section */}
         <View style={styles.ctaSection}>
-          <TouchableOpacity style={styles.ctaButton} activeOpacity={0.9}>
-            <Text style={styles.ctaText}>Explore Collection</Text>
-            <View style={styles.arrowCircle}>
-              <Text style={styles.arrow}>→</Text>
-            </View>
-          </TouchableOpacity>
-          
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              style={styles.ctaButton} 
+              activeOpacity={0.9}
+              onPress={() => navigation?.navigate?.('Categories', { selectedCategory: category.key })}
+            >
+              <Text style={styles.ctaText}>Explore Collection</Text>
+              <View style={styles.arrowCircle}>
+                <Text style={styles.arrow}>→</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
           <Text style={styles.shippingNote}>Free shipping • Orders above ₹499</Text>
         </View>
       </View>
     </>
   );
 };
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

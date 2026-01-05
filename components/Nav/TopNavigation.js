@@ -31,7 +31,12 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     const navigation = useNavigation();
-    const { getCartItemsCount } = useCart();
+    const { getCartItemsCount, wishlistItems, isInWishlist } = useCart(); // Add isInWishlist
+
+    // Get wishlist count
+    const wishlistCount = useMemo(() => {
+        return wishlistItems ? wishlistItems.length : 0;
+    }, [wishlistItems]);
 
     // Fetch products from AWS
     useEffect(() => {
@@ -125,12 +130,25 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
 
                 {/* Action Icons */}
                 <View style={styles.iconsContainer}>
-                    {/* Wishlist Icon */}
+                    {/* Wishlist Icon with Badge */}
                     <TouchableOpacity
                         style={styles.iconButton}
                         onPress={() => navigation.navigate('Wishlist')}
                     >
-                        <Ionicons name="heart-outline" size={24} color="#333" />
+                        <View style={styles.iconContainer}>
+                            <Ionicons
+                                name={wishlistCount > 0 ? "heart" : "heart-outline"}
+                                size={24}
+                                color={wishlistCount > 0 ? "#EF4444" : "#666"}
+                            />
+                            {wishlistCount > 0 && (
+                                <View style={styles.wishlistBadge}>
+                                    <Text style={styles.wishlistBadgeText}>
+                                        {wishlistCount > 99 ? '99+' : wishlistCount}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
                     </TouchableOpacity>
 
                     {/* Cart Icon with Badge */}
@@ -138,10 +156,8 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
                         style={styles.iconButton}
                         onPress={onCartPress}
                     >
-                        <View style={styles.cartIconContainer}>
+                        <View style={styles.iconContainer}>
                             <Ionicons name="bag-handle-outline" size={26} color="#333" />
-
-
                             {getCartItemsCount() > 0 && (
                                 <View style={styles.badge}>
                                     <Text style={styles.badgeText}>
@@ -225,7 +241,25 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 3,
     },
-
+    wishlistBadge: {
+        position: 'absolute',
+        top: -2,
+        right: -2,
+        backgroundColor: '#EF4444',
+        borderRadius: 10,
+        minWidth: 16,
+        height: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 4,
+        borderWidth: 2,
+        borderColor: '#fff',
+    },
+    wishlistBadgeText: {
+        color: '#fff',
+        fontSize: 9,
+        fontWeight: 'bold',
+    },
     topBar: {
         flexDirection: 'row',
         alignItems: 'center',

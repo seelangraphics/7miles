@@ -73,14 +73,14 @@ const SearchSuggestions = ({
 
             {/* Categories */}
             <View style={styles.categoriesSection}>
-                <Text style={styles.categoriesTitle}>
+                {/* <Text style={styles.categoriesTitle}>
                     Browse Categories
-                </Text>
+                </Text> */}
 
                 <View style={styles.categoriesGrid}>
                     {safeCategories.length === 0 ? (
                         <Text style={styles.emptyText}>
-                            No categories available
+                            {/* No categories available */}
                         </Text>
                     ) : (
                         safeCategories.map((category) => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -35,6 +35,9 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Add a ref for the FlatList
+  const flatListRef = useRef(null);
+
   const COLORS = {
     primary: "black",
     secondary: "#10B981",
@@ -49,6 +52,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  // Scroll to top when product changes
+  useEffect(() => {
+    if (flatListRef.current) {
+      // Scroll to top with animation
+      flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [product]);
 
   const fetchProducts = async () => {
     try {
@@ -286,6 +297,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
       />
 
       <FlatList
+        ref={flatListRef} // Add ref to FlatList
         data={similarProducts}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         numColumns={2}
@@ -393,7 +405,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
                   <TouchableOpacity
                     onPress={() => navigation.navigate("Categories")}
                   >
-                    <Text style={styles.seeAll}>See All</Text>
+                    {/* <Text style={styles.seeAll}>See All</Text> */}
                   </TouchableOpacity>
                 )}
               </View>
@@ -476,7 +488,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   listContent: {
-    paddingBottom: 120, // Extra padding for bottom bar (increased)
+    paddingBottom: 120,
   },
   detailsContainer: {
     padding: 20,

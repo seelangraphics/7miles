@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#f0f0f0',
         backgroundColor: '#fff',
+        marginTop:26
     },
     searchInputContainer: {
         flex: 1,
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
         borderRadius: 10,
-        paddingHorizontal: 12,
+        paddingHorizontal: 17,
         paddingVertical: 10,
         marginRight: 10,
     },

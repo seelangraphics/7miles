@@ -8,8 +8,9 @@ import HomeScreen from "../HomeScreen/HomeScreen";
 import CategoriesScreen from "../Categories/CategoriesScreen";
 
 import AccountScreen from "../AccountScreen/AccountScreen";
-import Hellp from "../Help/Hellp";
+
 import OrdersHistory from "../Yourorders/Yourorder";
+import Help from "../Help/Help";
 
 const Tab = createBottomTabNavigator();
 
@@ -79,7 +80,7 @@ if (route.name === "Account") {
       {/* HELP → SHOW DEFAULT HEADER */}
       <Tab.Screen
         name="Help"
-        component={Hellp}
+        component={Help}
         options={{
           headerShown: true,
           title: "Help & Support",

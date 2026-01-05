@@ -28,7 +28,13 @@ const CARD_HEIGHT = 300;
 const CategoriesScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { addToCart, updateQuantity, getCartItemsCount } = useCart();
+  const { 
+    addToCart, 
+    updateQuantity, 
+    getCartItemsCount,
+    toggleWishlist,
+    isInWishlist 
+  } = useCart();
 
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,14 +89,16 @@ const CategoriesScreen = () => {
   };
 
   // Handle Add to Cart
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, e) => {
+    if (e) e.stopPropagation();
     setAddedItems((prev) => ({ ...prev, [product.name]: true }));
     setQuantities((prev) => ({ ...prev, [product.name]: 1 }));
     addToCart(product);
   };
 
   // Handle Quantity Change
-  const handleQuantityChange = (product, change) => {
+  const handleQuantityChange = (product, change, e) => {
+    if (e) e.stopPropagation();
     const currentQty = quantities[product.name] || 0;
     const newQty = Math.max(0, currentQty + change);
 
@@ -100,6 +108,12 @@ const CategoriesScreen = () => {
     if (newQty === 0) {
       setAddedItems((prev) => ({ ...prev, [product.name]: false }));
     }
+  };
+
+  // Handle Wishlist Toggle
+  const handleWishlistToggle = (product, e) => {
+    if (e) e.stopPropagation();
+    toggleWishlist(product);
   };
 
   // Categories
@@ -229,6 +243,7 @@ const CategoriesScreen = () => {
     const bgColor = colors[index % colors.length];
     const quantity = quantities[product.name] || 0;
     const isAdded = addedItems[product.name];
+    const isWishlisted = isInWishlist(product.name);
 
     return (
       <TouchableOpacity 
@@ -238,12 +253,19 @@ const CategoriesScreen = () => {
       >
         {discount > 0 && (
           <View style={styles.discountBadge}>
-          <Text style={styles.discountText}>Save ₹{product.save}.00</Text>
+            <Text style={styles.discountText}>Save ₹{product.save}.00</Text>
           </View>
         )}
 
-        <TouchableOpacity style={styles.wishlistBtn}>
-          <Ionicons name="heart-outline" size={16} color="#666" />
+        <TouchableOpacity 
+          style={styles.wishlistBtn}
+          onPress={(e) => handleWishlistToggle(product, e)}
+        >
+          <Ionicons 
+            name={isWishlisted ? "heart" : "heart-outline"} 
+            size={16} 
+            color={isWishlisted ? "#EF4444" : "#666"}
+          />
         </TouchableOpacity>
 
         <View style={styles.imageContainer}>
@@ -267,14 +289,14 @@ const CategoriesScreen = () => {
             <View style={styles.quantityControls}>
               <TouchableOpacity 
                 style={styles.qtyBtn}
-                onPress={() => handleQuantityChange(product, -1)}
+                onPress={(e) => handleQuantityChange(product, -1, e)}
               >
                 <Text style={styles.qtyBtnText}>-</Text>
               </TouchableOpacity>
               <Text style={styles.quantity}>{quantity}</Text>
               <TouchableOpacity 
                 style={styles.qtyBtn}
-                onPress={() => handleQuantityChange(product, 1)}
+                onPress={(e) => handleQuantityChange(product, 1, e)}
               >
                 <Text style={styles.qtyBtnText}>+</Text>
               </TouchableOpacity>
@@ -282,7 +304,7 @@ const CategoriesScreen = () => {
           ) : (
             <TouchableOpacity 
               style={styles.addBtn}
-              onPress={() => handleAddToCart(product)}
+              onPress={(e) => handleAddToCart(product, e)}
             >
               <Ionicons name="cart" size={14} color="#fff" />
               <Text style={styles.addBtnText}>Add to Cart</Text>
@@ -442,10 +464,7 @@ const CategoriesScreen = () => {
         <View style={styles.productsHeader}>
           <View style={styles.productsHeaderContent}>
             <Text style={styles.productsTitle}>{selectedCategory}</Text>
-            <Text style={styles.productsSubtitle}>
-              {filteredProducts.length} products available
-              {hasActiveFilters && ` (filtered)`}
-            </Text>
+   
           </View>
           <View style={styles.filterSortRow}>
             <TouchableOpacity

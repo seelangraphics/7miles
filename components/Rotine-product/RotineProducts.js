@@ -24,7 +24,7 @@ const Routineproduct = () => {
   const [addedItems, setAddedItems] = useState({});
   const [quantities, setQuantities] = useState({});
   const navigation = useNavigation();
-  const { addToCart, updateQuantity } = useCart();
+  const { addToCart, updateQuantity, toggleWishlist, isInWishlist } = useCart();
 
   // Refs for each horizontal scroll
   const facePowderRef = useRef(null);
@@ -134,6 +134,11 @@ const Routineproduct = () => {
     }
   };
 
+  const handleWishlistToggle = (product, e) => {
+    if (e) e.stopPropagation();
+    toggleWishlist(product);
+  };
+
   // Don't show if no products in any category
   if (facePowderProducts.length === 0 && nightRoutineProducts.length === 0 && hairPackProducts.length === 0) {
     return null;
@@ -164,6 +169,8 @@ const Routineproduct = () => {
             quantities={quantities}
             onAdd={handleAddToCart}
             onQuantityChange={handleQuantityChange}
+            onWishlistToggle={handleWishlistToggle}
+            isInWishlist={isInWishlist}
             navigation={navigation}
             flatListRef={facePowderRef}
             currentIndices={currentIndices}
@@ -175,12 +182,14 @@ const Routineproduct = () => {
         {nightRoutineProducts.length > 0 && (
           <CategorySection
             title="Night Routine"
-            subtitle="Products for your night care routine • Auto-scrolling"
+            subtitle="Products for your night care routine"
             products={nightRoutineProducts}
             addedItems={addedItems}
             quantities={quantities}
             onAdd={handleAddToCart}
             onQuantityChange={handleQuantityChange}
+            onWishlistToggle={handleWishlistToggle}
+            isInWishlist={isInWishlist}
             navigation={navigation}
             flatListRef={nightRoutineRef}
             currentIndices={currentIndices}
@@ -192,12 +201,14 @@ const Routineproduct = () => {
         {hairPackProducts.length > 0 && (
           <CategorySection
             title="Hair Pack"
-            subtitle="Specialized hair care treatments • Auto-scrolling"
+            subtitle="Specialized hair care treatments"
             products={hairPackProducts}
             addedItems={addedItems}
             quantities={quantities}
             onAdd={handleAddToCart}
             onQuantityChange={handleQuantityChange}
+            onWishlistToggle={handleWishlistToggle}
+            isInWishlist={isInWishlist}
             navigation={navigation}
             flatListRef={hairPackRef}
             currentIndices={currentIndices}
@@ -218,6 +229,8 @@ const CategorySection = ({
   quantities,
   onAdd,
   onQuantityChange,
+  onWishlistToggle,
+  isInWishlist,
   navigation,
   flatListRef,
   currentIndices,
@@ -256,8 +269,10 @@ const CategorySection = ({
             index={index}
             quantity={quantities[item.name] || 0}
             isAdded={addedItems[item.name]}
+            isWishlisted={isInWishlist(item.name)}
             onAdd={() => onAdd(item)}
             onQuantityChange={(change) => onQuantityChange(item, change)}
+            onWishlistToggle={(e) => onWishlistToggle(item, e)}
             onPress={() => navigation.navigate("ProductDetails", { product: item })}
             category={title}
           />
@@ -281,7 +296,18 @@ const CategorySection = ({
 };
 
 // Product Card Component
-const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress, category }) => {
+const ProductCard = ({
+  product,
+  index,
+  quantity,
+  isAdded,
+  isWishlisted,
+  onAdd,
+  onQuantityChange,
+  onWishlistToggle,
+  onPress,
+  category
+}) => {
   const discount = Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100);
   const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
   const bgColor = colors[index % colors.length];
@@ -298,8 +324,18 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
       </View>
 
       {/* Wishlist Icon */}
-      <TouchableOpacity style={styles.wishlistBtn}>
-        <Ionicons name="heart-outline" size={16} color="#666" />
+      <TouchableOpacity
+        style={styles.wishlistBtn}
+        onPress={(e) => {
+          e.stopPropagation();
+          onWishlistToggle(e);
+        }}
+      >
+        <Ionicons
+          name={isWishlisted ? "heart" : "heart-outline"}
+          size={16}
+          color={isWishlisted ? "#EF4444" : "#666"}
+        />
       </TouchableOpacity>
 
       {/* Product Image */}
@@ -326,14 +362,20 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
           <View style={styles.quantityControls}>
             <TouchableOpacity
               style={styles.qtyBtn}
-              onPress={() => onQuantityChange(-1)}
+              onPress={(e) => {
+                e.stopPropagation();
+                onQuantityChange(-1);
+              }}
             >
               <Text style={styles.qtyBtnText}>-</Text>
             </TouchableOpacity>
             <Text style={styles.quantity}>{quantity}</Text>
             <TouchableOpacity
               style={styles.qtyBtn}
-              onPress={() => onQuantityChange(1)}
+              onPress={(e) => {
+                e.stopPropagation();
+                onQuantityChange(1);
+              }}
             >
               <Text style={styles.qtyBtnText}>+</Text>
             </TouchableOpacity>
@@ -341,7 +383,10 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
         ) : (
           <TouchableOpacity
             style={styles.addBtn}
-            onPress={onAdd}
+            onPress={(e) => {
+              e.stopPropagation();
+              onAdd();
+            }}
           >
             <Ionicons name="cart" size={14} color="#fff" />
             <Text style={styles.addBtnText}>Add to Cart</Text>
@@ -351,6 +396,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
     </TouchableOpacity>
   );
 };
+
 
 const styles = StyleSheet.create({
   // Main Container
