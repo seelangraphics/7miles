@@ -28,6 +28,10 @@ import Oil from "./components/SevenMile/Oil";
 import Powder from "./components/SevenMile/Powder";
 import WishlistScreen from "./components/WishlistScreen/WishlistScreen";
 import Herbalfacepack from "./components/HerbalFacePack/Herbalfacepack";
+import Help from "./components/Help/Help";
+import TermsOfService from "./components/AccountScreen/TermsOfService";
+import RefundPolicy from "./components/AccountScreen/RefundPolicy";
+import ShippingPolicy from "./components/AccountScreen/ShippingPolicy";
 
 const Stack = createNativeStackNavigator();
 
@@ -118,7 +122,51 @@ function AppContent() {
             component={OrderProcessingScreen}
             options={{ title: "order process", headerShown: false }}
           />
-          <Stack.Screen name="Wishlist" component={WishlistScreen} />
+          <Stack.Screen
+            name="Help"
+            component={Help}
+
+          />
+          <Stack.Screen
+            name="TermsOfService"
+            component={TermsOfService}
+            options={{ title: "Terms of Service ", headerShown: false }}
+          />
+          <Stack.Screen
+            name="Privacypolicy"
+            component={TermsOfService}
+            options={{ title: "PrivacyPolicy", headerShown: false }}
+          />
+          <Stack.Screen
+            name="ShippingPolicy"
+            component={ShippingPolicy}
+            options={{ title: "ShippingPolicy", headerShown: false }}
+          />
+          <Stack.Screen
+            name="RefundPolicy"
+            component={RefundPolicy}
+            options={{ title: "RefundPolicy", headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="Wishlist"
+            options={{
+              header: ({ navigation, route }) => {
+                // Get cart count from context or pass as prop
+
+
+                return (
+                  <TopBar
+                    title="Wishlist"
+                    showBackButton
+                    onBackPress={() => navigation.goBack()}
+                  />
+                );
+              },
+            }}
+          >
+            {(props) => <WishlistScreen {...props} />}
+          </Stack.Screen>
           <Stack.Screen
             name="address"
             component={Youraddress}
@@ -140,13 +188,23 @@ function AppContent() {
           <Stack.Screen
             name="ediblefoods"
             component={Ediblefoods}
-            options={{ title: "ediblefoods", headerShown: true }}
+            options={{
+              header: ({ navigation }) => (
+                <TopBar
+                  title="Herbal Face Packs"
+                  showBackButton
+                  onBackPress={() => navigation.goBack()}
+                  onCartPress={() => navigation.navigate("Cart")}
+                />
+              )
+            }}
           />
-          <Stack.Screen
+
+          {/* <Stack.Screen
             name="oil"
             component={Oil}
             options={{ title: "Oil", headerShown: true }}
-          />
+          /> */}
           <Stack.Screen
             name="herbalfacepack"
             component={Herbalfacepack}
@@ -161,6 +219,25 @@ function AppContent() {
               )
             }}
           />
+          <Stack.Screen
+            name="oil"
+            options={{
+              header: ({ navigation, route }) => {
+                // Get cart count from context or pass as prop
+
+
+                return (
+                  <TopBar
+                    title="Oil"
+                    showBackButton
+                    onBackPress={() => navigation.goBack()}
+                  />
+                );
+              },
+            }}
+          >
+            {(props) => <Oil {...props} />}
+          </Stack.Screen>
 
           <Stack.Screen
             name="powder"

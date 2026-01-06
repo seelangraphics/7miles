@@ -197,7 +197,7 @@ const handleCheckout = () => {
         {/* Free Shipping Progress */}
         <View style={styles.shippingProgressSection}>
           <View style={styles.progressHeader}>
-            <Ionicons name="rocket-outline" size={20} color="#d6433c" />
+            {/* <Ionicons name="rocket-outline" size={20} color="#d6433c" /> */}
             <Text style={styles.progressTitle}>Free Shipping Progress</Text>
             <Text style={styles.progressPercentage}>
               {shippingProgress.toFixed(0)}%
@@ -274,7 +274,7 @@ const handleCheckout = () => {
             onPress={calculateEstimatedShipping}
             disabled={pincode.length !== 6}
           >
-            <Ionicons name="calculator-outline" size={16} color="#fff" />
+            {/* <Ionicons name="calculator-outline" size={16} color="#fff" /> */}
             <Text style={styles.calcButtonText}>Calculate Shipping</Text>
           </TouchableOpacity>
 

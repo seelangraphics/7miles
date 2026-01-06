@@ -16,7 +16,6 @@ import {
 import { auth, db } from "../Firebase/Firebase";
 import { doc, onSnapshot, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
 export const Youraddress = ({ navigation }) => {
@@ -257,16 +256,20 @@ export const Youraddress = ({ navigation }) => {
   };
 
   const renderItem = ({ item, index }) => (
-    <TouchableOpacity style={styles.addressCard}>
+    <View style={styles.addressCard}>
       <View style={styles.cardHeader}>
         <View style={styles.addressHeader}>
-          <Ionicons name="location-sharp" size={20} color="#4F46E5" />
-          <Text style={styles.addressName}>
-            {`${item.firstName} ${item.lastName}`}
-          </Text>
+          <View style={styles.addressIconContainer}>
+            <Text style={styles.addressIcon}>A</Text>
+          </View>
+          <View style={styles.addressTitleContainer}>
+            <Text style={styles.addressName}>
+              {`${item.firstName} ${item.lastName}`}
+            </Text>
+            <Text style={styles.phoneNumber}>{item.mobileNo}</Text>
+          </View>
           {item.isDefault && (
             <View style={styles.defaultBadge}>
-              <Ionicons name="checkmark-circle" size={12} color="#fff" />
               <Text style={styles.defaultBadgeText}>DEFAULT</Text>
             </View>
           )}
@@ -282,15 +285,10 @@ export const Youraddress = ({ navigation }) => {
           {`${item.city}, ${item.state}, ${item.pincode}`}
         </Text>
         <Text style={styles.addressText}>{item.country}</Text>
-        <Text style={styles.phoneText}>📱 {item.mobileNo}</Text>
 
         {item.deliveryInstructions && (
           <View style={styles.instructionsContainer}>
-            <Ionicons
-              name="information-circle-outline"
-              size={14}
-              color="#6B7280"
-            />
+            <Text style={styles.instructionsTitle}>Delivery Instructions</Text>
             <Text style={styles.instructionsText}>
               {item.deliveryInstructions}
             </Text>
@@ -300,54 +298,37 @@ export const Youraddress = ({ navigation }) => {
 
       <View style={styles.addressActions}>
         <TouchableOpacity
-          style={styles.actionButton}
+          style={[styles.actionButton, styles.editButton]}
           onPress={() => handleEditAddress(item)}
         >
-          <Ionicons name="create-outline" size={14} color="#4F46E5" />
-          <Text style={styles.actionText}>Edit</Text>
+          <Text style={[styles.actionText, styles.editText]}>Edit</Text>
         </TouchableOpacity>
 
-        <View style={styles.divider} />
-
         <TouchableOpacity
-          style={styles.actionButton}
+          style={[styles.actionButton, styles.deleteButton]}
           onPress={() => handleDeleteAddress(item.id)}
         >
-          <Ionicons name="trash-outline" size={14} color="#EF4444" />
-          <Text style={[styles.actionText, { color: "#EF4444" }]}>Remove</Text>
+          <Text style={[styles.actionText, styles.deleteText]}>Remove</Text>
         </TouchableOpacity>
 
         {!item.isDefault && savedAddresses.length > 1 && (
-          <>
-            <View style={styles.divider} />
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => handleMakeDefault(item.id)}
-            >
-              <Ionicons name="star-outline" size={14} color="#F59E0B" />
-              <Text style={[styles.actionText, { color: "#F59E0B" }]}>
-                Set as Default
-              </Text>
-            </TouchableOpacity>
-          </>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.defaultButton]}
+            onPress={() => handleMakeDefault(item.id)}
+          >
+            <Text style={[styles.actionText, styles.defaultButtonText]}>
+              Set as Default
+            </Text>
+          </TouchableOpacity>
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color="#111827" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Your Addresses</Text>
-          <View style={{ width: 24 }} />
-        </View>
+    
 
         <FlatList
           data={savedAddresses}
@@ -356,7 +337,9 @@ export const Youraddress = ({ navigation }) => {
           contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
             <View style={styles.emptyState}>
-              <MaterialIcons name="location-off" size={50} color="#E0E0E0" />
+              <View style={styles.emptyIconContainer}>
+                <Text style={styles.emptyIcon}>📍</Text>
+              </View>
               <Text style={styles.emptyText}>No saved addresses</Text>
               <Text style={styles.emptySubtext}>
                 Add your first address to get started
@@ -365,16 +348,17 @@ export const Youraddress = ({ navigation }) => {
           }
         />
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            resetForm();
-            setModalVisible(true);
-          }}
-        >
-          <Ionicons name="add-circle" size={20} color="white" />
-          <Text style={styles.addButtonText}>Add New Address</Text>
-        </TouchableOpacity>
+        <View style={styles.footerContainer}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => {
+              resetForm();
+              setModalVisible(true);
+            }}
+          >
+            <Text style={styles.addButtonText}>+ Add New Address</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Add Address Modal */}
@@ -390,12 +374,12 @@ export const Youraddress = ({ navigation }) => {
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <AntDesign name="close" size={24} color="#666" />
+              <Text style={styles.closeButtonText}>×</Text>
             </TouchableOpacity>
             <Text style={styles.modalTitle}>
               {formData.id ? "Edit Address" : "Add New Address"}
             </Text>
-            <View style={{ width: 24 }} />
+            <View style={styles.modalHeaderSpacer} />
           </View>
 
           <ScrollView
@@ -534,8 +518,8 @@ export const Youraddress = ({ navigation }) => {
                   </Text>
                 </View>
                 <Switch
-                  trackColor={{ false: "#E0E0E0", true: "#4F46E5" }}
-                  thumbColor={formData.isDefault ? "white" : "white"}
+                  trackColor={{ false: "#E0E0E0", true: "#d32f2f" }}
+                  thumbColor={formData.isDefault ? "#fff" : "#f5f5f5"}
                   ios_backgroundColor="#E0E0E0"
                   value={formData.isDefault}
                   onValueChange={(value) =>
@@ -555,12 +539,9 @@ export const Youraddress = ({ navigation }) => {
               {loading ? (
                 <ActivityIndicator color="white" />
               ) : (
-                <>
-                  <Ionicons name="checkmark-circle" size={18} color="white" />
-                  <Text style={styles.saveButtonText}>
-                    {formData.id ? "Update Address" : "Save Address"}
-                  </Text>
-                </>
+                <Text style={styles.saveButtonText}>
+                  {formData.id ? "Update Address" : "Save Address"}
+                </Text>
               )}
             </TouchableOpacity>
           </View>
@@ -573,7 +554,7 @@ export const Youraddress = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#f5f5f5",
   },
   mainContainer: {
     flex: 1,
@@ -582,35 +563,49 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: "#e0e0e0",
   },
   backButton: {
-    padding: 4,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "#f8f8f8",
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: "#333",
+    fontWeight: "300",
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#111827",
+    color: "#333",
+  },
+  headerSpacer: {
+    width: 40,
   },
   listContainer: {
-    padding: 12,
-    paddingBottom: 80,
+    padding: 16,
+    paddingBottom: 100,
   },
   addressCard: {
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#e8e8e8",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+    shadowRadius: 3,
+    elevation: 2,
   },
   cardHeader: {
     marginBottom: 12,
@@ -618,21 +613,39 @@ const styles = StyleSheet.create({
   addressHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+  },
+  addressIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#ffebee",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  addressIcon: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#d32f2f",
+  },
+  addressTitleContainer: {
+    flex: 1,
   },
   addressName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#111827",
+    color: "#333",
+    marginBottom: 2,
+  },
+  phoneNumber: {
+    fontSize: 14,
+    color: "#666",
   },
   defaultBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#10B981",
-    paddingHorizontal: 8,
+    backgroundColor: "#d32f2f",
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
+    borderRadius: 4,
   },
   defaultBadgeText: {
     color: "#fff",
@@ -641,125 +654,155 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   addressDetails: {
-    gap: 6,
+    paddingLeft: 52, // Align with address icon
   },
   addressText: {
     fontSize: 14,
-    color: "#4B5563",
+    color: "#555",
     lineHeight: 20,
-  },
-  phoneText: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginTop: 4,
+    marginBottom: 4,
   },
   instructionsContainer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 8,
     marginTop: 8,
     padding: 8,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: "#f8f8f8",
     borderRadius: 6,
   },
-  instructionsText: {
-    flex: 1,
+  instructionsTitle: {
     fontSize: 12,
-    color: "#6B7280",
-    fontStyle: "italic",
+    fontWeight: "600",
+    color: "#d32f2f",
+    marginBottom: 2,
+  },
+  instructionsText: {
+    fontSize: 12,
+    color: "#666",
     lineHeight: 16,
   },
   addressActions: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "flex-start",
     marginTop: 16,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
-    gap: 8,
+    borderTopColor: "#f0f0f0",
   },
   actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 6,
+    marginRight: 8,
+  },
+  editButton: {
+    backgroundColor: "#ffebee",
+  },
+  deleteButton: {
+    backgroundColor: "#ffebee",
+  },
+  defaultButton: {
+    backgroundColor: "#ffebee",
   },
   actionText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#4F46E5",
   },
-  divider: {
-    width: 1,
-    height: 16,
-    backgroundColor: "#E5E7EB",
+  editText: {
+    color: "#d32f2f",
+  },
+  deleteText: {
+    color: "#d32f2f",
+  },
+  defaultButtonText: {
+    color: "#d32f2f",
   },
   emptyState: {
-    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  emptyIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#ffebee",
     justifyContent: "center",
     alignItems: "center",
-    padding: 40,
+    marginBottom: 16,
+  },
+  emptyIcon: {
+    fontSize: 36,
+    color: "#d32f2f",
   },
   emptyText: {
     fontSize: 16,
-    color: "#6B7280",
-    marginTop: 16,
     fontWeight: "600",
+    color: "#666",
+    marginBottom: 4,
   },
   emptySubtext: {
     fontSize: 14,
-    color: "#9CA3AF",
-    marginTop: 4,
+    color: "#999",
+    textAlign: "center",
+  },
+  footerContainer: {
+    position: "absolute",
+    bottom: 0,
+  
+    left: 0,
+    right: 0,
+    backgroundColor: "#f5f5f5",
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
   },
   addButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 12,
-    right: 12,
-    flexDirection: "row",
+    backgroundColor: "#d32f2f",
+    paddingVertical: 16,
+    borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#4F46E5",
-    padding: 16,
-    borderRadius: 12,
-    gap: 10,
-    shadowColor: "#4F46E5",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
   },
   addButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
   },
   modalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: "#e0e0e0",
   },
   closeButton: {
-    padding: 4,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "#f8f8f8",
+  },
+  closeButtonText: {
+    fontSize: 28,
+    color: "#666",
+    fontWeight: "300",
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#111827",
+    color: "#333",
+  },
+  modalHeaderSpacer: {
+    width: 40,
   },
   modalContent: {
     flex: 1,
-    padding: 16,
+    padding: 20,
   },
   formContainer: {
     marginBottom: 20,
@@ -770,18 +813,18 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#374151",
+    color: "#333",
     marginBottom: 8,
   },
   modalInput: {
     height: 48,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#f9f9f9",
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#D1D5DB",
-    color: "#111827",
+    borderColor: "#e0e0e0",
+    color: "#333",
   },
   textArea: {
     height: 80,
@@ -790,7 +833,6 @@ const styles = StyleSheet.create({
   },
   inputRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
   },
   defaultToggle: {
     flexDirection: "row",
@@ -799,38 +841,36 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingVertical: 16,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: "#f0f0f0",
   },
   defaultToggleText: {
     fontSize: 16,
-    color: "#111827",
+    color: "#333",
     fontWeight: "600",
   },
   defaultToggleSubtext: {
     fontSize: 12,
-    color: "#6B7280",
+    color: "#666",
     marginTop: 4,
   },
   modalFooter: {
-    padding: 16,
+    padding: 20,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: "#e0e0e0",
   },
   saveButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: "#d32f2f",
+    borderRadius: 8,
+    height: 48,
     justifyContent: "center",
-    backgroundColor: "#4F46E5",
-    borderRadius: 12,
-    height: 56,
-    gap: 8,
+    alignItems: "center",
   },
   saveButtonDisabled: {
-    backgroundColor: "#9CA3AF",
+    backgroundColor: "#999",
   },
   saveButtonText: {
-    color: "white",
+    color: "#fff",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
 });

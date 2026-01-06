@@ -6,7 +6,8 @@ import {
     Image, 
     StyleSheet,
     FlatList,
-    Dimensions 
+    Dimensions,
+    ScrollView // Added ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -22,12 +23,29 @@ export const Oil = () => {
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
     const navigation = useNavigation();
-    const { addToCart, updateQuantity } = useCart();
+    const { addToCart, updateQuantity, toggleWishlist, isInWishlist } = useCart(); // Added wishlist functions
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch(PRODUCTS_API);
+                // Add cache busting to prevent caching
+                const timestamp = new Date().getTime();
+                const apiUrl = `${PRODUCTS_API}?t=${timestamp}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0',
+                    },
+                    cache: 'no-store'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 console.log('Oil Products Data', JSON.stringify(data, null, 2));
                 setProducts(data);
@@ -40,13 +58,15 @@ export const Oil = () => {
 
     const oilProducts = products.filter(product => product.oil === "yes");
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (product, e) => {
+        if (e) e.stopPropagation();
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
         setQuantities(prev => ({ ...prev, [product.name]: 1 }));
         addToCart(product);
     };
 
-    const handleQuantityChange = (product, change) => {
+    const handleQuantityChange = (product, change, e) => {
+        if (e) e.stopPropagation();
         const currentQty = quantities[product.name] || 0;
         const newQty = Math.max(0, currentQty + change);
         
@@ -56,6 +76,11 @@ export const Oil = () => {
         if (newQty === 0) {
             setAddedItems(prev => ({ ...prev, [product.name]: false }));
         }
+    };
+
+    const handleWishlistToggle = (product, e) => {
+        if (e) e.stopPropagation();
+        toggleWishlist(product);
     };
 
     if (oilProducts.length === 0) {
@@ -68,8 +93,10 @@ export const Oil = () => {
             index={index}
             quantity={quantities[product.name] || 0}
             isAdded={addedItems[product.name]}
-            onAdd={() => handleAddToCart(product)}
-            onQuantityChange={(change) => handleQuantityChange(product, change)}
+            isWishlisted={isInWishlist(product.name)}
+            onAdd={(e) => handleAddToCart(product, e)}
+            onQuantityChange={(change, e) => handleQuantityChange(product, change, e)}
+            onWishlistToggle={(e) => handleWishlistToggle(product, e)}
             onPress={() => navigation.navigate("ProductDetails", { product })}
         />
     );
@@ -84,22 +111,39 @@ export const Oil = () => {
                 </View>
             </View>
 
-            {/* Products Grid */}
-            <FlatList
-                data={oilProducts}
-                renderItem={renderProductCard}
-                keyExtractor={(item, index) => item.name + index}
-                numColumns={2}
-                columnWrapperStyle={styles.columnWrapper}
-                contentContainerStyle={styles.gridContent}
-                scrollEnabled={false}
+            {/* Wrap FlatList in ScrollView for better scrolling */}
+            <ScrollView 
+                style={styles.scrollContainer}
                 showsVerticalScrollIndicator={false}
-            />
+            >
+                {/* Products Grid */}
+                <FlatList
+                    data={oilProducts}
+                    renderItem={renderProductCard}
+                    keyExtractor={(item, index) => item.name + index}
+                    numColumns={2}
+                    columnWrapperStyle={styles.columnWrapper}
+                    contentContainerStyle={styles.gridContent}
+                    scrollEnabled={false} // Disable FlatList scroll, let ScrollView handle it
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={<View style={{ height: 20 }} />}
+                />
+            </ScrollView>
         </View>
     );
 };
 
-const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress }) => {
+const ProductCard = ({ 
+    product, 
+    index, 
+    quantity, 
+    isAdded, 
+    isWishlisted,
+    onAdd, 
+    onQuantityChange, 
+    onWishlistToggle,
+    onPress 
+}) => {
     const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
     const bgColor = colors[index % colors.length];
 
@@ -115,8 +159,15 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
             </View>
 
             {/* Wishlist Icon */}
-            <TouchableOpacity style={styles.wishlistBtn}>
-                <Ionicons name="heart-outline" size={16} color="#666" />
+            <TouchableOpacity 
+                style={styles.wishlistBtn}
+                onPress={(e) => onWishlistToggle(e)}
+            >
+                <Ionicons 
+                    name={isWishlisted ? "heart" : "heart-outline"} 
+                    size={16} 
+                    color={isWishlisted ? "#EF4444" : "#666"}
+                />
             </TouchableOpacity>
 
             {/* Product Image */}
@@ -143,14 +194,14 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                     <View style={styles.quantityControls}>
                         <TouchableOpacity 
                             style={styles.qtyBtn}
-                            onPress={() => onQuantityChange(-1)}
+                            onPress={(e) => onQuantityChange(-1, e)}
                         >
                             <Text style={styles.qtyBtnText}>-</Text>
                         </TouchableOpacity>
                         <Text style={styles.quantity}>{quantity}</Text>
                         <TouchableOpacity 
                             style={styles.qtyBtn}
-                            onPress={() => onQuantityChange(1)}
+                            onPress={(e) => onQuantityChange(1, e)}
                         >
                             <Text style={styles.qtyBtnText}>+</Text>
                         </TouchableOpacity>
@@ -158,7 +209,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                 ) : (
                     <TouchableOpacity 
                         style={styles.addBtn}
-                        onPress={onAdd}
+                        onPress={(e) => onAdd(e)}
                     >
                         <Ionicons name="cart" size={14} color="#fff" />
                         <Text style={styles.addBtnText}>Add to Cart</Text>
@@ -175,6 +226,10 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingHorizontal: 16,
         marginTop: 8,
+        flex: 1, // Added flex: 1
+    },
+    scrollContainer: {
+        flex: 1, // Added to make scroll work
     },
     header: {
         flexDirection: 'row',
@@ -212,6 +267,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.05,
         shadowRadius: 8,
         overflow: 'hidden',
+        marginBottom: 5, // Added small margin
     },
     discountBadge: {
         position: 'absolute',

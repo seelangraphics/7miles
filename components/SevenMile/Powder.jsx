@@ -25,7 +25,7 @@ export const Powder = () => {
     const [addedItems, setAddedItems] = useState({});
     const [quantities, setQuantities] = useState({});
     const navigation = useNavigation();
-    const { addToCart, updateQuantity } = useCart();
+    const { addToCart, updateQuantity, toggleWishlist, isInWishlist } = useCart(); // Added wishlist functions
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -42,13 +42,15 @@ export const Powder = () => {
 
     const powderProducts = products.filter(product => product.powder === "yes");
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (product, e) => {
+        if (e) e.stopPropagation();
         setAddedItems(prev => ({ ...prev, [product.name]: true }));
         setQuantities(prev => ({ ...prev, [product.name]: 1 }));
         addToCart(product);
     };
 
-    const handleQuantityChange = (product, change) => {
+    const handleQuantityChange = (product, change, e) => {
+        if (e) e.stopPropagation();
         const currentQty = quantities[product.name] || 0;
         const newQty = Math.max(0, currentQty + change);
         
@@ -58,6 +60,11 @@ export const Powder = () => {
         if (newQty === 0) {
             setAddedItems(prev => ({ ...prev, [product.name]: false }));
         }
+    };
+
+    const handleWishlistToggle = (product, e) => {
+        if (e) e.stopPropagation();
+        toggleWishlist(product);
     };
 
     if (powderProducts.length === 0) {
@@ -91,8 +98,10 @@ export const Powder = () => {
             index={index}
             quantity={quantities[product.name] || 0}
             isAdded={addedItems[product.name]}
-            onAdd={() => handleAddToCart(product)}
-            onQuantityChange={(change) => handleQuantityChange(product, change)}
+            isWishlisted={isInWishlist(product.name)}
+            onAdd={(e) => handleAddToCart(product, e)}
+            onQuantityChange={(change, e) => handleQuantityChange(product, change, e)}
+            onWishlistToggle={(e) => handleWishlistToggle(product, e)}
             onPress={() => navigation.navigate("ProductDetails", { product })}
         />
     );
@@ -102,7 +111,13 @@ export const Powder = () => {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.container}>
                 {/* Header */}
-            
+                <View style={styles.header}>
+                
+                    <View style={styles.headerContent}>
+                        <Text style={styles.title}>Powder Products</Text>
+                        <Text style={styles.subtitle}>Finely ground quality powders</Text>
+                    </View>
+                </View>
 
                 {/* Products Grid */}
                 <FlatList
@@ -123,7 +138,17 @@ export const Powder = () => {
     );
 };
 
-const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChange, onPress }) => {
+const ProductCard = ({ 
+    product, 
+    index, 
+    quantity, 
+    isAdded, 
+    isWishlisted,
+    onAdd, 
+    onQuantityChange, 
+    onWishlistToggle,
+    onPress 
+}) => {
     const colors = ['#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea', '#f3eeea'];
     const bgColor = colors[index % colors.length];
 
@@ -139,8 +164,15 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
             </View>
 
             {/* Wishlist Icon */}
-            <TouchableOpacity style={styles.wishlistBtn}>
-                <Ionicons name="heart-outline" size={16} color="#666" />
+            <TouchableOpacity 
+                style={styles.wishlistBtn}
+                onPress={(e) => onWishlistToggle(e)}
+            >
+                <Ionicons 
+                    name={isWishlisted ? "heart" : "heart-outline"} 
+                    size={16} 
+                    color={isWishlisted ? "#EF4444" : "#666"}
+                />
             </TouchableOpacity>
 
             {/* Product Image */}
@@ -167,14 +199,14 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                     <View style={styles.quantityControls}>
                         <TouchableOpacity 
                             style={styles.qtyBtn}
-                            onPress={() => onQuantityChange(-1)}
+                            onPress={(e) => onQuantityChange(-1, e)}
                         >
                             <Text style={styles.qtyBtnText}>-</Text>
                         </TouchableOpacity>
                         <Text style={styles.quantity}>{quantity}</Text>
                         <TouchableOpacity 
                             style={styles.qtyBtn}
-                            onPress={() => onQuantityChange(1)}
+                            onPress={(e) => onQuantityChange(1, e)}
                         >
                             <Text style={styles.qtyBtnText}>+</Text>
                         </TouchableOpacity>
@@ -182,7 +214,7 @@ const ProductCard = ({ product, index, quantity, isAdded, onAdd, onQuantityChang
                 ) : (
                     <TouchableOpacity 
                         style={styles.addBtn}
-                        onPress={onAdd}
+                        onPress={(e) => onAdd(e)}
                     >
                         <Ionicons name="cart" size={14} color="#fff" />
                         <Text style={styles.addBtnText}>Add to Cart</Text>
