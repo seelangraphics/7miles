@@ -150,7 +150,16 @@ function AppContent() {
           <Stack.Screen
             name="herbalfacepack"
             component={Herbalfacepack}
-            options={{ title: "Herbalfacepack", headerShown: true }}
+            options={{
+              header: ({ navigation }) => (
+                <TopBar
+                  title="Herbal Face Packs"
+                  showBackButton
+                  onBackPress={() => navigation.goBack()}
+                  onCartPress={() => navigation.navigate("Cart")}
+                />
+              )
+            }}
           />
 
           <Stack.Screen
