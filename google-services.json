@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "840452424160",
+    "project_id": "miles-a720a",
+    "storage_bucket": "miles-a720a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840452424160:android:b766cec4c3d543380d6b85",
+        "android_client_info": {
+          "package_name": "com.sgc.sevenmiles"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840452424160-367te1oj22houbfdrl5bvu95f6k27sb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2xEqkbmBexMb6bCmg86c4MEQhpsARnOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840452424160-367te1oj22houbfdrl5bvu95f6k27sb6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+
