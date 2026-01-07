@@ -180,7 +180,7 @@ const Account = ({ navigation }) => {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Profile Header Card */}
-      <View style={styles.profileCard}>
+      {/* <View style={styles.profileCard}>
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{firstLetter}</Text>
@@ -203,7 +203,7 @@ const Account = ({ navigation }) => {
           <Ionicons name="create-outline" size={18} color="#6B7280" />
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
 
       {/* Account Section */}
@@ -322,6 +322,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F9FAFB",
+    marginTop:20
   },
   logo: {
         width: 90,

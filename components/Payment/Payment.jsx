@@ -28,6 +28,7 @@ const Payment = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { cartItems = [], getCartTotal, clearCart } = useCart();
+  console.log("cart-items",cartItems)
 
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -156,7 +157,7 @@ useEffect(() => {
           name: item.name,
           image: item.image,
           price: item.sale_price,
-          quantity: item.quantity,
+          quantity: item.cartQty,
           category: item.category,
         })),
 
@@ -505,7 +506,7 @@ const handleCashOnDelivery = async () => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Order Summary</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+            <TouchableOpacity onPress={() => navigation.navigate("MainTabs")}>
               <Text style={styles.editText}>More Items</Text>
             </TouchableOpacity>
           </View>

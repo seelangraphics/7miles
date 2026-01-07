@@ -28,7 +28,7 @@ export const Youraddress = ({ navigation }) => {
     city: "",
     state: "",
     country: "India",
-    mobileNo: "",
+    phone: "",
     pincode: "",
     deliveryInstructions: "",
     isDefault: false,
@@ -41,18 +41,74 @@ export const Youraddress = ({ navigation }) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const validateForm = () => {
-    const requiredFields = [
-      "firstName",
-      "lastName",
-      "addressLine1",
-      "city",
-      "state",
-      "pincode",
-      "mobileNo",
-    ];
-    return requiredFields.every((field) => formData[field].trim() !== "");
-  };
+const validateForm = () => {
+  const requiredFields = [
+    "firstName",
+    "lastName",
+    "addressLine1",
+    "city",
+    "state",
+    "pincode",
+    "phone",
+  ];
+  
+  // Check for empty required fields
+  const emptyFields = requiredFields.filter(field => {
+    const value = formData[field].toString().trim();
+    return value === "";
+  });
+  
+  if (emptyFields.length > 0) {
+    const fieldNames = {
+      firstName: "First Name",
+      lastName: "Last Name",
+      addressLine1: "Address Line 1",
+      city: "City",
+      state: "State",
+      pincode: "Pincode",
+      phone: "Mobile Number",
+    };
+    
+    Alert.alert(
+      "Missing Information",
+      `Please fill in the following required fields:\n\n• ${emptyFields.map(field => fieldNames[field]).join("\n• ")}`,
+      [{ text: "OK" }]
+    );
+    return false;
+  }
+  
+  // Validate mobile number (10 digits)
+  if (!/^\d{10}$/.test(formData.phone)) {
+    Alert.alert(
+      "Invalid Mobile Number",
+      "Mobile number must be exactly 10 digits",
+      [{ text: "OK", onPress: () => handleInputChange("phone", "") }]
+    );
+    return false;
+  }
+  
+  // Validate pincode (6 digits)
+  if (!/^\d{6}$/.test(formData.pincode)) {
+    Alert.alert(
+      "Invalid Pincode",
+      "Pincode must be exactly 6 digits",
+      [{ text: "OK", onPress: () => handleInputChange("pincode", "") }]
+    );
+    return false;
+  }
+  
+  // Optional: Validate pincode matches auto-filled city/state
+  if (formData.city === "" || formData.state === "") {
+    Alert.alert(
+      "Invalid Pincode",
+      "Please enter a valid Indian pincode to auto-fill city and state",
+      [{ text: "OK" }]
+    );
+    return false;
+  }
+  
+  return true;
+};
 
   const resetForm = () => {
     setFormData({
@@ -63,36 +119,66 @@ export const Youraddress = ({ navigation }) => {
       city: "",
       state: "",
       country: "India",
-      mobileNo: "",
+      phone: "",
       pincode: "",
       deliveryInstructions: "",
       isDefault: false,
     });
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      Toast.show({
-        type: "error",
-        text1: "Failed to Submit",
-        text2: "Please fill all required fields",
-        position: "bottom",
-        visibilityTime: 5000,
-      });
-      return;
-    }
+const handleSubmit = async () => {
+  if (formData.phone.length < 10) {
+    alert("Phone number should be 10 digits")
+    return;
+  }
+  
+  if (!validateForm()) {
+    Toast.show({
+      type: "error",
+      text1: "Failed to Submit",
+      text2: "Please fill all required fields",
+      position: "bottom",
+      visibilityTime: 5000,
+    });
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    if (user) {
-      try {
-        const userRef = doc(db, "milesusers", user.uid);
-        const userDoc = await getDoc(userRef);
+  if (user) {
+    try {
+      const userRef = doc(db, "milesusers", user.uid);
+      const userDoc = await getDoc(userRef);
 
-        let updatedAddresses = userDoc.exists()
-          ? [...(userDoc.data()?.addresses || [])]
-          : [];
+      let updatedAddresses = userDoc.exists()
+        ? [...(userDoc.data()?.addresses || [])]
+        : [];
 
+      // EDIT MODE: Update existing address
+      if (formData.id) {
+        updatedAddresses = updatedAddresses.map((addr) => {
+          // If this is the address being edited
+          if (addr.id === formData.id) {
+            // If setting as default, update all addresses
+            if (formData.isDefault) {
+              updatedAddresses = updatedAddresses.map((a) => ({
+                ...a,
+                isDefault: false,
+              }));
+            }
+            
+            return {
+              ...addr,
+              ...formData,
+              // Ensure ID remains the same
+              id: formData.id,
+            };
+          }
+          return addr;
+        });
+      } 
+      // ADD MODE: Add new address
+      else {
         // If setting as default or first address
         if (formData.isDefault || updatedAddresses.length === 0) {
           updatedAddresses = updatedAddresses.map((addr) => ({
@@ -109,31 +195,33 @@ export const Youraddress = ({ navigation }) => {
         };
 
         updatedAddresses.push(addressData);
-        await updateDoc(userRef, { addresses: updatedAddresses });
-
-        setSavedAddresses(updatedAddresses);
-        setModalVisible(false);
-        Toast.show({
-          type: "success",
-          text1: "Address Saved Successfully",
-          position: "bottom",
-          visibilityTime: 2000,
-        });
-        resetForm();
-      } catch (error) {
-        console.error("Error adding address: ", error);
-        Toast.show({
-          type: "error",
-          text1: "Failed to Save",
-          text2: "Failed to save address",
-          position: "bottom",
-          visibilityTime: 5000,
-        });
-      } finally {
-        setLoading(false);
       }
+
+      await updateDoc(userRef, { addresses: updatedAddresses });
+
+      setSavedAddresses(updatedAddresses);
+      setModalVisible(false);
+      Toast.show({
+        type: "success",
+        text1: formData.id ? "Address Updated" : "Address Saved Successfully",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+      resetForm();
+    } catch (error) {
+      console.error("Error saving address: ", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to Save",
+        text2: "Failed to save address",
+        position: "bottom",
+        visibilityTime: 5000,
+      });
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+};
 
   const handleMakeDefault = async (addressId) => {
     try {
@@ -194,7 +282,7 @@ export const Youraddress = ({ navigation }) => {
       city: address.city || "",
       state: address.state || "",
       country: address.country || "India",
-      mobileNo: address.mobileNo || "",
+      phone: address.phone || "",
       pincode: address.pincode || "",
       deliveryInstructions: address.deliveryInstructions || "",
       isDefault: address.isDefault || false,
@@ -266,7 +354,7 @@ export const Youraddress = ({ navigation }) => {
             <Text style={styles.addressName}>
               {`${item.firstName} ${item.lastName}`}
             </Text>
-            <Text style={styles.phoneNumber}>{item.mobileNo}</Text>
+            <Text style={styles.phoneNumber}>{item.phone}</Text>
           </View>
           {item.isDefault && (
             <View style={styles.defaultBadge}>
@@ -286,14 +374,7 @@ export const Youraddress = ({ navigation }) => {
         </Text>
         <Text style={styles.addressText}>{item.country}</Text>
 
-        {item.deliveryInstructions && (
-          <View style={styles.instructionsContainer}>
-            <Text style={styles.instructionsTitle}>Delivery Instructions</Text>
-            <Text style={styles.instructionsText}>
-              {item.deliveryInstructions}
-            </Text>
-          </View>
-        )}
+     
       </View>
 
       <View style={styles.addressActions}>
@@ -324,7 +405,114 @@ export const Youraddress = ({ navigation }) => {
       </View>
     </View>
   );
+useEffect(() => {
+  const fetchAddressFromPincode = async () => {
+    if (formData.pincode.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${formData.pincode}`);
+        const data = await response.json();
+        
+        // Check if the API returned a valid result
+        if (data[0].Status === "Success") {
+          const postOffice = data[0].PostOffice[0]; // Get the first matching result
+          
+          // Update the form fields with the API data
+          setFormData(prev => ({
+            ...prev,
+            city: postOffice.District || prev.city,
+            state: postOffice.State || prev.state,
+          }));
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Pincode Not Found",
+            text2: "Please check the entered pincode",
+            position: "bottom",
+            visibilityTime: 2000,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching pincode details: ", error);
+        Toast.show({
+          type: "error",
+          text1: "Network Error",
+          text2: "Failed to fetch address details",
+          position: "bottom",
+          visibilityTime: 3000,
+        });
+      }
+    }
+  };
 
+  fetchAddressFromPincode();
+}, [formData.pincode]); // Dependency on pincode
+  
+  useEffect(() => {
+  const validateAndFetchPincode = async () => {
+    const pincode = formData.pincode.trim();
+    
+    if (pincode.length === 6) {
+      // Validate pincode is numeric
+      if (!/^\d{6}$/.test(pincode)) {
+        Alert.alert(
+          "Invalid Pincode",
+          "Pincode must contain only numbers",
+          [{ text: "OK", onPress: () => handleInputChange("pincode", "") }]
+        );
+        return;
+      }
+      
+      setLoading(true);
+      
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const data = await response.json();
+        
+        if (data[0].Status === "Success") {
+          const postOffice = data[0].PostOffice[0];
+          
+          setFormData(prev => ({
+            ...prev,
+            city: postOffice.District || prev.city,
+            state: postOffice.State || prev.state,
+          }));
+          
+          Toast.show({
+            type: "success",
+            text1: "Address Found",
+            text2: "City and state auto-filled",
+            position: "bottom",
+            visibilityTime: 2000,
+          });
+        } else {
+          Alert.alert(
+            "Invalid Pincode",
+            "No address found for this pincode. Please enter a valid Indian pincode.",
+            [{ text: "OK" }]
+          );
+          // Clear city and state if pincode is invalid
+          setFormData(prev => ({
+            ...prev,
+            city: "",
+            state: ""
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching pincode details: ", error);
+        Alert.alert(
+          "Network Error",
+          "Failed to validate pincode. Please check your connection.",
+          [{ text: "OK" }]
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  validateAndFetchPincode();
+}, [formData.pincode]);
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
@@ -416,8 +604,8 @@ export const Youraddress = ({ navigation }) => {
                   style={styles.modalInput}
                   placeholder="9876543210"
                   keyboardType="phone-pad"
-                  value={formData.mobileNo}
-                  onChangeText={(text) => handleInputChange("mobileNo", text)}
+                  value={formData.phone}
+                  onChangeText={(text) => handleInputChange("phone", text)}
                   maxLength={10}
                 />
               </View>
@@ -449,14 +637,20 @@ export const Youraddress = ({ navigation }) => {
               <View style={styles.inputRow}>
                 <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
                   <Text style={styles.inputLabel}>Pincode*</Text>
-                  <TextInput
-                    style={styles.modalInput}
-                    placeholder="560001"
-                    keyboardType="number-pad"
-                    value={formData.pincode}
-                    onChangeText={(text) => handleInputChange("pincode", text)}
-                    maxLength={6}
-                  />
+                <TextInput
+  style={styles.modalInput}
+  placeholder="560001"
+  keyboardType="number-pad"
+  value={formData.pincode}
+  onChangeText={(text) => {
+    // Only allow numeric input up to 6 digits
+    const numericText = text.replace(/[^0-9]/g, '');
+    if (numericText.length <= 6) {
+      handleInputChange("pincode", numericText);
+    }
+  }}
+  maxLength={6}
+/>
                 </View>
                 <View style={[styles.inputGroup, { flex: 1 }]}>
                   <Text style={styles.inputLabel}>City*</Text>
@@ -491,22 +685,7 @@ export const Youraddress = ({ navigation }) => {
                 </View>
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>
-                  Delivery Instructions (Optional)
-                </Text>
-                <TextInput
-                  style={[styles.modalInput, styles.textArea]}
-                  placeholder="e.g., Leave at front door, Call before delivery, etc."
-                  value={formData.deliveryInstructions}
-                  onChangeText={(text) =>
-                    handleInputChange("deliveryInstructions", text)
-                  }
-                  multiline={true}
-                  numberOfLines={3}
-                  textAlignVertical="top"
-                />
-              </View>
+             
 
               <View style={styles.defaultToggle}>
                 <View>

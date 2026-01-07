@@ -14,6 +14,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../context/CartContext";
 import { Dropdown } from "react-native-element-dropdown";
+import { auth, db } from "../Firebase/Firebase";
+// import { doc, getDoc } from "firebase/firestore";
 
 
 
@@ -64,7 +66,40 @@ const CartScreen = ({ navigation }) => {
     }
   };
 
+  const handleCheckoutSimple = async () => {
+    if (cartItems.length === 0) {
+      Alert.alert("Cart Empty", "Please add items to cart before checkout");
+      return;
+    }
 
+    // Get current user
+    const user = auth.currentUser;
+    
+    if (!user) {
+      // Not logged in
+      Alert.alert(
+        "Login Required",
+        "Please login to proceed to checkout",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Login",
+            onPress: () => {
+              // Redirect to login
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "login" }],
+              });
+            },
+          },
+        ]
+      );
+      return;
+    }
+  }
 
 const handleCheckout = () => {
   if (cartItems.length === 0) {
@@ -72,9 +107,36 @@ const handleCheckout = () => {
     return;
   }
 
- 
-  const finalTotalWithTax = cartTotal + shippingCharge;
+  // Check if user is logged in
+  const user = auth.currentUser;
+  
+  if (!user) {
+    // User is NOT logged in - show login alert
+    Alert.alert(
+      "Login Required",
+      "Please login to proceed to checkout",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Login",
+          onPress: () => {
+            // Redirect to login page
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "login" }],
+            });
+          },
+        },
+      ]
+    );
+    return; // Stop further execution
+  }
 
+  // User IS logged in - proceed with checkout
+  const finalTotalWithTax = cartTotal + shippingCharge;
 
   const priceDetails = {
     subtotal: cartTotal.toFixed(2),

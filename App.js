@@ -32,6 +32,7 @@ import Help from "./components/Help/Help";
 import TermsOfService from "./components/AccountScreen/TermsOfService";
 import RefundPolicy from "./components/AccountScreen/RefundPolicy";
 import ShippingPolicy from "./components/AccountScreen/ShippingPolicy";
+import { MainAccount, Profile } from "./components/AccountScreen/Profile";
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,7 @@ function AppContent() {
             component={AuthScreen}
             options={{ headerShown: false }}
           />
+
 
           {/* Categories TopBar */}
           <Stack.Screen
@@ -171,6 +173,11 @@ function AppContent() {
             name="address"
             component={Youraddress}
             options={{ title: "Your Address", headerShown: true }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{ title: "Profile", headerShown: true }}
           />
           {/* My Orders */}
           <Stack.Screen

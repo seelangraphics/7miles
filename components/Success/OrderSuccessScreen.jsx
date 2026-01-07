@@ -15,9 +15,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
   const { order } = route.params || {};
   const orderId = order?.orderId || `ORD${Date.now()}`;
 
-// console.log('orders',order)
-
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -25,14 +22,9 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* ELEGANT HEADER SECTION */}
+        {/* HEADER SECTION */}
         <View style={styles.headerContainer}>
           <View style={styles.headerBackground}>
-            <View style={styles.headerDecoration}>
-              <View style={styles.circleDecoration} />
-              <View style={[styles.circleDecoration, styles.circle2]} />
-            </View>
-
             <View style={styles.successHeader}>
               <View style={styles.successIconContainer}>
                 <View style={styles.successIconBackground}>
@@ -102,13 +94,13 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* DELIVERY ADDRESS CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Ionicons name="location" size={18} color="#e55946ff" />
+            <Ionicons name="location" size={18} color="#e7272b" />
             <Text style={styles.cardTitle}>Delivery Address</Text>
           </View>
 
           <View style={styles.addressCard}>
             <View style={styles.addressIcon}>
-              <Ionicons name="home" size={20} color="#e54646ff" />
+              <Ionicons name="home" size={20} color="#e7272b" />
             </View>
             <View style={styles.addressDetails}>
               <Text style={styles.addressName}>
@@ -125,7 +117,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
                 {order?.address?.pincode || "400001"}
               </Text>
               <View style={styles.phoneRow}>
-                <Ionicons name="call" size={14} color="#666" />
+                <Ionicons name="call" size={14} color="#6B7280" />
                 <Text style={styles.addressPhone}>
                   {order?.address?.phone || "+91 9876543210"}
                 </Text>
@@ -137,33 +129,21 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* PAYMENT METHOD CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Ionicons name="card" size={18} color="#e54e46ff" />
+            <Ionicons name="card" size={18} color="#e7272b" />
             <Text style={styles.cardTitle}>Payment Method</Text>
           </View>
 
           <View style={styles.paymentCard}>
-            <View
-              style={[
-                styles.paymentIcon,
-                {
-                  backgroundColor:
-                    order?.payment?.method === "cod" ? "#FEF3C7" : "#DBEAFE",
-                },
-              ]}
-            >
-              <Ionicons
-                name={order?.payment?.method === "cod" ? "cash" : "card"}
-                size={24}
-                color={order?.payment?.method === "cod" ? "#D97706" : "#2563EB"}
-              />
-            </View>
+       
             <View style={styles.paymentDetails}>
               <Text style={styles.paymentMethod}>
                 {order?.payment?.method === "cod"
                   ? "Cash on Delivery"
                   : "Online Payment"}
               </Text>
-             
+              {/* <Text style={styles.paymentStatus}>
+                {order?.payment?.status === "paid" ? "Paid" : "Pending"}
+              </Text> */}
             </View>
           </View>
         </View>
@@ -171,7 +151,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* PRICE DETAILS CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Ionicons name="receipt" size={18} color="#e54646ff" />
+            <Ionicons name="receipt" size={18} color="#e7272b" />
             <Text style={styles.cardTitle}>Order Summary</Text>
           </View>
 
@@ -197,7 +177,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
             <View style={[styles.priceRow, styles.totalRow]}>
               <View>
                 <Text style={styles.totalLabel}>Total Amount</Text>
-    
+                <Text style={styles.taxNote}>Inclusive of all taxes</Text>
               </View>
               <Text style={styles.totalAmount}>
                 ₹{order?.priceDetails?.total || "0"}
@@ -206,10 +186,31 @@ const OrderSuccessScreen = ({ navigation, route }) => {
           </View>
         </View>
 
-   
+        {/* TRACKING CARD */}
+        {/* <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="cube" size={18} color="#e7272b" />
+            <Text style={styles.cardTitle}>Track Your Order</Text>
+          </View>
+          <View style={styles.trackingCard}>
+            <View style={styles.trackingIcon}>
+              <Ionicons name="cube-outline" size={24} color="#e7272b" />
+            </View>
+            <View style={styles.trackingContent}>
+              <Text style={styles.trackingTitle}>Order Packed</Text>
+              <Text style={styles.trackingDate}>Estimated: 2-3 days</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.trackButton}
+              onPress={() => navigation.navigate("YourOrder")}
+            >
+              <Text style={styles.trackButtonText}>Track Order</Text>
+            </TouchableOpacity>
+          </View>
+        </View> */}
       </ScrollView>
 
-      {/* ELEGANT FOOTER */}
+      {/* FOOTER */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.continueBtn}
@@ -227,45 +228,26 @@ const OrderSuccessScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#F9FAFB",
+  },
+  scrollView: {
+    flex: 1,
   },
   scrollContent: {
-    paddingBottom: 160,
+    paddingBottom: 120,
   },
 
-  // ELEGANT HEADER STYLES
+  // HEADER STYLES
   headerContainer: {
     marginBottom: 20,
   },
   headerBackground: {
-    backgroundColor: "#d2c1e2",
+    backgroundColor: "#e7272b",
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
     paddingTop: 40,
     paddingBottom: 30,
     paddingHorizontal: 20,
-    position: "relative",
-    overflow: "hidden",
-  },
-  headerDecoration: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
-  circleDecoration: {
-    position: "absolute",
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    top: -50,
-    right: -50,
-  },
-  circle2: {
-    width: 150,
-    height: 150,
-    top: 50,
-    left: -50,
   },
   successHeader: {
     alignItems: "center",
@@ -320,13 +302,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginHorizontal: 16,
     marginTop: -15,
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
-    shadowColor: "#4F46E5",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 8,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
   },
   confirmationRow: {
     flexDirection: "row",
@@ -336,27 +318,28 @@ const styles = StyleSheet.create({
   confirmationText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111",
+    color: "#1F2937",
     marginLeft: 10,
   },
   orderNote: {
     fontSize: 13,
-    color: "#666",
+    color: "#6B7280",
     lineHeight: 18,
+    fontWeight: "500",
   },
 
   // CARD STYLES
   card: {
     backgroundColor: "#fff",
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
     marginHorizontal: 16,
     marginBottom: 16,
+    elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 3,
   },
   cardHeader: {
     flexDirection: "row",
@@ -366,13 +349,13 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#111",
+    color: "#1F2937",
     marginLeft: 10,
   },
   itemCount: {
     marginLeft: "auto",
     fontSize: 13,
-    color: "#4F46E5",
+    color: "#e7272b",
     fontWeight: "600",
   },
 
@@ -382,7 +365,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#f1f5f9",
+    borderBottomColor: "#F3F4F6",
   },
 
   productImg: {
@@ -390,6 +373,7 @@ const styles = StyleSheet.create({
     height: 65,
     borderRadius: 12,
     marginRight: 16,
+    backgroundColor: "#F3F4F6",
   },
 
   productInfo: {
@@ -400,21 +384,21 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 14.5,
     fontWeight: "600",
-    color: "#222",
+    color: "#1F2937",
     marginBottom: 6,
   },
 
   productPrice: {
     fontSize: 14.5,
     fontWeight: "700",
-    color: "#111",
+    color: "#1F2937",
     marginBottom: 6,
   },
 
   productQuantity: {
     fontSize: 13,
     fontWeight: "500",
-    color: "#4F46E5",
+    color: "#e7272b",
   },
 
   bottomRow: {
@@ -424,20 +408,20 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: "#eee",
+    borderTopColor: "#F3F4F6",
   },
 
   totalText: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#111",
+    color: "#1F2937",
   },
 
   addMoreBtn: {
-    backgroundColor: "#1d1c23ff",
+    backgroundColor: "#1F2937",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 12,
   },
 
   addMoreText: {
@@ -449,7 +433,7 @@ const styles = StyleSheet.create({
   // ADDRESS CARD
   addressCard: {
     flexDirection: "row",
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#F9FAFB",
     borderRadius: 12,
     padding: 16,
   },
@@ -457,7 +441,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#EDE9FE",
+    backgroundColor: "#FEE2E2",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -468,12 +452,12 @@ const styles = StyleSheet.create({
   addressName: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111",
+    color: "#1F2937",
     marginBottom: 4,
   },
   addressLine: {
     fontSize: 13.5,
-    color: "#555",
+    color: "#6B7280",
     marginBottom: 2,
     lineHeight: 18,
   },
@@ -484,14 +468,14 @@ const styles = StyleSheet.create({
   },
   addressPhone: {
     fontSize: 13,
-    color: "#555",
+    color: "#6B7280",
     marginLeft: 6,
   },
 
   // PAYMENT CARD
   paymentCard: {
     flexDirection: "row",
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#F9FAFB",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
@@ -510,12 +494,12 @@ const styles = StyleSheet.create({
   paymentMethod: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111",
+    color: "#1F2937",
     marginBottom: 2,
   },
   paymentStatus: {
     fontSize: 13,
-    color: "#666",
+    color: "#6B7280",
   },
 
   // PRICE DETAILS
@@ -529,16 +513,17 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 14,
-    color: "#666",
+    color: "#6B7280",
+    fontWeight: "500",
   },
   priceValue: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#111",
+    color: "#1F2937",
   },
   divider: {
     height: 1,
-    backgroundColor: "#e2e8f0",
+    backgroundColor: "#E5E7EB",
     marginVertical: 12,
   },
   totalRow: {
@@ -546,55 +531,56 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 16,
-    color: "#111",
+    color: "#1F2937",
     fontWeight: "700",
   },
   taxNote: {
     fontSize: 12,
-    color: "#666",
+    color: "#6B7280",
     marginTop: 2,
   },
   totalAmount: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#4F46E5",
+    color: "#e7272b",
   },
 
   // TRACKING CARD
   trackingCard: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 16,
-    marginBottom: 16,
+    backgroundColor: "#F9FAFB",
+    borderRadius: 12,
+    padding: 16,
     flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+  },
+  trackingIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FEE2E2",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
   trackingContent: {
     flex: 1,
-    marginLeft: 12,
   },
   trackingTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111",
+    color: "#1F2937",
     marginBottom: 2,
   },
   trackingDate: {
     fontSize: 13,
-    color: "#4F46E5",
+    color: "#e7272b",
     fontWeight: "600",
   },
   trackButton: {
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#e7272b",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 12,
   },
   trackButtonText: {
     color: "#fff",
@@ -602,7 +588,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  // ELEGANT FOOTER
+  // FOOTER
   footer: {
     width: "100%",
     padding: 20,
@@ -613,18 +599,18 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   continueBtn: {
-    backgroundColor: "#1d1c23ff",
+    backgroundColor: "#e7272b",
     borderRadius: 12,
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
-    shadowColor: "#4F46E5",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 6,
   },
   btnIcon: {
     marginRight: 8,
@@ -643,7 +629,7 @@ const styles = StyleSheet.create({
   secondaryBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#4F46E5",
+    color: "#e7272b",
   },
 });
 

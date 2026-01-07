@@ -11,6 +11,7 @@ import {
   Dimensions,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../Firebase/Firebase";
@@ -19,7 +20,7 @@ import Toast from "react-native-toast-message";
 import { useCart } from "../context/CartContext";
 import { useNavigation } from "@react-navigation/native";
 
-const { height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const AddressPage = ({ route }) => {
   const [addresses, setAddresses] = useState([]);
@@ -31,12 +32,8 @@ const AddressPage = ({ route }) => {
   const { cartItems = [], getCartTotal } = useCart();
   const navigation = useNavigation();
 
-  const shipping =
-    priceDetails?.shipping
-
-  const finalTotal =
-    priceDetails?.finalTotal
-  
+  const shipping = priceDetails?.shipping;
+  const finalTotal = priceDetails?.finalTotal;
 
   const emptyForm = {
     firstName: "",
@@ -49,10 +46,13 @@ const AddressPage = ({ route }) => {
     pincode: "",
   };
   const [form, setForm] = useState(emptyForm);
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [pincodeError, setPincodeError] = useState("");
+  const [pincodeValid, setPincodeValid] = useState(false);
 
   const uid = auth.currentUser?.uid;
   const slideAnim = useRef(new Animated.Value(height)).current;
-  const formAnim = useRef(new Animated.Value(height)).current; // Separate animation for form
+  const formAnim = useRef(new Animated.Value(height)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -63,6 +63,86 @@ const AddressPage = ({ route }) => {
       useNativeDriver: true,
     }).start();
   }, []);
+
+  // Pincode validation effect
+  useEffect(() => {
+    const validatePincode = async () => {
+      const pincode = form.pincode.trim();
+      
+      if (pincode.length === 6) {
+        // Basic numeric validation
+        if (!/^\d{6}$/.test(pincode)) {
+          setPincodeError("Pincode must contain only numbers");
+          setPincodeValid(false);
+          return;
+        }
+        
+        setPincodeLoading(true);
+        setPincodeError("");
+        
+        try {
+          const response = await fetch(
+            `https://api.postalpincode.in/pincode/${pincode}`
+          );
+          const data = await response.json();
+          
+          if (data[0].Status === "Success") {
+            const postOffice = data[0].PostOffice[0];
+            
+            setForm((prev) => ({
+              ...prev,
+              city: postOffice.District || prev.city,
+              state: postOffice.State || prev.state,
+            }));
+            
+            setPincodeValid(true);
+            setPincodeError("");
+            
+            Toast.show({
+              type: "success",
+              text1: "✓ Address found",
+              text2: "City & State auto-filled",
+              position: "bottom",
+              visibilityTime: 2000,
+            });
+          } else {
+            setPincodeError("Invalid pincode. No address found.");
+            setPincodeValid(false);
+            setForm((prev) => ({
+              ...prev,
+              city: "",
+              state: "",
+            }));
+            
+            Alert.alert(
+              "Invalid Pincode",
+              "Please enter a valid Indian postal code",
+              [{ text: "OK" }]
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching pincode:", error);
+          setPincodeError("Failed to validate pincode. Check internet connection.");
+          setPincodeValid(false);
+          
+          Alert.alert(
+            "Network Error",
+            "Unable to validate pincode. Please try again.",
+            [{ text: "OK" }]
+          );
+        } finally {
+          setPincodeLoading(false);
+        }
+      } else {
+        setPincodeValid(false);
+        setPincodeError("");
+      }
+    };
+    
+    // Debounce to prevent too many API calls
+    const timer = setTimeout(validatePincode, 800);
+    return () => clearTimeout(timer);
+  }, [form.pincode]);
 
   const fetchAddresses = async () => {
     if (!uid) return;
@@ -115,34 +195,103 @@ const AddressPage = ({ route }) => {
       setShowForm(false);
       setForm(emptyForm);
       setEditId(null);
+      setPincodeError("");
+      setPincodeValid(false);
     });
   };
 
   const handleAddAddress = () => {
     setForm(emptyForm);
     setEditId(null);
+    setPincodeError("");
+    setPincodeValid(false);
     openFormModal();
   };
 
   const handleEditAddress = (address) => {
     setForm(address);
     setEditId(address.id);
+    // Check if pincode was previously validated
+    if (address.pincode && address.city && address.state) {
+      setPincodeValid(true);
+    }
     openFormModal();
+  };
+
+  const validateFormFields = () => {
+    // Check all required fields
+    const requiredFields = [
+      { field: "firstName", name: "First Name" },
+      { field: "lastName", name: "Last Name" },
+      { field: "phone", name: "Phone Number" },
+      { field: "addressLine1", name: "Address Line 1" },
+      { field: "city", name: "City" },
+      { field: "state", name: "State" },
+      { field: "pincode", name: "Pincode" },
+    ];
+
+    const emptyFields = requiredFields.filter(({ field }) => {
+      return !form[field] || form[field].toString().trim() === "";
+    });
+
+    if (emptyFields.length > 0) {
+      Alert.alert(
+        "Missing Information",
+        `Please fill in:\n\n${emptyFields
+          .map(({ name }) => `• ${name}`)
+          .join("\n")}`,
+        [{ text: "OK" }]
+      );
+      return false;
+    }
+
+    // Validate phone number
+    if (!/^\d{10}$/.test(form.phone)) {
+      Alert.alert(
+        "Invalid Phone Number",
+        "Phone number must be exactly 10 digits",
+        [{ text: "OK" }]
+      );
+      return false;
+    }
+
+    // Validate pincode format
+    if (!/^\d{6}$/.test(form.pincode)) {
+      Alert.alert(
+        "Invalid Pincode",
+        "Pincode must be exactly 6 digits",
+        [{ text: "OK" }]
+      );
+      return false;
+    }
+
+    // Validate pincode has been verified
+    if (!pincodeValid) {
+      Alert.alert(
+        "Invalid Pincode",
+        "Please wait for pincode validation or enter a valid pincode",
+        [{ text: "OK" }]
+      );
+      return false;
+    }
+
+    // Check if city and state are filled (should be if pincode is valid)
+    if (!form.city.trim() || !form.state.trim()) {
+      Alert.alert(
+        "Address Error",
+        "Please enter a valid pincode to auto-fill city and state",
+        [{ text: "OK" }]
+      );
+      return false;
+    }
+
+    return true;
   };
 
   const saveAddress = async () => {
     if (!uid) return;
-
-    if (
-      !form.firstName ||
-      !form.lastName ||
-      !form.phone ||
-      !form.addressLine1 ||
-      !form.city ||
-      !form.state ||
-      !form.pincode
-    ) {
-      Toast.show({ type: "error", text1: "Please fill all required fields" });
+    
+    if (!validateFormFields()) {
       return;
     }
 
@@ -173,7 +322,11 @@ const AddressPage = ({ route }) => {
       closeFormModal();
       fetchAddresses();
     } catch (error) {
-      Toast.show({ type: "error", text1: "Failed to save address" });
+      Alert.alert(
+        "Save Failed",
+        error.message || "Failed to save address. Please try again.",
+        [{ text: "OK" }]
+      );
     }
   };
 
@@ -206,56 +359,227 @@ const AddressPage = ({ route }) => {
     }
     navigation.navigate("payment", {
       address: defaultAddress,
-      shippingaddress:shipping,
+      shippingaddress: shipping,
       totalAmount: finalTotal,
       cartItems,
-      
     });
   };
 
   const deleteAddress = async (id) => {
     if (!uid) return;
-    Alert.alert(
-      "Delete Address",
-      "Are you sure you want to delete this address?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              const userRef = doc(db, "milesusers", uid);
-              const snap = await getDoc(userRef);
-              let list = snap.data()?.addresses || [];
-              list = list.filter((a) => a.id !== id);
+    Alert.alert("Delete Address", "Are you sure you want to delete this address?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const userRef = doc(db, "milesusers", uid);
+            const snap = await getDoc(userRef);
+            let list = snap.data()?.addresses || [];
+            list = list.filter((a) => a.id !== id);
 
-              // If we're deleting the default address, make the first one default
-              const deletedAddress = addresses.find((a) => a.id === id);
-              if (deletedAddress?.isDefault && list.length > 0) {
-                list[0].isDefault = true;
-              }
-
-              await updateDoc(userRef, { addresses: list });
-              Toast.show({ type: "success", text1: "✓ Address deleted" });
-              fetchAddresses();
-            } catch (error) {
-              Toast.show({ type: "error", text1: "Failed to delete address" });
+            const deletedAddress = addresses.find((a) => a.id === id);
+            if (deletedAddress?.isDefault && list.length > 0) {
+              list[0].isDefault = true;
             }
-          },
+
+            await updateDoc(userRef, { addresses: list });
+            Toast.show({ type: "success", text1: "✓ Address deleted" });
+            fetchAddresses();
+          } catch (error) {
+            Toast.show({ type: "error", text1: "Failed to delete address" });
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const defaultAddress = addresses.find((a) => a.isDefault);
   const otherAddresses = addresses.filter((a) => !a.isDefault);
 
+  // Update the pincode input with validation UI
+  const renderFormInputs = () => {
+    return (
+      <>
+        {/* First Name */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>First Name *</Text>
+          <TextInput
+            placeholder="First Name"
+            style={[
+              styles.input,
+              !form.firstName.trim() && styles.invalidInput,
+            ]}
+            value={form.firstName}
+            onChangeText={(v) => setForm({ ...form, firstName: v })}
+            placeholderTextColor="#9CA3AF"
+          />
+          {!form.firstName.trim() && (
+            <Text style={styles.errorText}>Required field</Text>
+          )}
+        </View>
+
+        {/* Last Name */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Last Name *</Text>
+          <TextInput
+            placeholder="Last Name"
+            style={[
+              styles.input,
+              !form.lastName.trim() && styles.invalidInput,
+            ]}
+            value={form.lastName}
+            onChangeText={(v) => setForm({ ...form, lastName: v })}
+            placeholderTextColor="#9CA3AF"
+          />
+          {!form.lastName.trim() && (
+            <Text style={styles.errorText}>Required field</Text>
+          )}
+        </View>
+
+        {/* Phone Number */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Phone Number *</Text>
+          <TextInput
+            placeholder="10-digit mobile number"
+            style={[
+              styles.input,
+              form.phone.length > 0 &&
+                form.phone.length !== 10 &&
+                styles.invalidInput,
+              form.phone.length === 10 && styles.validInput,
+            ]}
+            value={form.phone}
+            onChangeText={(v) => {
+              const numeric = v.replace(/[^0-9]/g, "").slice(0, 10);
+              setForm({ ...form, phone: numeric });
+            }}
+            placeholderTextColor="#9CA3AF"
+            maxLength={10}
+            keyboardType="phone-pad"
+          />
+          {form.phone.length > 0 && form.phone.length !== 10 && (
+            <Text style={styles.errorText}>Must be 10 digits</Text>
+          )}
+        </View>
+
+        {/* Address Line 1 */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Address Line 1 *</Text>
+          <TextInput
+            placeholder="House no., Building, Street"
+            style={[
+              styles.input,
+              !form.addressLine1.trim() && styles.invalidInput,
+            ]}
+            value={form.addressLine1}
+            onChangeText={(v) => setForm({ ...form, addressLine1: v })}
+            placeholderTextColor="#9CA3AF"
+          />
+          {!form.addressLine1.trim() && (
+            <Text style={styles.errorText}>Required field</Text>
+          )}
+        </View>
+
+        {/* Address Line 2 (Optional) */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Address Line 2 (Optional)</Text>
+          <TextInput
+            placeholder="Apartment, Suite, etc."
+            style={styles.input}
+            value={form.addressLine2}
+            onChangeText={(v) => setForm({ ...form, addressLine2: v })}
+            placeholderTextColor="#9CA3AF"
+          />
+        </View>
+
+        {/* Pincode with Validation */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>PIN Code *</Text>
+          <View style={styles.pincodeContainer}>
+            <TextInput
+              placeholder="6-digit pincode"
+              style={[
+                styles.input,
+                styles.pincodeInput,
+                pincodeError && styles.invalidInput,
+                pincodeValid && styles.validInput,
+              ]}
+              value={form.pincode}
+              onChangeText={(v) => {
+                const numeric = v.replace(/[^0-9]/g, "").slice(0, 6);
+                setForm({ ...form, pincode: numeric });
+              }}
+              placeholderTextColor="#9CA3AF"
+              maxLength={6}
+              keyboardType="number-pad"
+            />
+            {pincodeLoading && (
+              <ActivityIndicator
+                size="small"
+                color="#d6433c"
+                style={styles.pincodeLoader}
+              />
+            )}
+          </View>
+          {pincodeError ? (
+            <Text style={styles.errorText}>{pincodeError}</Text>
+          ) : pincodeValid ? (
+            <Text style={styles.successText}>✓ Valid pincode</Text>
+          ) : form.pincode.length === 6 ? (
+            <Text style={styles.infoText}>Validating pincode...</Text>
+          ) : null}
+        </View>
+
+        {/* City (auto-filled) */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>City *</Text>
+          <TextInput
+            placeholder="City"
+            style={[
+              styles.input,
+              !form.city.trim() && styles.invalidInput,
+              form.city.trim() && styles.validInput,
+            ]}
+            value={form.city}
+            onChangeText={(v) => setForm({ ...form, city: v })}
+            placeholderTextColor="#9CA3AF"
+            editable={!pincodeValid}
+          />
+          {!form.city.trim() && (
+            <Text style={styles.errorText}>Will auto-fill from pincode</Text>
+          )}
+        </View>
+
+        {/* State (auto-filled) */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>State *</Text>
+          <TextInput
+            placeholder="State"
+            style={[
+              styles.input,
+              !form.state.trim() && styles.invalidInput,
+              form.state.trim() && styles.validInput,
+            ]}
+            value={form.state}
+            onChangeText={(v) => setForm({ ...form, state: v })}
+            placeholderTextColor="#9CA3AF"
+            editable={!pincodeValid}
+          />
+          {!form.state.trim() && (
+            <Text style={styles.errorText}>Will auto-fill from pincode</Text>
+          )}
+        </View>
+      </>
+    );
+  };
+
   return (
     <>
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Delivery Address Section */}
+          {/* Delivery Address Section - Your existing code remains unchanged */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Delivery Address</Text>
@@ -276,22 +600,8 @@ const AddressPage = ({ route }) => {
                       style={styles.actionIcon}
                       onPress={() => handleEditAddress(defaultAddress)}
                     >
-                      <Ionicons
-                        name="create-outline"
-                        size={14}
-                        color="#d6433c"
-                      />
+                      <Ionicons name="create-outline" size={14} color="#d6433c" />
                     </TouchableOpacity>
-                    {/* <TouchableOpacity
-                      style={styles.actionIcon}
-                      onPress={() => deleteAddress(defaultAddress.id)}
-                    >
-                      <Ionicons
-                        name="trash-outline"
-                        size={14}
-                        color="#EF4444"
-                      />
-                    </TouchableOpacity> */}
                   </View>
                 </View>
 
@@ -301,16 +611,10 @@ const AddressPage = ({ route }) => {
                   </Text>
                   <View style={styles.detailRow}>
                     <Ionicons name="call-outline" size={12} color="#6B7280" />
-                    <Text style={styles.detailText}>
-                      {defaultAddress.phone}
-                    </Text>
+                    <Text style={styles.detailText}>{defaultAddress.phone}</Text>
                   </View>
                   <View style={styles.detailRow}>
-                    <Ionicons
-                      name="location-outline"
-                      size={12}
-                      color="#6B7280"
-                    />
+                    <Ionicons name="location-outline" size={12} color="#6B7280" />
                     <Text style={styles.detailText}>
                       {defaultAddress.addressLine1}
                     </Text>
@@ -324,11 +628,7 @@ const AddressPage = ({ route }) => {
                     </View>
                   ) : null}
                   <View style={styles.detailRow}>
-                    <Ionicons
-                      name="business-outline"
-                      size={12}
-                      color="#6B7280"
-                    />
+                    <Ionicons name="business-outline" size={12} color="#6B7280" />
                     <Text style={styles.detailText}>
                       {defaultAddress.city}, {defaultAddress.state} -{" "}
                       {defaultAddress.pincode}
@@ -337,17 +637,14 @@ const AddressPage = ({ route }) => {
                 </View>
               </View>
             ) : (
-              <TouchableOpacity
-                style={styles.emptyCard}
-                onPress={handleAddAddress}
-              >
+              <TouchableOpacity style={styles.emptyCard} onPress={handleAddAddress}>
                 <Ionicons name="add-circle-outline" size={24} color="#d6433c" />
                 <Text style={styles.emptyText}>Add Delivery Address</Text>
               </TouchableOpacity>
             )}
           </View>
 
-          {/* Order Items Section */}
+          {/* Order Items Section - Your existing code remains unchanged */}
           {cartItems.length > 0 && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
@@ -380,7 +677,7 @@ const AddressPage = ({ route }) => {
             </View>
           )}
 
-          {/* Price Details Section */}
+          {/* Price Details Section - Your existing code remains unchanged */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Price Details</Text>
             <View style={styles.priceRow}>
@@ -402,7 +699,7 @@ const AddressPage = ({ route }) => {
           </View>
         </ScrollView>
 
-        {/* Bottom Action Bar */}
+        {/* Bottom Action Bar - Your existing code remains unchanged */}
         <View style={styles.bottomBar}>
           <View style={styles.priceContainer}>
             <Text style={styles.bottomPrice}>₹{finalTotal}</Text>
@@ -411,8 +708,7 @@ const AddressPage = ({ route }) => {
           <TouchableOpacity
             style={[
               styles.continueButton,
-              (!defaultAddress || cartItems.length === 0) &&
-                styles.disabledButton,
+              (!defaultAddress || cartItems.length === 0) && styles.disabledButton,
             ]}
             onPress={handleContinue}
             disabled={!defaultAddress || cartItems.length === 0}
@@ -423,7 +719,7 @@ const AddressPage = ({ route }) => {
         </View>
       </Animated.View>
 
-      {/* Address Selection Modal */}
+      {/* Address Selection Modal - Your existing code remains unchanged */}
       <Modal visible={showChangeModal} transparent animationType="none">
         <View style={styles.modalOverlay}>
           <TouchableOpacity
@@ -431,10 +727,7 @@ const AddressPage = ({ route }) => {
             onPress={closeBottomSheet}
           />
           <Animated.View
-            style={[
-              styles.bottomSheet,
-              { transform: [{ translateY: slideAnim }] },
-            ]}
+            style={[styles.bottomSheet, { transform: [{ translateY: slideAnim }] }]}
           >
             <View style={styles.sheetHeader}>
               <View style={styles.sheetHandle} />
@@ -453,10 +746,7 @@ const AddressPage = ({ route }) => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView
-              style={styles.sheetContent}
-              showsVerticalScrollIndicator={false}
-            >
+            <ScrollView style={styles.sheetContent} showsVerticalScrollIndicator={false}>
               {addresses.map((address) => (
                 <TouchableOpacity
                   key={address.id}
@@ -495,31 +785,17 @@ const AddressPage = ({ route }) => {
                           }, 300);
                         }}
                       >
-                        <Ionicons
-                          name="create-outline"
-                          size={12}
-                          color="#d6433c"
-                        />
+                        <Ionicons name="create-outline" size={12} color="#d6433c" />
                       </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => deleteAddress(address.id)}
-                      >
-                        <Ionicons
-                          name="trash-outline"
-                          size={12}
-                          color="#EF4444"
-                        />
+                      <TouchableOpacity onPress={() => deleteAddress(address.id)}>
+                        <Ionicons name="trash-outline" size={12} color="#EF4444" />
                       </TouchableOpacity>
                     </View>
                   </View>
                   <Text style={styles.optionPhone}>{address.phone}</Text>
-                  <Text style={styles.optionAddress}>
-                    {address.addressLine1}
-                  </Text>
+                  <Text style={styles.optionAddress}>{address.addressLine1}</Text>
                   {address.addressLine2 && (
-                    <Text style={styles.optionAddress}>
-                      {address.addressLine2}
-                    </Text>
+                    <Text style={styles.optionAddress}>{address.addressLine2}</Text>
                   )}
                   <Text style={styles.optionLocation}>
                     {address.city}, {address.state} - {address.pincode}
@@ -530,17 +806,11 @@ const AddressPage = ({ route }) => {
 
             {selectedId && (
               <View style={styles.sheetFooter}>
-                <TouchableOpacity
-                  style={styles.deliverButton}
-                  onPress={deliverHere}
-                >
+                <TouchableOpacity style={styles.deliverButton} onPress={deliverHere}>
                   <Ionicons name="checkmark-circle" size={12} color="#fff" />
                   <Text style={styles.deliverText}>DELIVER HERE</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.closeSheet}
-                  onPress={closeBottomSheet}
-                >
+                <TouchableOpacity style={styles.closeSheet} onPress={closeBottomSheet}>
                   <Text style={styles.closeText}>CLOSE</Text>
                 </TouchableOpacity>
               </View>
@@ -549,19 +819,11 @@ const AddressPage = ({ route }) => {
         </View>
       </Modal>
 
-      {/* Add/Edit Address Modal - SIMPLIFIED */}
+      {/* Add/Edit Address Modal - UPDATED with validation */}
       <Modal visible={showForm} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          <TouchableOpacity
-            style={styles.overlayTouchable}
-            onPress={closeFormModal}
-          />
-          <Animated.View
-            style={[
-              styles.formSheet,
-              { transform: [{ translateY: formAnim }] },
-            ]}
-          >
+          <TouchableOpacity style={styles.overlayTouchable} onPress={closeFormModal} />
+          <Animated.View style={[styles.formSheet, { transform: [{ translateY: formAnim }] }]}>
             <View style={styles.formHeader}>
               <Text style={styles.formTitle}>
                 {editId ? "Edit Address" : "Add Address"}
@@ -571,65 +833,39 @@ const AddressPage = ({ route }) => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView
-              style={styles.formContent}
-              showsVerticalScrollIndicator={false}
-            >
-              {Object.keys(emptyForm).map((key) => (
-                <View key={key} style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>
-                    {key === "addressLine1"
-                      ? "Address Line 1 *"
-                      : key === "addressLine2"
-                      ? "Address Line 2"
-                      : key === "pincode"
-                      ? "PIN Code *"
-                      : key.charAt(0).toUpperCase() +
-                        key.slice(1).replace(/([A-Z])/g, " $1") +
-                        " *"}
-                  </Text>
-                  <TextInput
-                    placeholder={
-                      key === "firstName"
-                        ? "First Name"
-                        : key === "lastName"
-                        ? "Last Name"
-                        : key === "phone"
-                        ? "Phone Number"
-                        : key === "addressLine1"
-                        ? "House no., Building, Street"
-                        : key === "addressLine2"
-                        ? "Apartment, Suite, etc."
-                        : key === "city"
-                        ? "City"
-                        : key === "state"
-                        ? "State"
-                        : key === "pincode"
-                        ? "PIN Code"
-                        : ""
-                    }
-                    style={styles.input}
-                    value={form[key]}
-                    onChangeText={(v) => setForm({ ...form, [key]: v })}
-                    placeholderTextColor="#9CA3AF"
-                    keyboardType={
-                      key === "phone" || key === "pincode"
-                        ? "phone-pad"
-                        : "default"
-                    }
-                  />
-                </View>
-              ))}
+            <ScrollView style={styles.formContent} showsVerticalScrollIndicator={false}>
+              {renderFormInputs()}
             </ScrollView>
 
             <View style={styles.formFooter}>
-              <TouchableOpacity
-                style={styles.cancelBtn}
-                onPress={closeFormModal}
-              >
+              <TouchableOpacity style={styles.cancelBtn} onPress={closeFormModal}>
                 <Text style={styles.cancelBtnText}>CANCEL</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.saveBtn} onPress={saveAddress}>
+              <TouchableOpacity
+                style={[
+                  styles.saveBtn,
+                  (!pincodeValid ||
+                    !form.firstName.trim() ||
+                    !form.lastName.trim() ||
+                    !form.phone ||
+                    form.phone.length !== 10 ||
+                    !form.addressLine1.trim() ||
+                    !form.city.trim() ||
+                    !form.state.trim()) &&
+                    styles.disabledSaveBtn,
+                ]}
+                onPress={saveAddress}
+                disabled={
+                  !pincodeValid ||
+                  !form.firstName.trim() ||
+                  !form.lastName.trim() ||
+                  !form.phone ||
+                  form.phone.length !== 10 ||
+                  !form.addressLine1.trim() ||
+                  !form.city.trim() ||
+                  !form.state.trim()
+                }
+              >
                 <Text style={styles.saveBtnText}>SAVE ADDRESS</Text>
               </TouchableOpacity>
             </View>

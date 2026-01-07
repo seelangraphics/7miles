@@ -8,13 +8,16 @@ import {
   FlatList,
   RefreshControl,
   Alert,
-  Image,
+  SafeAreaView,
+  StatusBar,
+  ScrollView,
 } from 'react-native';
-import {  getDoc } from 'firebase/firestore';
+import { getDoc } from 'firebase/firestore';
 import { db, auth } from '../Firebase/Firebase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { doc, updateDoc } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
 export default function OrdersHistory() {
   const [orders, setOrders] = useState([]);
@@ -22,6 +25,7 @@ export default function OrdersHistory() {
   const [refreshing, setRefreshing] = useState(false);
   const [username, setUsername] = useState('');
   const [useremail, setuserEmail] = useState('');
+  const navigation = useNavigation(); 
 
   useEffect(() => {
     fetchOrders();
@@ -94,120 +98,96 @@ export default function OrdersHistory() {
     return `₹${(amount || 0).toLocaleString('en-IN')}`;
   };
 
+  const MAIL_ENDPOINT =
+    "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
 
+  const sendOrderCancelEmail = async (order) => {
+    try {
+      const payload = {
+        storeType: "tinykarts",
+        to: useremail,
+        username: username,
+        subject: `Order Cancelled #${order.orderId}`,
+        message: `
+          <div style="font-family:Arial;">
+            <h2>Your order has been cancelled</h2>
+            <p>Hello ${username},</p>
+            <p>We wanted to let you know that your order <strong>#${order.orderId}</strong> has been cancelled as per your request.</p>
+            <p>If the payment was already made, refund will be processed within 3–5 working days.</p>
+            <br />
+            <p>Thanks for shopping with 7miles.</p>
+            <p>Team 7miles</p>
+          </div>
+        `,
+        orderid: order.orderId,
+      };
 
-const MAIL_ENDPOINT =
-  "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
+      await axios.post(MAIL_ENDPOINT, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
 
+      return true;
 
+    } catch (err) {
+      console.log("❌ Cancel email error →", err.response?.data || err.message);
+      return false;
+    }
+  };
 
+  const deleteOrderFromFirestore = async (orderId) => {
+    const user = auth.currentUser;
 
-const sendOrderCancelEmail = async (order) => {
-  try {
-    const payload = {
-      storeType: "tinykarts",
-      to: useremail,
-      username: username,
-      subject: `Order Cancelled #${order.orderId}`,
-      message: `
-        <div style="font-family:Arial;">
-          <h2>Your order has been cancelled</h2>
-          <p>Hello ${username},</p>
-          <p>We wanted to let you know that your order <strong>#${order.orderId}</strong> has been cancelled as per your request.</p>
-          <p>If the payment was already made, refund will be processed within 3–5 working days.</p>
-          <br />
-          <p>Thanks for shopping with 7miles.</p>
-          <p>Team 7miles</p>
-        </div>
-      `,
-      orderid: order.orderId,
-    };
+    if(!user) return;
 
-    await axios.post(MAIL_ENDPOINT, payload, {
-      headers: { "Content-Type": "application/json" },
+    const ref = doc(db, "milesusers", user.uid);
+
+    await updateDoc(ref, {
+      orders: orders.filter(o => o.orderId !== orderId)
     });
 
-    return true;
+    // refresh UI
+    setOrders(prev => prev.filter(o => o.orderId !== orderId));
+  };
 
-  } catch (err) {
-    console.log("❌ Cancel email error →", err.response?.data || err.message);
-    return false;
-  }
-};
+  const handleCancelOrder = (order) => {
+    Alert.alert(
+      "Cancel Order",
+      `Are you sure you want to cancel order #${order.orderId}? This action cannot be undone.`,
+      [
+        { text: "Keep Order", style: "cancel" },
 
+        {
+          text: "Cancel Order",
+          style: "destructive",
+          onPress: async () => {
 
+            try {
 
+              const response = await sendOrderCancelEmail(order);
 
+              if(!response){
+                console.log("Email failed → not deleting order");
+                return;
+              }
 
+              await deleteOrderFromFirestore(order.orderId);
 
+              Alert.alert(
+                "Order Cancelled!",
+                `Order #${order.orderId} has been successfully cancelled.`
+              );
 
-
-const deleteOrderFromFirestore = async (orderId) => {
-  const user = auth.currentUser;
-
-  if(!user) return;
-
-  const ref = doc(db, "milesusers", user.uid);
-
-  await updateDoc(ref, {
-    orders: orders.filter(o => o.orderId !== orderId)
-  });
-
-  // refresh UI
-  setOrders(prev => prev.filter(o => o.orderId !== orderId));
-};
-
-
-
-
-
-
-
-
-
-
-
-const handleCancelOrder = (order) => {
-  Alert.alert(
-    "Cancel Order",
-    `Are you sure you want to cancel order #${order.orderId}? This action cannot be undone.`,
-    [
-      { text: "Keep Order", style: "cancel" },
-
-      {
-        text: "Cancel Order",
-        style: "destructive",
-        onPress: async () => {
-
-          try {
-
-            const response = await sendOrderCancelEmail(order);
-
-            if(!response){
-              console.log("Email failed → not deleting order");
-              return;
+            } catch (error) {
+              console.log("Cancel failed", error);
             }
-
-            await deleteOrderFromFirestore(order.orderId);
-
-            Alert.alert(
-              "Order Cancelled!",
-              `Order #${order.orderId} has been successfully cancelled.`
-            );
-
-          } catch (error) {
-            console.log("Cancel failed", error);
-          }
+          },
         },
-      },
-    ]
-  );
-};
+      ]
+    );
+  };
 
-
-  // Render Product Item with Image
+  // Render Product Item
   const renderProductItem = (item, index) => {
-    const productImage = item.image || item.imageUrl || item.thumbnail;
     const productName = item.name || 'Unnamed Product';
     const quantity = item.quantity || 1;
     const price = item.price || 0;
@@ -215,20 +195,19 @@ const handleCancelOrder = (order) => {
 
     return (
       <View key={index} style={styles.productItem}>
-       
-        
-
         {/* Product Details */}
         <View style={styles.productDetails}>
           <Text style={styles.productName} numberOfLines={2}>
             {productName}
           </Text>
-          <Text style={styles.productQuantity}>
-            Qty: {quantity}
-          </Text>
-          <Text style={styles.productPrice}>
-            ₹{price.toLocaleString('en-IN')} each
-          </Text>
+          <View style={styles.productMeta}>
+            <Text style={styles.productQuantity}>
+              Qty: {quantity}
+            </Text>
+            <Text style={styles.productPrice}>
+              ₹{price.toLocaleString('en-IN')} each
+            </Text>
+          </View>
         </View>
 
         {/* Product Total */}
@@ -245,10 +224,11 @@ const handleCancelOrder = (order) => {
   const renderOrderItem = ({ item: order }) => {
     const canCancel = order.status !== 'cancelled' && order.status !== 'delivered';
     const statusConfig = {
-      pending: { color: '#F59E0B', label: 'Pending', icon: 'clock-outline' },
-      processing: { color: '#3B82F6', label: 'Processing', icon: 'package-variant' },
+      pending: { color: '#FFFFFF', label: '', icon: '' },
+      processing: { color: '#e7272b', label: 'Processing', icon: 'package-variant' },
       delivered: { color: '#10B981', label: 'Delivered', icon: 'check-circle' },
-      cancelled: { color: '#EF4444', label: 'Cancelled', icon: 'close-circle' },
+      cancelled: { color: '#DC2626', label: 'Cancelled', icon: 'close-circle' },
+      shipped: { color: '#3B82F6', label: 'Shipped', icon: 'truck' },
     };
     
     const status = order.status?.toLowerCase() || 'pending';
@@ -259,7 +239,7 @@ const handleCancelOrder = (order) => {
         {/* Order Header */}
         <View style={styles.orderHeader}>
           <View style={styles.orderHeaderLeft}>
-            <Icon name="package-variant-closed" size={20} color="#3B82F6" />
+            {/* <Icon name="package-variant-closed" size={20} color="#e7272b" /> */}
             <View style={styles.orderInfo}>
               <Text style={styles.orderId}>Order #{order.orderId || 'N/A'}</Text>
               <Text style={styles.orderDate}>
@@ -268,11 +248,17 @@ const handleCancelOrder = (order) => {
             </View>
           </View>
           
-         
+          <View style={[styles.statusBadge, { backgroundColor: `${config.color}15` }]}>
+            <Icon name={config.icon} size={12} color={config.color} />
+            <Text style={[styles.statusText, { color: config.color }]}>
+              {config.label}
+            </Text>
+          </View>
         </View>
 
         {/* Product Details */}
         <View style={styles.productsSection}>
+          <Text style={styles.sectionTitle}>Ordered Items</Text>
           
           {order.items && order.items.length > 0 ? (
             <View style={styles.productsList}>
@@ -291,7 +277,7 @@ const handleCancelOrder = (order) => {
           <View style={styles.totalSection}>
             <Text style={styles.totalLabel}>Order Total</Text>
             <Text style={styles.totalAmount}>
-              {formatCurrency(order.total)}
+              {formatCurrency(order.priceDetails?.total || order.totalAmount || 0)}
             </Text>
           </View>
 
@@ -300,8 +286,8 @@ const handleCancelOrder = (order) => {
               style={styles.cancelButton}
               onPress={() => handleCancelOrder(order)}
             >
-              <Icon name="close-circle-outline" size={18} color="#EF4444" />
-              <Text style={styles.cancelButtonText}>Cancel Order</Text>
+              <Icon name="close-circle-outline" size={16} color="#DC2626" />
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -310,25 +296,16 @@ const handleCancelOrder = (order) => {
   };
 
   // Render Header
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.headerContent}>
-        <Text style={styles.title}>Your Orders</Text>
-        <Text style={styles.subtitle}>
-          {username ? `Welcome back, ${username}` : 'Track your orders'}
-        </Text>
-      </View>
-      
-    
-    </View>
-  );
+
 
   // Loading State
   if (loading && !refreshing) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#3B82F6" />
-        <Text style={styles.loadingText}>Loading your orders...</Text>
+      <View style={styles.loaderContainer}>
+        <View style={styles.loaderCard}>
+          <ActivityIndicator size="large" color="#e7272b" />
+          <Text style={styles.loadingText}>Loading your orders...</Text>
+        </View>
       </View>
     );
   }
@@ -336,44 +313,50 @@ const handleCancelOrder = (order) => {
   // Empty State
   if (orders.length === 0 && !loading) {
     return (
-      <View style={styles.emptyContainer}>
-        <View style={styles.emptyIllustration}>
-          <Icon name="package-variant" size={80} color="#E5E7EB" />
-        </View>
-        <Text style={styles.emptyTitle}>No orders yet</Text>
-        <Text style={styles.emptyText}>
-          You haven't placed any orders. Start shopping to see them here!
-        </Text>
-        <TouchableOpacity 
-          style={styles.shopButton}
-          onPress={() => console.log('Navigate to shop')}
-        >
-          <Text style={styles.shopButtonText}>Start Shopping</Text>
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.emptyScrollContainer}>
+          <View style={styles.emptyContainer}>
+            <View style={styles.emptyIllustration}>
+              <Icon name="package-variant" size={80} color="#E5E7EB" />
+            </View>
+            <Text style={styles.emptyTitle}>No orders yet</Text>
+            <Text style={styles.emptyText}>
+              You haven't placed any orders. Start shopping to see them here!
+            </Text>
+            <TouchableOpacity 
+              style={styles.shopButton}
+              onPress={() => navigation.navigate("Categories")}
+            >
+              <Text style={styles.shopButtonText}>Start Shopping</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#F9FAFB" barStyle="dark-content" />
       <FlatList
         data={orders}
         renderItem={renderOrderItem}
         keyExtractor={(item, index) => `${item.orderId || 'order'}_${index}`}
-        ListHeaderComponent={renderHeader}
+        // ListHeaderComponent={renderHeader}
         refreshControl={
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh}
-            colors={['#3B82F6']}
-            tintColor="#3B82F6"
+            colors={['#e7272b']}
+            tintColor="#e7272b"
           />
         }
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListFooterComponent={<View style={styles.footerSpace} />}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -382,120 +365,148 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9FAFB',
   },
-  centered: {
+  loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F9FAFB',
   },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  headerContent: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6B7280',
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#F3F4F6',
-    borderRadius: 12,
-    padding: 16,
-  },
-  statItem: {
-    flex: 1,
+  loaderCard: {
+    backgroundColor: '#fff',
+    padding: 40,
+    borderRadius: 20,
     alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: '#E5E7EB',
-    marginHorizontal: 20,
-  },
-  orderCard: {
-    backgroundColor: 'white',
-    marginHorizontal: 16,
-    marginVertical: 8,
-    borderRadius: 16,
-    padding: 20,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
+    maxWidth: '80%',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+  header: {
+    padding: 20,
+    backgroundColor: '#F9FAFB',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  headerContent: {
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
     elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 11,
+    color: '#6B7280',
+    fontWeight: '600',
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: '#E5E7EB',
+    marginHorizontal: 12,
+  },
+  orderCard: {
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginVertical: 8,
+    borderRadius: 20,
+    padding: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
   },
   orderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
   orderHeaderLeft: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    flex: 1,
   },
   orderInfo: {
     marginLeft: 12,
+    flex: 1,
   },
   orderId: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: '700',
+    color: '#1F2937',
+    lineHeight: 20,
   },
   orderDate: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#6B7280',
     marginTop: 2,
+    fontWeight: '500',
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    gap: 4,
+    marginLeft: 8,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
   },
   productsSection: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#6B7280',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
     marginBottom: 12,
   },
   productsList: {
-    gap: 12,
+    gap: 8,
   },
   productItem: {
     flexDirection: 'row',
@@ -505,49 +516,37 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F3F4F6',
-  },
-  productImageContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#F3F4F6',
-  },
-  productImage: {
-    width: '100%',
-    height: '100%',
-  },
-  productImagePlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginBottom: 4,
   },
   productDetails: {
     flex: 1,
-    marginLeft: 12,
   },
   productName: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 4,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 6,
+    lineHeight: 18,
+  },
+  productMeta: {
+    flexDirection: 'row',
+    gap: 12,
   },
   productQuantity: {
     fontSize: 12,
     color: '#6B7280',
-    marginBottom: 2,
   },
   productPrice: {
     fontSize: 12,
     color: '#6B7280',
   },
   productTotal: {
-    marginLeft: 12,
+    marginLeft: 8,
   },
   productTotalText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: '700',
+    color: '#1F2937',
   },
   noProducts: {
     alignItems: 'center',
@@ -560,11 +559,12 @@ const styles = StyleSheet.create({
   },
   noProductsText: {
     marginTop: 8,
-    fontSize: 14,
+    fontSize: 13,
     color: '#9CA3AF',
+    fontWeight: '500',
   },
   orderFooter: {
-    paddingTop: 20,
+    paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#F3F4F6',
     flexDirection: 'row',
@@ -575,29 +575,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   totalLabel: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#6B7280',
     marginBottom: 4,
+    fontWeight: '600',
   },
   totalAmount: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1F2937',
   },
   cancelButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FEF2F2',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 10,
-    gap: 8,
+    gap: 6,
     borderWidth: 1,
     borderColor: '#FECACA',
   },
   cancelButtonText: {
     color: '#DC2626',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
   },
   listContent: {
@@ -606,11 +607,19 @@ const styles = StyleSheet.create({
   separator: {
     height: 8,
   },
+  footerSpace: {
+    height: 20,
+  },
+  emptyScrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: 24,
     backgroundColor: '#F9FAFB',
   },
   emptyIllustration: {
@@ -623,34 +632,31 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   emptyTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
-    color: '#111827',
+    color: '#1F2937',
     marginBottom: 8,
     textAlign: 'center',
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#6B7280',
     textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 32,
+    lineHeight: 22,
+    marginBottom: 24,
+    fontWeight: '500',
   },
   shopButton: {
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 32,
+    backgroundColor: '#e7272b',
+    paddingHorizontal: 28,
     paddingVertical: 14,
     borderRadius: 12,
+    minWidth: 160,
+    alignItems: 'center',
   },
   shopButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: '#fff',
+    fontSize: 15,
     fontWeight: '600',
   },
 });
-
-
-
-
-// await saveOrderToFirebase("razorpay", "success");
-// await sendOrderPlacedEmail(orderData);

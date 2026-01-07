@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
+import { useNavigation } from "@react-navigation/native";
 
-const FAQItem = ({ item, isOpen, onToggle }) => {
+
+const FAQItem = ({ item, isOpen, onToggle,}) => {
   const animation = React.useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -59,7 +61,7 @@ const FAQItem = ({ item, isOpen, onToggle }) => {
 
 const FAQSection = ({ data = defaultFAQData }) => {
   const [openIndex, setOpenIndex] = useState(0);
-
+  const navigation = useNavigation(); 
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -90,7 +92,7 @@ const FAQSection = ({ data = defaultFAQData }) => {
         <Text style={styles.supportText}>
           Need more help? Our team is here for you.
         </Text>
-        <TouchableOpacity style={styles.supportButton}>
+        <TouchableOpacity       onPress={() => navigation.navigate("Help")} style={styles.supportButton}>
           <Text style={styles.supportButtonText}>Contact Support</Text>
         </TouchableOpacity>
       </View>
