@@ -22,7 +22,7 @@ import RazorpayCheckout from "react-native-razorpay";
 import { Dimensions } from "react-native";
 import LottieView from "lottie-react-native";
 const MAIL_ENDPOINT =
-  "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
+  "https://xmyml3xjs0.execute-api.ap-south-1.amazonaws.com/send-email";
 
 const Payment = () => {
   const navigation = useNavigation();
@@ -59,8 +59,8 @@ const Payment = () => {
   }, []);
 
   const RAZORPAY_API_KEY =
-    "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/order";
-  const PAYMENT_API_KEY = "nb7yqBXPNZ8RDEsa0s7sS8OxEn9bujNV1c1VK3vc";
+    "https://xmyml3xjs0.execute-api.ap-south-1.amazonaws.com/order";
+  const PAYMENT_API_KEY = "FqAw8dS1a7N46d8TBM9e8xEynHiGpAw6tH42GSNf";
 
   const [userData, setUserData] = useState(null);
 
@@ -208,7 +208,7 @@ useEffect(() => {
   const sendOrderPlacedEmail = async (order) => {
     try {
       const payload = {
-        storeType: "tinykarts",
+        storeType: "7miles",
         to: order.userEmail,
         username: order.userName,
         subject: `Order Placed Successfully #${order.orderId}`,
@@ -304,10 +304,10 @@ useEffect(() => {
 
       // Step 2: Open Razorpay checkout
       const options = {
-        description: "TinyKarts Order Payment",
+        description: "7Miles Order Payment",
         currency: "INR",
         key: "rzp_live_b0fy47YNnCNRK8",
-        name: "TinyKarts",
+        name: "7Miles",
         orderId: razorpayOrderId,
         amount: Math.round(finalTotal * 100),
         prefill: {

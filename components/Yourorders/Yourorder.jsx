@@ -99,12 +99,12 @@ export default function OrdersHistory() {
   };
 
   const MAIL_ENDPOINT =
-    "https://178sjvr7ai.execute-api.ap-south-1.amazonaws.com/send-email";
+    "https://xmyml3xjs0.execute-api.ap-south-1.amazonaws.com/send-email";
 
   const sendOrderCancelEmail = async (order) => {
     try {
       const payload = {
-        storeType: "tinykarts",
+        storeType: "7miles",
         to: useremail,
         username: username,
         subject: `Order Cancelled #${order.orderId}`,
@@ -129,7 +129,7 @@ export default function OrdersHistory() {
       return true;
 
     } catch (err) {
-      console.log("❌ Cancel email error →", err.response?.data || err.message);
+      console.log("Cancel email error →", err.response?.data || err.message);
       return false;
     }
   };

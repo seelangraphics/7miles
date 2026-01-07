@@ -88,7 +88,7 @@ const Help = () => {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>❤️ We're here to help you!</Text>
+        <Text style={styles.footerText}>❤️We're here to help you!</Text>
       </View>
     </ScrollView>
   )
