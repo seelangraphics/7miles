@@ -1,0 +1,15 @@
+Cart page 
+
+1-- i command out in cart page Estimate Shipping  conten over all  code line - 297.
+2-- Free Shipping Progress FREE_SHIPPING_LIMIT code  command in code line no - 259.
+3-- Shipping Charges command code line - 381.
+
+
+Delivery Address 
+
+1-- command out Shipping delevery address page code line - 689.
+
+
+Payment page
+
+1--- command shipping amount

@@ -111,7 +111,7 @@ useEffect(() => {
       name: "Razorpay",
       icon: "card-outline",
       description: "Pay with UPI, Cards, Net Banking",
-      color: "#4F46E5",
+      color: "#F00A0A",
       isActive: true,
     },
     {
@@ -119,7 +119,7 @@ useEffect(() => {
       name: "Cash on Delivery",
       icon: "cash-outline",
       description: "Pay when you receive your order",
-      color: "#10B981",
+      color: "#F00A0A",
       isActive: true,
     },
   ];
@@ -361,9 +361,6 @@ setOrderDetails(orderData);
     }
   };
 
-
-  
-
 const handleCashOnDelivery = async () => {
   if (!cartItems || cartItems.length === 0) {
     Toast.show({
@@ -389,7 +386,7 @@ const handleCashOnDelivery = async () => {
       setIsLoading(false);
       return;
     }
-    // await sendOrderPlacedEmail(orderData);
+    await sendOrderPlacedEmail(orderData);
     setOrderDetails(orderData);
 
     Toast.show({
@@ -409,15 +406,6 @@ const handleCashOnDelivery = async () => {
     setIsLoading(false);
   }
 };
-
-
-
-
-
-
-
-
-
 
   const handlePayment = () => {
     if (!selectedMethod) {
@@ -451,7 +439,25 @@ const handleCashOnDelivery = async () => {
     );
   };
 
-
+const handleProductPress = (item) => {
+    // Prepare product object with all required fields
+    const productDetails = {
+      id: item.id || item.name,
+      name: item.name,
+      image: item.image,
+      quantity:item.quantity,
+      sale_price: item.sale_price,
+      regular_price: item.regular_price || item.sale_price,
+      category: item.category || "Hair Care",
+      brand: item.brand || item.Brand || "Unknown Brand",
+       benefits: item.benefits || item.Benefits || "Unknown Brand",
+      description: item.detailed_description || "No description available",
+      hair_type: item.hair_type || item.hairType || "",
+      save: item.save || Math.round(((item.regular_price || item.sale_price) - item.sale_price) || 0)
+    };
+    
+    navigation.navigate("ProductDetails", { product: productDetails });
+};
 
 
 
@@ -506,14 +512,15 @@ const handleCashOnDelivery = async () => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Order Summary</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("MainTabs")}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate("MainTabs")}>
               <Text style={styles.editText}>More Items</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {cartItems.map((item, index) => (
             <View key={index} style={styles.itemRow}>
-              <Image
+              <TouchableOpacity     onPress={() => handleProductPress(item)}>
+<Image
                 source={
                   typeof item.image === "string"
                     ? { uri: item.image }
@@ -521,10 +528,15 @@ const handleCashOnDelivery = async () => {
                 }
                 style={styles.itemImage}
               />
-              <View style={styles.itemDetails}>
-                <Text style={styles.itemName} numberOfLines={1}>
+              </TouchableOpacity>
+              
+              <View style={styles.itemDetails} >
+                <TouchableOpacity   onPress={() => handleProductPress(item)}>
+                       <Text style={styles.itemName} numberOfLines={1}>
                   {item.name}
                 </Text>
+                </TouchableOpacity>
+           
                 <Text style={styles.itemCategory}>{item.category}</Text>
                 <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
               </View>
@@ -540,10 +552,10 @@ const handleCashOnDelivery = async () => {
               ₹{getCartTotal().toFixed(2)}
             </Text>
           </View>
-          <View style={styles.summaryRow}>
+          {/* <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Shipping</Text>
             <Text style={styles.shippingValue}>₹{shippingCharge}</Text>
-          </View>
+          </View> */}
 
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Amount</Text>
@@ -559,11 +571,11 @@ const handleCashOnDelivery = async () => {
                 <Text style={styles.addressName}>
                   {address.firstName} {address.lastName}
                 </Text>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => navigation.navigate("delivery")}
                 >
                   <Text style={styles.changeAddressText}>Change</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <Text style={styles.addressPhone}>{address.phone}</Text>
               <Text style={styles.addressText}>{address.addressLine1}</Text>
@@ -647,8 +659,9 @@ const handleCashOnDelivery = async () => {
       </ScrollView>
       <View style={styles.bottomBar}>
         <View style={styles.bottomLeft}>
+            <Text style={styles.totalLabelBottom}>Total Payable</Text>
           <Text style={styles.totalAmount}>₹{finalTotal}</Text>
-          <Text style={styles.totalLabelBottom}>Total Payable</Text>
+        
         </View>
 
         <TouchableOpacity
@@ -666,7 +679,7 @@ const handleCashOnDelivery = async () => {
               <Text style={styles.payButtonText}>
                 {selectedMethod === "cod" ? "PLACE ORDER" : "PAY NOW"}
               </Text>
-              <Ionicons name="lock-closed" size={15} color="#fff" />
+              {/* <Ionicons name="lock-closed" size={15} color="#fff" /> */}
             </>
           )}
         </TouchableOpacity>
@@ -756,6 +769,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#222",
     letterSpacing: -0.2,
+    marginBottom:5,
   },
   editText: {
     fontSize: 13.5, // Normal font size
@@ -933,7 +947,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "#eee",
     borderRadius: 14,
     marginBottom: 12,

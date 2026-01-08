@@ -4,16 +4,24 @@ import { View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'r
 const Help = () => {
   // Contact functions
   const callSupport = () => {
-    Linking.openURL('tel:+911234567890')
+    Linking.openURL('tel:+9109677764778')
   }
 
   const whatsappChat = () => {
-    Linking.openURL('https://wa.me/911234567890')
+    Linking.openURL('https://wa.me/9190677764778')
   }
 
   const emailSupport = () => {
     Linking.openURL('mailto:7milesnkl@gmail.com')
   }
+const openMap = () => {
+  const url = 'https://maps.app.goo.gl/AaBc7He6Ev6YAe1aA'
+  Linking.openURL(url).catch(err => {
+    console.error('Error opening map:', err)
+  })
+}
+
+
 
   return (
     <ScrollView style={styles.container}>
@@ -25,7 +33,7 @@ const Help = () => {
         <TouchableOpacity style={styles.contactCard} onPress={callSupport}>
           <View style={styles.contactInfo}>
             <Text style={styles.contactTitle}>Call Us</Text>
-            <Text style={styles.contactSubtitle}>+91 123 456 7890</Text>
+            <Text style={styles.contactSubtitle}>+91 096777 64778</Text>
             <Text style={styles.contactDescription}>Direct phone support</Text>
           </View>
           <View style={styles.arrowContainer}>
@@ -77,18 +85,19 @@ const Help = () => {
           </Text>
           
           <View style={styles.mapButton}>
-            <TouchableOpacity 
-              style={styles.mapButtonTouchable}
-              onPress={() => Linking.openURL('https://maps.google.com/?q=Namakkal,Tamilnadu')}
-            >
-              <Text style={styles.mapButtonText}>View on Map</Text>
-            </TouchableOpacity>
+ <TouchableOpacity 
+  style={styles.mapButtonTouchable}
+  onPress={openMap}
+>
+  <Text style={styles.mapButtonText}>View on Map</Text>
+</TouchableOpacity>
+
           </View>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>❤️We're here to help you!</Text>
+        <Text style={styles.footerText}>We're here to help you!</Text>
       </View>
     </ScrollView>
   )

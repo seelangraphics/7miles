@@ -123,12 +123,12 @@ const ProductSlider = () => {
 
                         <Text style={styles.description}>{item.description}</Text>
 
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={styles.ctaButton}
                             onPress={() => handleShopNow(item.screen)}
                         >
                             <Text style={styles.ctaText}>{item.cta}</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </View>

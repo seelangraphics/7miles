@@ -205,7 +205,7 @@ export default function OrdersHistory() {
               Qty: {quantity}
             </Text>
             <Text style={styles.productPrice}>
-              ₹{price.toLocaleString('en-IN')} each
+              ₹{price.toLocaleString('en-IN')} 
             </Text>
           </View>
         </View>

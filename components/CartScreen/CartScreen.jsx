@@ -23,7 +23,7 @@ const CartScreen = ({ navigation }) => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
 
   const cartTotal = getCartTotal();
-  const FREE_SHIPPING_LIMIT = 200;
+  const FREE_SHIPPING_LIMIT = 20;
   const shippingCharge = cartTotal >= FREE_SHIPPING_LIMIT ? 0 : 40;
   const finalTotal = cartTotal + shippingCharge;
 
@@ -153,6 +153,25 @@ const handleCheckout = () => {
 
 
 
+  const handleProductPress = (item) => {
+    // Prepare product object with all required fields
+    const productDetails = {
+      id: item.id || item.name,
+      name: item.name,
+      quantity:item.quantity,
+      image: item.image,
+      sale_price: item.sale_price,
+      regular_price: item.regular_price || item.sale_price,
+      category: item.category || "Hair Care",
+      brand: item.brand || item.Brand || "Unknown Brand",
+       benefits: item.benefits || item.Benefits || "Unknown Brand",
+      description: item.detailed_description || "No description available",
+      hair_type: item.hair_type || item.hairType || "",
+      save: item.save || Math.round(((item.regular_price || item.sale_price) - item.sale_price) || 0)
+    };
+    
+    navigation.navigate("ProductDetails", { product: productDetails });
+  };
 
 
 
@@ -182,9 +201,10 @@ const handleCheckout = () => {
     <View style={styles.container}>
       <ScrollView style={styles.cartItems} showsVerticalScrollIndicator={false}>
         {cartItems.map((item) => (
-          <View style={styles.cartItem}>
+          <View  key={item.id || item.name}   style={styles.cartItem}>
             {/* Left Side Image */}
-            <Image
+            <TouchableOpacity     onPress={() => handleProductPress(item)}>
+                 <Image
               source={
                 typeof item.image === "string"
                   ? { uri: item.image }
@@ -192,13 +212,19 @@ const handleCheckout = () => {
               }
               style={styles.cartItemImage}
             />
+            </TouchableOpacity>
+         
 
             {/* Right Side Details */}
+           
             <View style={styles.cartItemDetails}>
               {/* Name */}
-              <Text style={styles.cartItemName} numberOfLines={2}>
+              <TouchableOpacity     onPress={() => handleProductPress(item)}>
+                     <Text style={styles.cartItemName} numberOfLines={2}>
                 {item.name}
               </Text>
+               </TouchableOpacity>
+         
 
               {/* Price */}
               <Text style={styles.cartItemPrice}>₹{item.sale_price}</Text>
@@ -239,10 +265,10 @@ const handleCheckout = () => {
 
               {/* Wishlist + Remove Row */}
               <View style={styles.actionRow}>
-                <TouchableOpacity style={styles.wishlistButton}>
+                {/* <TouchableOpacity style={styles.wishlistButton}>
                   <Ionicons name="heart-outline" size={18} color="#d6433c" />
                   <Text style={styles.actionText}>Wishlist</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                   style={styles.removeButton}
@@ -257,9 +283,9 @@ const handleCheckout = () => {
         ))}
 
         {/* Free Shipping Progress */}
-        <View style={styles.shippingProgressSection}>
+        {/* <View style={styles.shippingProgressSection}>
           <View style={styles.progressHeader}>
-            {/* <Ionicons name="rocket-outline" size={20} color="#d6433c" /> */}
+      
             <Text style={styles.progressTitle}>Free Shipping Progress</Text>
             <Text style={styles.progressPercentage}>
               {shippingProgress.toFixed(0)}%
@@ -292,10 +318,10 @@ const handleCheckout = () => {
               </Text>
             </View>
           )}
-        </View>
+        </View> */}
 
         {/* Estimate Shipping */}
-        <View style={styles.estimateSection}>
+        {/* <View style={styles.estimateSection}>
           <Text style={styles.sectionTitle}>Estimate Shipping</Text>
 
           <View style={styles.inputRow}>
@@ -336,14 +362,14 @@ const handleCheckout = () => {
             onPress={calculateEstimatedShipping}
             disabled={pincode.length !== 6}
           >
-            {/* <Ionicons name="calculator-outline" size={16} color="#fff" /> */}
+      
             <Text style={styles.calcButtonText}>Calculate Shipping</Text>
           </TouchableOpacity>
 
           {estimatedShipping && (
             <View style={styles.estimateResult}>
               <View style={styles.resultRow}>
-                {/* <Text style={resultMethod}>{estimatedShipping.method}</Text> */}
+           
                 <Text
                   style={
                     estimatedShipping.price === 0
@@ -365,7 +391,7 @@ const handleCheckout = () => {
               </Text>
             </View>
           )}
-        </View>
+        </View> */}
 
         {/* Price Details Section */}
         <View style={styles.priceDetailsSection}>
@@ -378,7 +404,7 @@ const handleCheckout = () => {
             <Text style={styles.detailValue}>₹{cartTotal.toFixed(2)}</Text>
           </View>
 
-          <View style={styles.detailRow}>
+          {/* <View style={styles.detailRow}>
             <View style={styles.shippingDetail}>
               <Text style={styles.detailLabel}>Shipping Charges</Text>
               {shippingCharge === 0 && (
@@ -395,7 +421,7 @@ const handleCheckout = () => {
             >
               {shippingCharge === 0 ? "FREE" : `₹${shippingCharge.toFixed(2)}`}
             </Text>
-          </View>
+          </View> */}
 
           <View style={styles.separator} />
 

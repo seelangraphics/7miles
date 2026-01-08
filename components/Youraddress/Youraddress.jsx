@@ -580,7 +580,7 @@ useEffect(() => {
                   <Text style={styles.inputLabel}>First Name*</Text>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="John"
+                    placeholder="FirstName"
                     value={formData.firstName}
                     onChangeText={(text) =>
                       handleInputChange("firstName", text)
@@ -591,7 +591,7 @@ useEffect(() => {
                   <Text style={styles.inputLabel}>Last Name*</Text>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="Doe"
+                    placeholder="LastName"
                     value={formData.lastName}
                     onChangeText={(text) => handleInputChange("lastName", text)}
                   />
@@ -602,7 +602,7 @@ useEffect(() => {
                 <Text style={styles.inputLabel}>Mobile Number*</Text>
                 <TextInput
                   style={styles.modalInput}
-                  placeholder="9876543210"
+                  placeholder=""
                   keyboardType="phone-pad"
                   value={formData.phone}
                   onChangeText={(text) => handleInputChange("phone", text)}
@@ -639,7 +639,7 @@ useEffect(() => {
                   <Text style={styles.inputLabel}>Pincode*</Text>
                 <TextInput
   style={styles.modalInput}
-  placeholder="560001"
+  placeholder=""
   keyboardType="number-pad"
   value={formData.pincode}
   onChangeText={(text) => {
@@ -656,7 +656,7 @@ useEffect(() => {
                   <Text style={styles.inputLabel}>City*</Text>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="Bangalore"
+                    placeholder=""
                     value={formData.city}
                     onChangeText={(text) => handleInputChange("city", text)}
                   />
@@ -668,7 +668,7 @@ useEffect(() => {
                   <Text style={styles.inputLabel}>State*</Text>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="Karnataka"
+                    placeholder=""
                     value={formData.state}
                     onChangeText={(text) => handleInputChange("state", text)}
                   />

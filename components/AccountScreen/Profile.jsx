@@ -55,7 +55,34 @@ export const Profile = ({ navigation }) => {
   useEffect(() => {
     fetchUserData();
   }, []);
-
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await signOut(auth);
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "login" }],
+              });
+            } catch (error) {
+              console.log("Logout error:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
   const fetchUserData = async () => {
     const user = auth.currentUser;
     if (user) {
@@ -656,13 +683,13 @@ export const Profile = ({ navigation }) => {
        
             </View>
             
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.editButton}
               onPress={() => handleEdit("name", userInfo.name)}
             >
               <Ionicons name="create-outline" size={14} color="#6B7280" />
               <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
  
@@ -741,23 +768,12 @@ export const Profile = ({ navigation }) => {
 
           {/* Security Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Security</Text>
+            {/* <Text style={styles.sectionTitle}>Security</Text> */}
             <View style={styles.sectionContent}>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => setModalType("delete") || setModalVisible(true)}
-              >
-                <View style={styles.menuItemLeft}>
-                  <View style={[styles.iconContainer, { backgroundColor: "#FEF2F2" }]}>
-                    <Ionicons name="trash-outline" size={20} color="#DC2626" />
-                  </View>
-                  <View style={styles.menuTextContainer}>
-                    <Text style={[styles.menuTitle, { color: "#DC2626" }]}>Delete Account</Text>
-                    <Text style={styles.menuSubtitle}>Permanently delete your account</Text>
-                  </View>
-                </View>
-                <Ionicons name="chevron-forward" size={18} color="#DC2626" />
-              </TouchableOpacity>
+                          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Ionicons name="log-out-outline" size={22} color="#EF4444" />
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
             </View>
           </View>
 

@@ -63,7 +63,7 @@ const AddressPage = ({ route }) => {
       useNativeDriver: true,
     }).start();
   }, []);
-
+console.log("cart-item",cartItems)
   // Pincode validation effect
   useEffect(() => {
     const validatePincode = async () => {
@@ -394,7 +394,25 @@ const AddressPage = ({ route }) => {
       },
     ]);
   };
-
+const handleProductPress = (item) => {
+    // Prepare product object with all required fields
+    const productDetails = {
+      id: item.id || item.name,
+      name: item.name,
+      image: item.image,
+      quantity:item.quantity,
+      sale_price: item.sale_price,
+      regular_price: item.regular_price || item.sale_price,
+      category: item.category || "Hair Care",
+      brand: item.brand || item.Brand || "Unknown Brand",
+      benefits: item.benefits || item.Benefits || "Unknown Brand",
+      description: item.detailed_description || "No description available",
+      hair_type: item.hair_type || item.hairType || "",
+      save: item.save || Math.round(((item.regular_price || item.sale_price) - item.sale_price) || 0)
+    };
+    
+    navigation.navigate("ProductDetails", { product: productDetails });
+  };
   const defaultAddress = addresses.find((a) => a.isDefault);
   const otherAddresses = addresses.filter((a) => !a.isDefault);
 
@@ -600,7 +618,8 @@ const AddressPage = ({ route }) => {
                       style={styles.actionIcon}
                       onPress={() => handleEditAddress(defaultAddress)}
                     >
-                      <Ionicons name="create-outline" size={14} color="#d6433c" />
+                      {/* <Ionicons name="create-outline" size={14} color="#d6433c" /> */}
+                      <Text color="#000000"  style>Edit</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -652,7 +671,8 @@ const AddressPage = ({ route }) => {
               </Text>
               {cartItems.map((item, index) => (
                 <View key={index} style={styles.itemCard}>
-                  <View style={styles.itemImageContainer}>
+                  <TouchableOpacity     onPress={() => handleProductPress(item)}>
+                     <View style={styles.itemImageContainer}>
                     <Image
                       source={
                         typeof item.image === "string"
@@ -662,15 +682,20 @@ const AddressPage = ({ route }) => {
                       style={styles.itemImage}
                     />
                   </View>
+                   </TouchableOpacity>
+                 
                   <View style={styles.itemDetails}>
-                    <Text style={styles.itemName} numberOfLines={2}>
+                    <TouchableOpacity     onPress={() => handleProductPress(item)}>
+                       <Text style={styles.itemName} numberOfLines={2}>
                       {item.name}
                     </Text>
+                    </TouchableOpacity>
+                   
                     <Text style={styles.itemCategory}>{item.category}</Text>
                     <Text style={styles.itemPrice}>₹{item.quantity}</Text>
                   </View>
                   <Text style={styles.itemTotal}>
-                    ₹{getCartTotal().toFixed(2)}
+                  ₹{item.sale_price}
                   </Text>
                 </View>
               ))}
@@ -686,10 +711,10 @@ const AddressPage = ({ route }) => {
                 ₹{getCartTotal().toFixed(2)}
               </Text>
             </View>
-            <View style={styles.priceRow}>
+            {/* <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Shipping</Text>
               <Text style={styles.priceValue}>₹{shipping}</Text>
-            </View>
+            </View> */}
 
             <View style={styles.divider} />
             <View style={styles.totalRow}>
@@ -702,8 +727,9 @@ const AddressPage = ({ route }) => {
         {/* Bottom Action Bar - Your existing code remains unchanged */}
         <View style={styles.bottomBar}>
           <View style={styles.priceContainer}>
+             <Text style={styles.bottomLabel}>Total</Text>
             <Text style={styles.bottomPrice}>₹{finalTotal}</Text>
-            <Text style={styles.bottomLabel}>Total</Text>
+           
           </View>
           <TouchableOpacity
             style={[
@@ -820,58 +846,83 @@ const AddressPage = ({ route }) => {
       </Modal>
 
       {/* Add/Edit Address Modal - UPDATED with validation */}
-      <Modal visible={showForm} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity style={styles.overlayTouchable} onPress={closeFormModal} />
-          <Animated.View style={[styles.formSheet, { transform: [{ translateY: formAnim }] }]}>
-            <View style={styles.formHeader}>
-              <Text style={styles.formTitle}>
-                {editId ? "Edit Address" : "Add Address"}
-              </Text>
-              <TouchableOpacity onPress={closeFormModal}>
-                <Ionicons name="close" size={16} color="#6B7280" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.formContent} showsVerticalScrollIndicator={false}>
-              {renderFormInputs()}
-            </ScrollView>
-
-            <View style={styles.formFooter}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={closeFormModal}>
-                <Text style={styles.cancelBtnText}>CANCEL</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  (!pincodeValid ||
-                    !form.firstName.trim() ||
-                    !form.lastName.trim() ||
-                    !form.phone ||
-                    form.phone.length !== 10 ||
-                    !form.addressLine1.trim() ||
-                    !form.city.trim() ||
-                    !form.state.trim()) &&
-                    styles.disabledSaveBtn,
-                ]}
-                onPress={saveAddress}
-                disabled={
-                  !pincodeValid ||
-                  !form.firstName.trim() ||
-                  !form.lastName.trim() ||
-                  !form.phone ||
-                  form.phone.length !== 10 ||
-                  !form.addressLine1.trim() ||
-                  !form.city.trim() ||
-                  !form.state.trim()
-                }
-              >
-                <Text style={styles.saveBtnText}>SAVE ADDRESS</Text>
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
+ <Modal visible={showForm} transparent animationType="fade">
+  <View style={styles.modalOverlay}>
+    <TouchableOpacity style={styles.overlayTouchable} onPress={closeFormModal} />
+    <Animated.View style={[styles.formSheet, { transform: [{ translateY: formAnim }] }]}>
+      <View style={styles.formHeader}>
+        <View style={styles.formTitleContainer}>
+          {/* <Ionicons name="location-outline" size={20} color="#d6433c" /> */}
+          <Text style={styles.formTitle}>
+            {editId ? "Edit Address" : "Add New Address"}
+          </Text>
         </View>
-      </Modal>
+        <TouchableOpacity 
+          style={styles.closeButton}
+          onPress={closeFormModal}
+        >
+          <Ionicons name="close-circle" size={24} color="#6B7280" />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView 
+        style={styles.formContent} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.formContentContainer}
+      >
+        {renderFormInputs()}
+        
+        <View style={styles.formNote}>
+          <Ionicons name="information-circle-outline" size={14} color="#6B7280" />
+          {/* <Text style={styles.noteText}>
+            All fields marked with * are mandatory. Pincode validation is required.
+          </Text> */}
+        </View>
+      </ScrollView>
+
+      <View style={styles.formFooter}>
+        <TouchableOpacity 
+          style={[styles.formButton, styles.cancelBtn]} 
+          onPress={closeFormModal}
+        >
+          {/* <Ionicons name="close-outline" size={16} color="#374151" /> */}
+          <Text style={styles.cancelBtnText}>CANCEL</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.formButton, 
+            styles.saveBtn,
+            (!pincodeValid ||
+              !form.firstName.trim() ||
+              !form.lastName.trim() ||
+              !form.phone ||
+              form.phone.length !== 10 ||
+              !form.addressLine1.trim() ||
+              !form.city.trim() ||
+              !form.state.trim()) &&
+              styles.disabledSaveBtn,
+          ]}
+          onPress={saveAddress}
+          disabled={
+            !pincodeValid ||
+            !form.firstName.trim() ||
+            !form.lastName.trim() ||
+            !form.phone ||
+            form.phone.length !== 10 ||
+            !form.addressLine1.trim() ||
+            !form.city.trim() ||
+            !form.state.trim()
+          }
+        >
+          {/* <Ionicons name="checkmark-outline" size={16} color="#fff" /> */}
+          <Text style={styles.saveBtnText}>
+            {editId ? "UPDATE ADDRESS" : "SAVE ADDRESS"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </Animated.View>
+  </View>
+</Modal>
     </>
   );
 };
@@ -1049,7 +1100,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 13.5,
     fontWeight: "600",
-    color: "#d2c1e2",
+    color: "#59585A",
   },
   itemTotal: {
     fontSize: 13.5, 
@@ -1124,6 +1175,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#666",
   },
+  
   continueButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -1397,4 +1449,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
   },
+  
 });

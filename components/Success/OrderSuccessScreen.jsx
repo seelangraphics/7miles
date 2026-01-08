@@ -15,6 +15,26 @@ const OrderSuccessScreen = ({ navigation, route }) => {
   const { order } = route.params || {};
   const orderId = order?.orderId || `ORD${Date.now()}`;
 
+  const handleProductPress = (item) => {
+    // Prepare product object with all required fields
+    const productDetails = {
+      id: item.id || item.name,
+      name: item.name,
+      image: item.image,
+      quantity:item.quantity,
+      sale_price: item.sale_price || item.price,
+      regular_price: item.regular_price || item.sale_price || item.price,
+      category: item.category || "Hair Care",
+      brand: item.brand || item.Brand || "Unknown Brand",
+      benefits: item.benefits|| item.Benefits || "Unknown Brand",
+      description: item?.detailed_description,
+      hair_type: item.hair_type || item.hairType || "",
+      save: item.save || Math.round(((item.regular_price || item.sale_price || item.price) - (item.sale_price || item.price)) || 0)
+    };
+    
+    navigation.navigate("ProductDetails", { product: productDetails });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -47,7 +67,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
 
           <View style={styles.orderConfirmationCard}>
             <View style={styles.confirmationRow}>
-              <Ionicons name="checkmark-circle" size={22} color="#10B981" />
+              {/* <Ionicons name="checkmark-circle" size={22} color="#10B981" /> */}
               <Text style={styles.confirmationText}>
                 Your order has been confirmed
               </Text>
@@ -69,22 +89,29 @@ const OrderSuccessScreen = ({ navigation, route }) => {
 
           {order?.items?.map((item, index) => (
             <View key={index} style={styles.productRow}>
-              <Image source={{ uri: item.image }} style={styles.productImg} />
+              <TouchableOpacity onPress={() => handleProductPress(item)}>
+                <Image 
+                  source={{ 
+                    uri: typeof item.image === 'string' 
+                      ? item.image 
+                      : (item.image_url || item.product_image || 'https://via.placeholder.com/150')
+                  }} 
+                  style={styles.productImg} 
+                />
+              </TouchableOpacity>
+
               <View style={styles.productInfo}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productPrice}>₹{item.price}</Text>
+                <TouchableOpacity onPress={() => handleProductPress(item)}>
+                  <Text style={styles.productName}>{item.name}</Text>
+                </TouchableOpacity>
+                <Text style={styles.productPrice}>₹{item.sale_price || item.price}</Text>
                 <Text style={styles.productQuantity}>Qty: {item.quantity}</Text>
               </View>
             </View>
           ))}
 
           <View style={styles.bottomRow}>
-            <TouchableOpacity
-              style={styles.addMoreBtn}
-              onPress={() => navigation.navigate("Products")}
-            >
-              <Text style={styles.addMoreText}>Add More</Text>
-            </TouchableOpacity>
+      
             <Text style={styles.totalText}>
               Total: ₹{order?.priceDetails?.total}
             </Text>
@@ -94,14 +121,14 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* DELIVERY ADDRESS CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Ionicons name="location" size={18} color="#e7272b" />
+            {/* <Ionicons name="location" size={18} color="#e7272b" /> */}
             <Text style={styles.cardTitle}>Delivery Address</Text>
           </View>
 
           <View style={styles.addressCard}>
-            <View style={styles.addressIcon}>
+            {/* <View style={styles.addressIcon}>
               <Ionicons name="home" size={20} color="#e7272b" />
-            </View>
+            </View> */}
             <View style={styles.addressDetails}>
               <Text style={styles.addressName}>
                 {order?.address?.name || "John Doe"}
@@ -117,7 +144,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
                 {order?.address?.pincode || "400001"}
               </Text>
               <View style={styles.phoneRow}>
-                <Ionicons name="call" size={14} color="#6B7280" />
+                {/* <Ionicons name="call" size={14} color="#6B7280" /> */}
                 <Text style={styles.addressPhone}>
                   {order?.address?.phone || "+91 9876543210"}
                 </Text>
@@ -129,21 +156,17 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* PAYMENT METHOD CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Ionicons name="card" size={18} color="#e7272b" />
+            {/* <Ionicons name="card" size={18} color="#e7272b" /> */}
             <Text style={styles.cardTitle}>Payment Method</Text>
           </View>
 
           <View style={styles.paymentCard}>
-       
             <View style={styles.paymentDetails}>
               <Text style={styles.paymentMethod}>
                 {order?.payment?.method === "cod"
                   ? "Cash on Delivery"
                   : "Online Payment"}
               </Text>
-              {/* <Text style={styles.paymentStatus}>
-                {order?.payment?.status === "paid" ? "Paid" : "Pending"}
-              </Text> */}
             </View>
           </View>
         </View>
@@ -151,7 +174,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* PRICE DETAILS CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Ionicons name="receipt" size={18} color="#e7272b" />
+            {/* <Ionicons name="receipt" size={18} color="#e7272b" /> */}
             <Text style={styles.cardTitle}>Order Summary</Text>
           </View>
 
@@ -163,21 +186,21 @@ const OrderSuccessScreen = ({ navigation, route }) => {
               </Text>
             </View>
 
-            <View style={styles.priceRow}>
+            {/* <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Shipping</Text>
               <Text style={styles.priceValue}>
                 {order?.priceDetails?.shipping === 0
                   ? "Free"
                   : `₹${order?.priceDetails?.shipping || "0"}`}
               </Text>
-            </View>
+            </View> */}
 
             <View style={styles.divider} />
 
             <View style={[styles.priceRow, styles.totalRow]}>
               <View>
                 <Text style={styles.totalLabel}>Total Amount</Text>
-                <Text style={styles.taxNote}>Inclusive of all taxes</Text>
+                {/* <Text style={styles.taxNote}>Inclusive of all taxes</Text> */}
               </View>
               <Text style={styles.totalAmount}>
                 ₹{order?.priceDetails?.total || "0"}
@@ -216,7 +239,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
           style={styles.continueBtn}
           onPress={() => navigation.navigate("MainTabs")}
         >
-          <Ionicons name="cart" size={20} color="#fff" style={styles.btnIcon} />
+          {/* <Ionicons name="cart" size={20} color="#fff" style={styles.btnIcon} /> */}
           <Text style={styles.continueBtnText}>Continue Shopping</Text>
           <Ionicons name="arrow-forward" size={20} color="#fff" />
         </TouchableOpacity>

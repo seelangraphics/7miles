@@ -27,55 +27,65 @@ const FilterModal = ({ visible, onClose, onApply, products = [], activeFilters =
     }
   }, [activeFilters]);
 
-  // Extract filter options from products
+  // Extract filter options from products with better handling
   const extractFilterOptions = () => {
     // Ensure products is an array
     const productsArray = Array.isArray(products) ? products : [];
     
-    const brands = [];
-    const hairTypes = [];
+    const brandsSet = new Set();
+    const hairTypesSet = new Set();
     
-    // Try to extract brands and hair types from various possible field names
+    // Extract brands and hair types from various possible field names
     productsArray.forEach(product => {
-      if (!product) return;
+      if (!product || typeof product !== 'object') return;
       
-      // Try different possible brand field names
-      const brand = product.brand || product.Brand || product.product_brand || product.brand_name;
-      if (brand && !brands.includes(brand)) {
-        brands.push(brand);
+      // Extract brand from various possible field names
+      const brand = product.brand || product.Brand || 
+                   product.product_brand || product.brand_name ||
+                   product.company || product.manufacturer;
+      
+      // Clean and validate brand
+      if (brand && typeof brand === 'string' && brand.trim()) {
+        const cleanedBrand = brand.trim();
+        if (cleanedBrand) brandsSet.add(cleanedBrand);
       }
       
-      // Try different possible hair type field names
-      const hairType = product.hair_type || product.hairType || product.hair || 
-                      product.hairtype || product.type || product.product_type;
-      if (hairType && !hairTypes.includes(hairType)) {
-        hairTypes.push(hairType);
+      // Extract hair type from various possible field names
+      const hairType = product.hair_type || product.hairType || 
+                      product.hair || product.hairtype || 
+                      product.type || product.product_type ||
+                      product.category || product.product_category;
+      
+      // Clean and validate hair type
+      if (hairType && typeof hairType === 'string' && hairType.trim()) {
+        const cleanedHairType = hairType.trim();
+        if (cleanedHairType) hairTypesSet.add(cleanedHairType);
       }
     });
 
     return { 
-      brands: brands.sort(), 
-      hairTypes: hairTypes.sort() 
+      brands: Array.from(brandsSet).sort(), 
+      hairTypes: Array.from(hairTypesSet).sort() 
     };
   };
 
   const { brands, hairTypes } = useMemo(() => extractFilterOptions(), [products]);
 
-  const priceRanges = [
-    { label: 'Under ₹500', min: 0, max: 500 },
-    { label: '₹500 - ₹1000', min: 500, max: 1000 },
-    { label: '₹1000 - ₹2000', min: 1000, max: 2000 },
-    { label: '₹2000 - ₹5000', min: 2000, max: 5000 },
-    { label: 'Over ₹5000', min: 5000, max: 100000 },
-  ];
+  const priceRanges = useMemo(() => [
+    { label: 'Under ₹500', min: 0, max: 500, id: 'price-0-500' },
+    { label: '₹500 - ₹1000', min: 500, max: 1000, id: 'price-500-1000' },
+    { label: '₹1000 - ₹2000', min: 1000, max: 2000, id: 'price-1000-2000' },
+    { label: '₹2000 - ₹5000', min: 2000, max: 5000, id: 'price-2000-5000' },
+    { label: 'Over ₹5000', min: 5000, max: 100000, id: 'price-5000-plus' },
+  ], []);
 
-  const discountRanges = [
-    { label: '10% & above', value: 10 },
-    { label: '20% & above', value: 20 },
-    { label: '30% & above', value: 30 },
-    { label: '40% & above', value: 40 },
-    { label: '50% & above', value: 50 },
-  ];
+  const discountRanges = useMemo(() => [
+    { label: '10% & above', value: 10, id: 'discount-10' },
+    { label: '20% & above', value: 20, id: 'discount-20' },
+    { label: '30% & above', value: 30, id: 'discount-30' },
+    { label: '40% & above', value: 40, id: 'discount-40' },
+    { label: '50% & above', value: 50, id: 'discount-50' },
+  ], []);
 
   const toggleBrand = (brand) => {
     setSelectedFilters(prev => ({
@@ -171,7 +181,7 @@ const FilterModal = ({ visible, onClose, onApply, products = [], activeFilters =
                 <View style={styles.filterGrid}>
                   {brands.map(brand => (
                     <TouchableOpacity
-                      key={brand}
+                      key={`brand-${brand}`}
                       style={[
                         styles.filterChip,
                         selectedFilters.brand?.includes(brand) && styles.filterChipSelected
@@ -197,7 +207,7 @@ const FilterModal = ({ visible, onClose, onApply, products = [], activeFilters =
                 <View style={styles.filterGrid}>
                   {hairTypes.map(type => (
                     <TouchableOpacity
-                      key={type}
+                      key={`type-${type}`}
                       style={[
                         styles.filterChip,
                         selectedFilters.hairType?.includes(type) && styles.filterChipSelected
@@ -222,7 +232,7 @@ const FilterModal = ({ visible, onClose, onApply, products = [], activeFilters =
               <View style={styles.filterGrid}>
                 {priceRanges.map(range => (
                   <TouchableOpacity
-                    key={range.label}
+                    key={range.id}
                     style={[
                       styles.priceChip,
                       selectedFilters.priceRange?.min === range.min && styles.priceChipSelected
@@ -246,7 +256,7 @@ const FilterModal = ({ visible, onClose, onApply, products = [], activeFilters =
               <View style={styles.filterGrid}>
                 {discountRanges.map(discount => (
                   <TouchableOpacity
-                    key={discount.label}
+                    key={discount.id}
                     style={[
                       styles.discountChip,
                       selectedFilters.discount?.includes(discount.value) && styles.discountChipSelected
@@ -285,6 +295,7 @@ const FilterModal = ({ visible, onClose, onApply, products = [], activeFilters =
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
@@ -332,6 +343,9 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingHorizontal: 20,
     paddingTop: 16,
+    paddingBottom: 20,
+  },
+  scrollContent: {
     paddingBottom: 20,
   },
   section: {

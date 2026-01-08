@@ -10,6 +10,7 @@ import {
   Dimensions,
   ActivityIndicator 
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import { useCart } from '../context/CartContext';
 
@@ -22,6 +23,7 @@ const BundleComponent = () => {
   const [error, setError] = useState(null);
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
+  const navigation = useNavigation();
 
   // Fetch products from AWS API
   useEffect(() => {
@@ -64,6 +66,28 @@ const BundleComponent = () => {
     }, 0);
   }, [bundleProducts]);
 
+  // Navigation function for product details
+  const handleProductPress = (item) => {
+    // Prepare product object with all required fields
+    const productDetails = {
+      id: item.id || item.name,
+      name: item.name || item.title,
+      image: item.image?.uri || item.image || item.thumbnail,
+      sale_price: item.sale_price,
+      regular_price: item.regular_price || item.sale_price,
+      quantity:item.quantity,
+      category: item.category || item.Category || "Hair Care",
+      brand: item.brand || item.Brand || "Unknown Brand",
+      benefits: item.benefits || item.Benefits || "",
+      description: item.detailed_description,
+      hair_type: item.hair_type || item.hairType || "",
+      save: item.save || Math.round(((item.regular_price || item.sale_price) - item.sale_price) || 0),
+      // Include original data for backward compatibility
+      ...item
+    };
+    
+    navigation.navigate("ProductDetails", { product: productDetails });
+  };
 
   const handleAddBundle = () => {
     if (isAdding || bundleProducts.length === 0) return;
@@ -87,11 +111,17 @@ const BundleComponent = () => {
         addToCart(cartProduct);
       });
       
-      // Show success message
+      // Show success message with options
       Alert.alert(
         "Bundle Added to Cart! 🎉",
         `Added ${bundleProducts.length} products and saved ₹${calculateBundleSavings.toFixed(2)}`,
-        [{ text: "Continue Shopping" }, { text: "View Cart" }]
+        [
+          { text: "Continue Shopping", style: "cancel" },
+          { 
+            text: "View Cart", 
+            onPress: () => navigation.navigate('Cart')
+          }
+        ]
       );
       
     } catch (error) {
@@ -106,7 +136,7 @@ const BundleComponent = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#000000" />
         <Text style={styles.loadingText}>Loading bundle offers...</Text>
       </View>
     );
@@ -140,7 +170,7 @@ const BundleComponent = () => {
 
       {/* Main Card */}
       <View style={styles.mainCard}>
-        {/* Banner Section - Like in reference image */}
+        {/* Banner Section */}
         <View style={styles.bannerSection}>
           <Image 
             source={bannerImage} 
@@ -156,26 +186,34 @@ const BundleComponent = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.productsContainer}
           >
-            {bundleProducts.map((product) => (
-              <View key={product.id || product._id} style={styles.productCard}>
-                {/* Product Image - Handle different image structures */}
+            {bundleProducts.map((product, index) => (
+              <TouchableOpacity 
+                key={product.id || product._id || product.name || index} 
+                style={styles.productCard}
+                onPress={() => handleProductPress(product)}
+                activeOpacity={0.7}
+              >
+                {/* Product Image */}
                 <Image 
-                  source={{ uri: product.image?.uri || product.image || product.thumbnail }} 
+                  source={{ 
+                    uri: product.image?.uri || 
+                         product.image || 
+                         product.thumbnail || 
+                         product.image_url 
+                  }} 
                   style={styles.productImage}
-                 
                 />
                 
                 {/* Product Info */}
                 <View style={styles.productInfo}>
                   <Text style={styles.productName} numberOfLines={2}>
-                    {product.name || product.title}
+                    {product.name || product.title || "Product Name"}
                   </Text>
                   
-                  {product.cartqty && (
-                    <Text style={styles.productQuantity}>
-                      {product.cartqty}
-                    </Text>
-                  )}
+                  {/* Bundle Badge */}
+                  <View style={styles.bundleIndicator}>
+                    <Text style={styles.bundleIndicatorText}>Bundle Item</Text>
+                  </View>
                   
                   {/* Price Section */}
                   <View style={styles.priceSection}>
@@ -188,12 +226,21 @@ const BundleComponent = () => {
                     <View style={styles.priceRow}>
                       <Text style={styles.priceLabel}>Regular:</Text>
                       <Text style={styles.regularPrice}>
-                        ₹{parseFloat(product.regular_price || 0).toFixed(2)}
+                        ₹{parseFloat(product.regular_price || product.sale_price || 0).toFixed(2)}
                       </Text>
                     </View>
                   </View>
+                  
+                  {/* Savings */}
+                  {product.regular_price && product.sale_price && (
+                    <View style={styles.savingsRow}>
+                      <Text style={styles.savingsText}>
+                        Save ₹{(parseFloat(product.regular_price) - parseFloat(product.sale_price)).toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
@@ -201,7 +248,7 @@ const BundleComponent = () => {
         {/* Total Savings and Add Button */}
         <View style={styles.footerSection}>
           <View style={styles.savingsContainer}>
-            <Text style={styles.savingsLabel}>Total Savings</Text>
+            <Text style={styles.savingsLabel}>Total Bundle Savings</Text>
             <View style={styles.savingsAmount}>
               <Text style={styles.saveText}>SAVE</Text>
               <Text style={styles.savingsValue}>₹{calculateBundleSavings.toFixed(2)}</Text>
@@ -228,78 +275,74 @@ const BundleComponent = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#F8F9FA',
     padding: 16,
     marginVertical: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  errorContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#E74C3C',
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  errorSubText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
   header: {
     marginBottom: 20,
     paddingHorizontal: 8,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '900',
+    fontSize: 24,
+    fontWeight: '800',
     color: '#000000',
-    letterSpacing: -0.5,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666666',
     fontWeight: '500',
-    letterSpacing: 0.3,
   },
   mainCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
+    borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: '#EEEEEE',
   },
   bannerSection: {
-    height: 180,
+    height: 160,
     position: 'relative',
   },
   bannerImage: {
     width: '100%',
     height: '100%',
-  },
-  bannerOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  bannerTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 8,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  bannerSubtitle: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    fontWeight: '600',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   productsSection: {
     paddingHorizontal: 16,
@@ -313,44 +356,47 @@ const styles = StyleSheet.create({
     width: 140,
     marginRight: 16,
     backgroundColor: '#F9F9F9',
-    borderRadius: 16,
+    borderRadius: 12,
     padding: 12,
     borderWidth: 1,
     borderColor: '#EEEEEE',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
     elevation: 2,
   },
   productImage: {
     width: '100%',
     height: 100,
-    borderRadius: 12,
+    borderRadius: 10,
     backgroundColor: '#F0F0F0',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   productInfo: {
     alignItems: 'center',
   },
   productName: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 13,
+    fontWeight: '600',
     color: '#000000',
     textAlign: 'center',
-    marginBottom: 8,
-    lineHeight: 18,
-    height: 36,
+    marginBottom: 6,
+    lineHeight: 16,
+    height: 32,
   },
-  productQuantity: {
-    fontSize: 12,
-    color: '#666666',
-    fontWeight: '600',
-    marginBottom: 12,
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
+  bundleIndicator: {
+    backgroundColor: '#FFE5E5',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  bundleIndicatorText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#D32F2F',
+    letterSpacing: 0.2,
   },
   priceSection: {
     width: '100%',
@@ -363,71 +409,83 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 11,
-    color: '#888888',
+    color: '#777777',
     fontWeight: '500',
   },
   salePrice: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 15,
+    fontWeight: '700',
     color: '#000000',
   },
   regularPrice: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#999999',
     textDecorationLine: 'line-through',
   },
- footerSection: {
-  paddingVertical: 16,
-  paddingHorizontal: 18,
-  backgroundColor: '#F8F8F8',
-  flexDirection: 'row',
-  alignItems: 'center',
-},
-
+  savingsRow: {
+    marginTop: 6,
+    width: '100%',
+    alignItems: 'center',
+  },
+  savingsText: {
+    fontSize: 11,
+    color: '#27AE60',
+    fontWeight: '600',
+    backgroundColor: '#E8F8EF',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  footerSection: {
+    padding: 16,
+    backgroundColor: '#F8F8F8',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+  },
   savingsContainer: {
     flex: 1,
   },
- savingsLabel: {
-  fontSize: 12,
-  color: '#666',
-  marginBottom: 4,
-},
-
-savingsValue: {
-  fontSize: 24,   // ⬅ reduced from 32 (main issue)
-  fontWeight: '800',
-},
-
+  savingsLabel: {
+    fontSize: 13,
+    color: '#666666',
+    marginBottom: 4,
+    fontWeight: '500',
+  },
   savingsAmount: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   saveText: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#FFFFFF',
     backgroundColor: '#000000',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 6,
-    letterSpacing: 0.5,
+    borderRadius: 4,
+    letterSpacing: 0.3,
   },
- 
- addButton: {
-  backgroundColor: '#000',
-  borderRadius: 40,
-  paddingHorizontal: 20,
-  paddingVertical: 12,
-  minWidth: 120,
-},
-
-addButtonText: {
-  fontSize: 14,
-  fontWeight: '700',
-  color:'white'
-},
-
+  savingsValue: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#000000',
+  },
+  addButton: {
+    backgroundColor: '#000000',
+    borderRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    minWidth: 140,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   disabledButton: {
     backgroundColor: '#666666',
     opacity: 0.7,
@@ -436,22 +494,28 @@ addButtonText: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    gap: 8,
   },
- 
+  addButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 0.2,
+  },
   buttonIcon: {
     backgroundColor: '#FFFFFF',
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 2,
   },
   buttonIconText: {
     color: '#000000',
-    fontSize: 18,
-    fontWeight: '900',
-    lineHeight: 18,
+    fontSize: 16,
+    fontWeight: '800',
+    lineHeight: 16,
   },
 });
 

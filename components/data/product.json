@@ -398,6 +398,7 @@
     {
         "id": 10,
         "name": "SHIKAKAI POWDER",
+        "Herbalfacepack": "yes",
         "sale_price": 280,
         "regular_price": 325,
         "save": 45,
@@ -441,6 +442,7 @@
     {
         "id": 11,
         "name": "HENNA POWDER",
+        "Herbalfacepack": "yes",
         "sale_price": 100,
         "regular_price": 160,
         "save": 60,
@@ -1063,6 +1065,7 @@
         "sale_price": 270,
         "regular_price": 310,
         "oil": "yes",
+        "detailed_description": "Our Kumkumathi routine is a luxurious, 100% natural handmade soap enriched with Kumkumathi oil, saffron, sandalwood, and traditional Ayurvedic herbs. It gently cleanses while nourishing the skin, improving complexion, reducing blemishes, and restoring a youthful glow. Ideal for daily use on face and body.",
         "save": 40,
         "category": "Skin Care",
         "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp",
@@ -1072,7 +1075,14 @@
         ],
         "nightroutine": "yes",
         "quantity": "50ml",
-        "benefits": "Improves skin texture overnight",
+        "benefits": [
+            "Enhances natural skin glow with saffron infusion",
+            "Evens skin tone and reduces pigmentation",
+            "Deeply nourishes and hydrates dry, dull skin",
+            "Helps fight acne and pimples with antibacterial properties",
+            "Reduces fine lines and early signs of aging",
+            "Soothes and calms skin with sandalwood and Ayurvedic herbs"
+        ],
         "description": "Ayurvedic night routine oil for radiant skin.",
         "Bundle_save": "Yes"
     },
@@ -1388,6 +1398,7 @@
     {
         "id": 33,
         "name": "AVARAMPOO POWDER",
+        "Herbalfacepack": "yes",
         "sale_price": 100,
         "regular_price": 175,
         "save": 75,

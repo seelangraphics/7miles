@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
-  ScrollView,
   Platform,
   StatusBar,
   Dimensions,
@@ -19,23 +18,25 @@ import ProductFeatures from "./Features";
 import ProductImageSlider from "./ProductImageSlider";
 import { useCart } from "../context/CartContext";
 
-// Get the API URL from environment variables
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
-
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const ProductDetailsScreen = ({ route, navigation }) => {
   const { product } = route.params;
 
-  const { addToCart, updateQuantity, getItemQuantity, isInCart, cartItems } =
-    useCart();
+  const {
+    addToCart,
+    updateQuantity,
+    getItemQuantity,
+    isInCart,
+    toggleWishlist,
+    isInWishlist
+  } = useCart();
 
   const [quantity, setQuantity] = useState(1);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Add a ref for the FlatList
   const flatListRef = useRef(null);
 
   const COLORS = {
@@ -53,10 +54,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     fetchProducts();
   }, []);
 
-  // Scroll to top when product changes
   useEffect(() => {
     if (flatListRef.current) {
-      // Scroll to top with animation
       flatListRef.current.scrollToOffset({ offset: 0, animated: true });
     }
   }, [product]);
@@ -65,7 +64,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     try {
       setLoading(true);
       setError(null);
-
       const response = await fetch(PRODUCTS_API);
 
       if (!response.ok) {
@@ -73,23 +71,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
       }
 
       const data = await response.json();
-
-      // Handle different response formats
       let productsArray = data;
-      if (
-        !Array.isArray(data) &&
-        data.products &&
-        Array.isArray(data.products)
-      ) {
+      if (!Array.isArray(data) && data.products && Array.isArray(data.products)) {
         productsArray = data.products;
       }
 
-      // Ensure each product has proper image format
       const formattedProducts = productsArray.map((item) => ({
         ...item,
-        // Ensure image is properly formatted for Image component
-        image:
-          typeof item.image === "string" ? { uri: item.image } : item.image,
+        image: typeof item.image === "string" ? { uri: item.image } : item.image,
       }));
 
       setProducts(formattedProducts);
@@ -102,9 +91,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   };
 
   const [hasAddedToCart, setHasAddedToCart] = useState(false);
-
   const isItemInCart = isInCart(product.name);
-
+  const isItemInWishlist = isInWishlist(product.name);
   const showQuantityControls = isItemInCart;
 
   useEffect(() => {
@@ -117,29 +105,24 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   const handleQuantityChange = (change) => {
     const newQty = quantity + change;
-
     if (newQty <= 0) {
-      // REMOVE FROM CART
       updateQuantity(product.name, 0);
-      setQuantity(1); // reset for next add
+      setQuantity(1);
       setHasAddedToCart(false);
       return;
     }
-
     setQuantity(newQty);
     updateQuantity(product.name, newQty);
   };
 
   const handleAddToCart = () => {
     if (isItemInCart) return;
-
     addToCart({ ...product, cartQty: 1 });
     setQuantity(1);
     setHasAddedToCart(true);
   };
 
   const handleBuyNow = () => {
-    // Add product multiple times based on quantity
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
@@ -154,12 +137,9 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   ].filter(Boolean);
 
   const similarProducts = products
-    .filter(
-      (item) => item.category === product.category && item.id !== product.id
-    )
+    .filter((item) => item.category === product.category && item.id !== product.id)
     .slice(0, 6);
 
-  // Calculate discount for similar products
   const calculateDiscount = (regularPrice, salePrice) => {
     if (!regularPrice || regularPrice === 0) return 0;
     return Math.round(((regularPrice - salePrice) / regularPrice) * 100);
@@ -168,15 +148,9 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   const renderSimilarProduct = ({ item, index }) => {
     const cartItemQuantity = getItemQuantity(item.name);
     const isInCartItem = isInCart(item.name);
+    const isWishlisted = isInWishlist(item.name);
     const discount = calculateDiscount(item.regular_price, item.sale_price);
-    const colors = [
-      "#f3eeea",
-      "#f3eeea",
-      "#f3eeea",
-      "#f3eeea",
-      "#f3eeea",
-      "#f3eeea",
-    ];
+    const colors = ["#f3eeea", "#f3eeea", "#f3eeea", "#f3eeea", "#f3eeea", "#f3eeea"];
     const bgColor = colors[index % colors.length];
 
     return (
@@ -186,32 +160,32 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           onPress={() => navigation.push("ProductDetails", { product: item })}
           activeOpacity={0.9}
         >
-          {/* Discount Badge */}
-          {discount > 0 && (
-            <View style={styles.discountBadge}>
-              <Text style={styles.discountText}>-{discount}%</Text>
-            </View>
-          )}
+          <View style={styles.discountBadge}>
+            <Text style={styles.discountText}>save ₹{item.save}.00</Text>
+          </View>
 
-          {/* Wishlist Icon */}
-          <TouchableOpacity style={styles.wishlistBtn}>
-            <Ionicons name="heart-outline" size={16} color="#666" />
+          <TouchableOpacity
+            style={styles.wishlistBtn}
+            onPress={(e) => {
+              e.stopPropagation();
+              toggleWishlist(item);
+            }}
+          >
+            <Ionicons
+              name={isWishlisted ? "heart" : "heart-outline"}
+              size={16}
+              color={isWishlisted ? "#EF4444" : "#666"}
+            />
           </TouchableOpacity>
 
-          {/* Product Image */}
           <View style={styles.imageContainer}>
             <Image
-              source={
-                typeof item.image === "string"
-                  ? { uri: item.image }
-                  : item.image
-              }
+              source={typeof item.image === "string" ? { uri: item.image } : item.image}
               style={styles.productImage}
               resizeMode="cover"
             />
           </View>
 
-          {/* Product Info */}
           <View style={styles.productInfo}>
             <Text style={styles.category} numberOfLines={1}>
               {item.category}
@@ -225,23 +199,18 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               <Text style={styles.regularPrice}>₹{item.regular_price}</Text>
             </View>
 
-            {/* Add to Cart / Quantity Controls */}
             {isInCartItem ? (
               <View style={styles.quantityControls}>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() =>
-                    updateQuantity(item.name, cartItemQuantity - 1)
-                  }
+                  onPress={() => updateQuantity(item.name, cartItemQuantity - 1)}
                 >
                   <Text style={styles.qtyBtnText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.quantity}>{cartItemQuantity}</Text>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() =>
-                    updateQuantity(item.name, cartItemQuantity + 1)
-                  }
+                  onPress={() => updateQuantity(item.name, cartItemQuantity + 1)}
                 >
                   <Text style={styles.qtyBtnText}>+</Text>
                 </TouchableOpacity>
@@ -290,14 +259,10 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#FFFFFF"
-        translucent={false}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" translucent={false} />
 
       <FlatList
-        ref={flatListRef} // Add ref to FlatList
+        ref={flatListRef}
         data={similarProducts}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         numColumns={2}
@@ -306,9 +271,21 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View>
+            {/* <TouchableOpacity
+              style={styles.wishlistHeaderBtn}
+              onPress={() => toggleWishlist(product)}
+            >
+              <Ionicons
+                name={isItemInWishlist ? "heart" : "heart-outline"}
+                size={24}
+                color={isItemInWishlist ? "#EF4444" : "#666"}
+              />
+            </TouchableOpacity> */}
+
             <ProductImageSlider
               images={sliderImages}
               dotColor={COLORS.primary}
+              product={product} // Pa
             />
 
             <View style={styles.detailsContainer}>
@@ -338,22 +315,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
                 <View style={styles.metaInfo}>
                   <View style={styles.metaItem}>
-                    <Ionicons
-                      name="cube-outline"
-                      size={16}
-                      color={COLORS.light}
-                    />
+                    <Ionicons name="cube-outline" size={16} color={COLORS.light} />
                     <Text style={styles.metaText}>
                       Quantity: {product.quantity}
                     </Text>
                   </View>
                   <View style={styles.metaDivider} />
                   <View style={styles.metaItem}>
-                    <Ionicons
-                      name="pricetag-outline"
-                      size={16}
-                      color={COLORS.light}
-                    />
+                    <Ionicons name="pricetag-outline" size={16} color={COLORS.light} />
                     <Text style={styles.metaText}>
                       Category: {product.category}
                     </Text>
@@ -375,16 +344,9 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Benefits</Text>
                 <View style={styles.benefitsContainer}>
-                  {(Array.isArray(product.benefits)
-                    ? product.benefits
-                    : []
-                  ).map((item, index) => (
+                  {(Array.isArray(product.benefits) ? product.benefits : []).map((item, index) => (
                     <View key={index} style={styles.benefitItem}>
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={16}
-                        color={COLORS.secondary}
-                      />
+                      <Ionicons name="checkmark-circle" size={16} color={COLORS.secondary} />
                       <Text style={styles.benefitText}>{item}</Text>
                     </View>
                   ))}
@@ -401,13 +363,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
               <View style={styles.similarHeader}>
                 <Text style={styles.sectionTitle}>Similar Products</Text>
-                {similarProducts.length > 0 && (
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("Categories")}
-                  >
-                    {/* <Text style={styles.seeAll}>See All</Text> */}
-                  </TouchableOpacity>
-                )}
               </View>
             </View>
           </View>
@@ -431,7 +386,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         }
       />
 
-      {/* Bottom Action Bar - Fixed Position */}
       <View style={styles.bottomActionBar}>
         <View style={styles.actionBarContent}>
           <View style={styles.leftSection}>
