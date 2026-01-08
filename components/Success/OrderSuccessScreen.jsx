@@ -146,7 +146,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
               <View style={styles.phoneRow}>
                 {/* <Ionicons name="call" size={14} color="#6B7280" /> */}
                 <Text style={styles.addressPhone}>
-                  {order?.address?.phone || "+91 9876543210"}
+                  {order?.address?.phone || "+91 96777 64778"}
                 </Text>
               </View>
             </View>

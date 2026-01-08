@@ -4,11 +4,11 @@ import { View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'r
 const Help = () => {
   // Contact functions
   const callSupport = () => {
-    Linking.openURL('tel:+9109677764778')
+    Linking.openURL('tel:+919677764778')
   }
 
   const whatsappChat = () => {
-    Linking.openURL('https://wa.me/9190677764778')
+    Linking.openURL('https://wa.me/+919677764778')
   }
 
   const emailSupport = () => {
@@ -33,7 +33,7 @@ const openMap = () => {
         <TouchableOpacity style={styles.contactCard} onPress={callSupport}>
           <View style={styles.contactInfo}>
             <Text style={styles.contactTitle}>Call Us</Text>
-            <Text style={styles.contactSubtitle}>+91 096777 64778</Text>
+            <Text style={styles.contactSubtitle}>+91 96777 64778</Text>
             <Text style={styles.contactDescription}>Direct phone support</Text>
           </View>
           <View style={styles.arrowContainer}>

@@ -306,7 +306,7 @@ useEffect(() => {
       const options = {
         description: "7Miles Order Payment",
         currency: "INR",
-        key: "rzp_live_b0fy47YNnCNRK8",
+        key: "rzp_live_S1HrBV8P78Aw9l",
         name: "7Miles",
         orderId: razorpayOrderId,
         amount: Math.round(finalTotal * 100),
