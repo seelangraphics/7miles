@@ -59,7 +59,7 @@ const Adbanner = () => {
       id: product.id.toString(),
       name: product.name,
       title: product.name,
-      quantity: item.quantity,
+      quantity: product.quantity,
       image: { uri: product.image },
       sale_price: product.sale_price,
       regular_price: product.regular_price,

@@ -399,7 +399,7 @@ const handleCheckout = () => {
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>
-              Subtotal ({cartItems.length} items)
+              Subtotal ({cartItems.length} {cartItems.length == 1 ? "item" : "items"})
             </Text>
             <Text style={styles.detailValue}>₹{cartTotal.toFixed(2)}</Text>
           </View>

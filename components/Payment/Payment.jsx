@@ -388,7 +388,7 @@ const handleCashOnDelivery = async () => {
     }
     await sendOrderPlacedEmail(orderData);
     setOrderDetails(orderData);
-
+getCartTotal(null)
     Toast.show({
       type: "success",
       text1: "Order Placed!",
@@ -516,33 +516,52 @@ const handleProductPress = (item) => {
               <Text style={styles.editText}>More Items</Text>
             </TouchableOpacity> */}
           </View>
+{cartItems.map((item, index) => {
+  const unitPrice = item.sale_price;
+  const qty = item.cartQty;
+  const totalPrice = unitPrice * qty;
 
-          {cartItems.map((item, index) => (
-            <View key={index} style={styles.itemRow}>
-              <TouchableOpacity     onPress={() => handleProductPress(item)}>
-<Image
-                source={
-                  typeof item.image === "string"
-                    ? { uri: item.image }
-                    : item.image
-                }
-                style={styles.itemImage}
-              />
-              </TouchableOpacity>
-              
-              <View style={styles.itemDetails} >
-                <TouchableOpacity   onPress={() => handleProductPress(item)}>
-                       <Text style={styles.itemName} numberOfLines={1}>
-                  {item.name}
-                </Text>
-                </TouchableOpacity>
-           
-                <Text style={styles.itemCategory}>{item.category}</Text>
-                <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
-              </View>
-              <Text style={styles.itemPrice}>₹{item.sale_price}</Text>
-            </View>
-          ))}
+  return (
+    <View key={index} style={styles.itemRow}>
+      <TouchableOpacity onPress={() => handleProductPress(item)}>
+        <Image
+          source={
+            typeof item.image === "string"
+              ? { uri: item.image }
+              : item.image
+          }
+          style={styles.itemImage}
+        />
+      </TouchableOpacity>
+
+      <View style={styles.itemDetails}>
+        <TouchableOpacity onPress={() => handleProductPress(item)}>
+          <Text style={styles.itemName} numberOfLines={1}>
+            {item.name}
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.itemCategory}>{item.category}</Text>
+
+        {/* SINGLE PRICE */}
+        <Text style={styles.itemSinglePrice}>
+          ₹{unitPrice} / item
+        </Text>
+
+        {/* QUANTITY */}
+        <Text style={styles.itemQuantity}>
+          Qty: {qty}
+        </Text>
+      </View>
+
+      {/* TOTAL PRICE */}
+      <Text style={styles.itemPrice}>
+        ₹{totalPrice}
+      </Text>
+    </View>
+  );
+})}
+
 
           <Text style={styles.priceDetailsHeading}>Price Details</Text>
 

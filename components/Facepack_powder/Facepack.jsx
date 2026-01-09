@@ -14,10 +14,12 @@ import {
 
 const { width, height } = Dimensions.get('window');
 import { useNavigation } from '@react-navigation/native';
+import Constants from 'expo-constants';
 
 // Simple Marquee Component (top placement)
 const TopMarquee = () => {
   const translateX = useRef(new Animated.Value(0)).current;
+
 
   useEffect(() => {
     const animate = () => {
@@ -49,6 +51,7 @@ const Facepack = ({ navigation }) => {
   
   // Fallback gradient background
   const fallbackGradient = ['#FFF9F0', '#FEF7E6'];
+    const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
   
 
   return (
@@ -57,7 +60,9 @@ const Facepack = ({ navigation }) => {
       <View style={styles.backgroundContainer}>
         {!imageError ? (
           <ImageBackground
-            source={require('../../assets/Facepack.webp')}
+         source={{
+  uri: `${PRODUCTS_API}/images/Facepack.webp`,
+}}
             style={styles.backgroundImage}
             resizeMode="cover"
             onError={() => setImageError(true)}

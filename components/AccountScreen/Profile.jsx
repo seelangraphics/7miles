@@ -369,24 +369,7 @@ export const Profile = ({ navigation }) => {
     );
   };
 
-  const handleForgotPassword = async () => {
-    try {
-      await sendPasswordResetEmail(auth, userInfo.email);
-      Toast.show({
-        type: "success",
-        text1: "Password reset email sent",
-        text2: "Check your email inbox",
-        position: "bottom",
-      });
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Failed to send reset email",
-        text2: error.message,
-        position: "bottom",
-      });
-    }
-  };
+
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -714,7 +697,7 @@ export const Profile = ({ navigation }) => {
                 <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => handleEdit("email", userInfo.email)}
               >
@@ -728,7 +711,7 @@ export const Profile = ({ navigation }) => {
                   </View>
                 </View>
                 <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <TouchableOpacity
                 style={styles.menuItem}

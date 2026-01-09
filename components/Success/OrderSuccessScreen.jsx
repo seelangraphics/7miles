@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Share,
   Alert,
   Image,
+  BackHandler
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -15,18 +16,35 @@ const OrderSuccessScreen = ({ navigation, route }) => {
   const { order } = route.params || {};
   const orderId = order?.orderId || `ORD${Date.now()}`;
 
+  // Handle hardware back button
+  useEffect(() => {
+    const backAction = () => {
+      // Navigate to Cart screen instead of going back
+      navigation.navigate("MainTabs");
+      return true; // Prevent default back behavior
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    // Cleanup the event listener
+    return () => backHandler.remove();
+  }, [navigation]);
+
   const handleProductPress = (item) => {
     // Prepare product object with all required fields
     const productDetails = {
       id: item.id || item.name,
       name: item.name,
       image: item.image,
-      quantity:item.quantity,
+      quantity: item.quantity,
       sale_price: item.sale_price || item.price,
       regular_price: item.regular_price || item.sale_price || item.price,
       category: item.category || "Hair Care",
       brand: item.brand || item.Brand || "Unknown Brand",
-      benefits: item.benefits|| item.Benefits || "Unknown Brand",
+      benefits: item.benefits || item.Benefits || "Unknown Brand",
       description: item?.detailed_description,
       hair_type: item.hair_type || item.hairType || "",
       save: item.save || Math.round(((item.regular_price || item.sale_price || item.price) - (item.sale_price || item.price)) || 0)
@@ -34,6 +52,21 @@ const OrderSuccessScreen = ({ navigation, route }) => {
     
     navigation.navigate("ProductDetails", { product: productDetails });
   };
+
+  // If you also want a header back button to go to Cart
+  // You can add this in your navigation options
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity 
+          onPress={() => navigation.navigate("Cart")}
+          style={{ marginLeft: 15 }}
+        >
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -67,7 +100,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
 
           <View style={styles.orderConfirmationCard}>
             <View style={styles.confirmationRow}>
-              {/* <Ionicons name="checkmark-circle" size={22} color="#10B981" /> */}
               <Text style={styles.confirmationText}>
                 Your order has been confirmed
               </Text>
@@ -111,7 +143,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
           ))}
 
           <View style={styles.bottomRow}>
-      
             <Text style={styles.totalText}>
               Total: ₹{order?.priceDetails?.total}
             </Text>
@@ -121,14 +152,10 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* DELIVERY ADDRESS CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            {/* <Ionicons name="location" size={18} color="#e7272b" /> */}
             <Text style={styles.cardTitle}>Delivery Address</Text>
           </View>
 
           <View style={styles.addressCard}>
-            {/* <View style={styles.addressIcon}>
-              <Ionicons name="home" size={20} color="#e7272b" />
-            </View> */}
             <View style={styles.addressDetails}>
               <Text style={styles.addressName}>
                 {order?.address?.name || "John Doe"}
@@ -144,7 +171,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
                 {order?.address?.pincode || "400001"}
               </Text>
               <View style={styles.phoneRow}>
-                {/* <Ionicons name="call" size={14} color="#6B7280" /> */}
                 <Text style={styles.addressPhone}>
                   {order?.address?.phone || "+91 96777 64778"}
                 </Text>
@@ -156,7 +182,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* PAYMENT METHOD CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            {/* <Ionicons name="card" size={18} color="#e7272b" /> */}
             <Text style={styles.cardTitle}>Payment Method</Text>
           </View>
 
@@ -174,7 +199,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         {/* PRICE DETAILS CARD */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            {/* <Ionicons name="receipt" size={18} color="#e7272b" /> */}
             <Text style={styles.cardTitle}>Order Summary</Text>
           </View>
 
@@ -186,21 +210,11 @@ const OrderSuccessScreen = ({ navigation, route }) => {
               </Text>
             </View>
 
-            {/* <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Shipping</Text>
-              <Text style={styles.priceValue}>
-                {order?.priceDetails?.shipping === 0
-                  ? "Free"
-                  : `₹${order?.priceDetails?.shipping || "0"}`}
-              </Text>
-            </View> */}
-
             <View style={styles.divider} />
 
             <View style={[styles.priceRow, styles.totalRow]}>
               <View>
                 <Text style={styles.totalLabel}>Total Amount</Text>
-                {/* <Text style={styles.taxNote}>Inclusive of all taxes</Text> */}
               </View>
               <Text style={styles.totalAmount}>
                 ₹{order?.priceDetails?.total || "0"}
@@ -208,29 +222,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
-
-        {/* TRACKING CARD */}
-        {/* <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Ionicons name="cube" size={18} color="#e7272b" />
-            <Text style={styles.cardTitle}>Track Your Order</Text>
-          </View>
-          <View style={styles.trackingCard}>
-            <View style={styles.trackingIcon}>
-              <Ionicons name="cube-outline" size={24} color="#e7272b" />
-            </View>
-            <View style={styles.trackingContent}>
-              <Text style={styles.trackingTitle}>Order Packed</Text>
-              <Text style={styles.trackingDate}>Estimated: 2-3 days</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.trackButton}
-              onPress={() => navigation.navigate("YourOrder")}
-            >
-              <Text style={styles.trackButtonText}>Track Order</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </ScrollView>
 
       {/* FOOTER */}
@@ -239,7 +230,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
           style={styles.continueBtn}
           onPress={() => navigation.navigate("MainTabs")}
         >
-          {/* <Ionicons name="cart" size={20} color="#fff" style={styles.btnIcon} /> */}
           <Text style={styles.continueBtnText}>Continue Shopping</Text>
           <Ionicons name="arrow-forward" size={20} color="#fff" />
         </TouchableOpacity>
@@ -247,7 +237,6 @@ const OrderSuccessScreen = ({ navigation, route }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

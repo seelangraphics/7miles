@@ -13,3 +13,7 @@ Delivery Address
 Payment page
 
 1--- command shipping amount
+
+Account Page in profile page
+
+1 --- command email change  code line - 700

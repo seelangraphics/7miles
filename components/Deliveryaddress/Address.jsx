@@ -664,43 +664,56 @@ const handleProductPress = (item) => {
           </View>
 
           {/* Order Items Section - Your existing code remains unchanged */}
-          {cartItems.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Order Items ({cartItems.length})
-              </Text>
-              {cartItems.map((item, index) => (
-                <View key={index} style={styles.itemCard}>
-                  <TouchableOpacity     onPress={() => handleProductPress(item)}>
-                     <View style={styles.itemImageContainer}>
-                    <Image
-                      source={
-                        typeof item.image === "string"
-                          ? { uri: item.image }
-                          : item.image
-                      }
-                      style={styles.itemImage}
-                    />
-                  </View>
-                   </TouchableOpacity>
-                 
-                  <View style={styles.itemDetails}>
-                    <TouchableOpacity     onPress={() => handleProductPress(item)}>
-                       <Text style={styles.itemName} numberOfLines={2}>
-                      {item.name}
-                    </Text>
-                    </TouchableOpacity>
-                   
-                    <Text style={styles.itemCategory}>{item.category}</Text>
-                    <Text style={styles.itemPrice}>₹{item.quantity}</Text>
-                  </View>
-                  <Text style={styles.itemTotal}>
-                  ₹{item.sale_price}
-                  </Text>
-                </View>
-              ))}
+     {cartItems.length > 0 && (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>
+      Order Items ({cartItems.length})
+    </Text>
+
+    {cartItems.map((item, index) => {
+      const itemTotal = item.cartQty * item.sale_price;
+
+      return (
+        <View key={index} style={styles.itemCard}>
+          <TouchableOpacity onPress={() => handleProductPress(item)}>
+            <View style={styles.itemImageContainer}>
+              <Image
+                source={
+                  typeof item.image === "string"
+                    ? { uri: item.image }
+                    : item.image
+                }
+                style={styles.itemImage}
+              />
             </View>
-          )}
+          </TouchableOpacity>
+
+          <View style={styles.itemDetails}>
+            <TouchableOpacity onPress={() => handleProductPress(item)}>
+              <Text style={styles.itemName} numberOfLines={2}>
+                {item.name}
+              </Text>
+
+              <Text style={styles.qtyText}>
+                Qty: {item.cartQty}
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={styles.itemCategory}>{item.category}</Text>
+            <Text style={styles.itemPrice}>
+              ₹{item.sale_price} 
+            </Text>
+          </View>
+
+          <Text style={styles.itemTotal}>
+            ₹{itemTotal}
+          </Text>
+        </View>
+      );
+    })}
+  </View>
+)}
+
 
           {/* Price Details Section - Your existing code remains unchanged */}
           <View style={styles.section}>
