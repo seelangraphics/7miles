@@ -1,0 +1,15 @@
+{
+  "name": "7miles-payments-lambda",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Razorpay order + validation service for 7miles",
+  "main": "index.mjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.12",
+    "razorpay": "^2.9.4"
+  }
+}

@@ -86,6 +86,7 @@ export default {
     extra: {
       PRODUCTS_API: process.env.PRODUCTS_API,
       RAZORPAY_API_KEY: process.env.RAZORPAY_API_KEY,
+      PAYMENT_API_KEY: process.env.PAYMENT_API_KEY,
       eas: {
         projectId: "008623e8-d0fd-49f1-9b00-a311259299e8",
       },

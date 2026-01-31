@@ -205,48 +205,134 @@ useEffect(() => {
     }
   };
 
-  const sendOrderPlacedEmail = async (order) => {
-    try {
-      const payload = {
-        storeType: "7miles",
-        to: order.userEmail,
-        username: order.userName,
-        subject: `Order Placed Successfully #${order.orderId}`,
+  // const sendOrderPlacedEmail = async (order) => {
+  //   try {
+  //     const payload = {
+  //       storeType: "7miles",
+  //       to: order.userEmail,
+  //       username: order.userName,
+  //       subject: `Order Placed Successfully #${order.orderId}`,
 
-        message: `
-        <div style="font-family:Arial;">
-          <h2>Your order is confirmed!</h2>
-          <p>Hello ${order.userName},</p>
-          <p>Thanks for shopping with <strong>7miles</strong>.</p>
+  //       message: `
+  //       <div style="font-family:Arial;">
+  //         <h2>Your order is confirmed!</h2>
+  //         <p>Hello ${order.userName},</p>
+  //         <p>Thanks for shopping with <strong>7miles</strong>.</p>
 
-          <p>Your order <strong>#${
-            order.orderId
-          }</strong> has been successfully placed.</p>
+  //         <p>Your order <strong>#${
+  //           order.orderId
+  //         }</strong> has been successfully placed.</p>
 
-          <p><strong>Payment Method:</strong> ${order.payment.method.toUpperCase()}</p>
-          <p><strong>Total:</strong> ₹${order.priceDetails.total}</p>
+  //         <p><strong>Payment Method:</strong> ${order.payment.method.toUpperCase()}</p>
+  //         <p><strong>Total:</strong> ₹${order.priceDetails.total}</p>
           
-          <br/>
-          <p>Team 7miles</p>
+  //         <br/>
+  //         <p>Team 7miles</p>
+  //       </div>
+  //     `,
+
+  //       orderid: order.orderId,
+  //     };
+
+  //     console.log("Payload", JSON.stringify(payload, null, 2));
+  //     await axios.post(MAIL_ENDPOINT, payload, {
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+
+  //     console.log("Order placed email sent!");
+  //     return true;
+  //   } catch (e) {
+  //     console.log("Email error → ", e);
+  //     return false;
+  //   }
+  // };
+const sendOrderPlacedEmail = async (order) => {
+  try {
+    const itemsHtml = order.items.map(item => `
+      <tr>
+        <td style="padding:8px 0;">${item.name}</td>
+        <td style="padding:8px 0; text-align:center;">${item.quantity}</td>
+        <td style="padding:8px 0; text-align:right;">₹${item.price}</td>
+      </tr>
+    `).join("");
+
+    const address = order.address;
+
+    const payload = {
+      storeType: "7miles",
+      to: order.userEmail,
+      username: order.userName,
+      subject: `Order Confirmed – #${order.orderId}`,
+      message: `
+      <div style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:20px;">
+        <div style="max-width:600px;margin:auto;background:#ffffff;border-radius:8px;overflow:hidden;">
+          
+          <!-- Header -->
+          <div style="background:#000;padding:20px;text-align:center;">
+            <h1 style="color:#fff;margin:0;font-size:22px;">7Miles Order Confirmation</h1>
+          </div>
+
+          <!-- Body -->
+          <div style="padding:20px;color:#333;">
+            <p style="font-size:16px;">Hello <strong>${order.userName}</strong>,</p>
+            <p>Thank you for shopping with <strong>7Miles</strong>. Your order has been successfully placed.</p>
+
+            <p><strong>Order ID:</strong> ${order.orderId}<br/>
+            <strong>Payment Method:</strong> ${order.payment.method.toUpperCase()}</p>
+
+            <!-- Items Table -->
+            <h3 style="border-bottom:1px solid #eee;padding-bottom:8px;">Order Summary</h3>
+            <table width="100%" style="border-collapse:collapse;font-size:14px;">
+              <thead>
+                <tr style="border-bottom:1px solid #ddd;text-align:left;">
+                  <th>Product</th>
+                  <th style="text-align:center;">Qty</th>
+                  <th style="text-align:right;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <!-- Price -->
+            <p style="text-align:right;font-size:16px;margin-top:15px;">
+              <strong>Total: ₹${order.priceDetails.total}</strong>
+            </p>
+
+            <!-- Delivery Address -->
+            <h3 style="border-bottom:1px solid #eee;padding-bottom:8px;">Delivery Address</h3>
+            <p style="line-height:1.6;">
+              ${address.name}<br/>
+              ${address.address}${address.address2 ? ", " + address.address2 : ""}<br/>
+              ${address.city}, ${address.state} - ${address.pincode}<br/>
+              Phone: ${address.phone}
+            </p>
+
+            <p style="margin-top:20px;">We’ll notify you once your order is shipped.</p>
+            <p>— Team 7Miles</p>
+          </div>
+
+          <!-- Footer -->
+          <div style="background:#fafafa;padding:12px;text-align:center;font-size:12px;color:#777;">
+            © ${new Date().getFullYear()} 7Miles. All rights reserved.
+          </div>
         </div>
+      </div>
       `,
+      orderid: order.orderId,
+    };
 
-        orderid: order.orderId,
-      };
+    await axios.post(MAIL_ENDPOINT, payload, {
+      headers: { "Content-Type": "application/json" },
+    });
 
-      console.log("Payload", JSON.stringify(payload, null, 2));
-      await axios.post(MAIL_ENDPOINT, payload, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      console.log("Order placed email sent!");
-      return true;
-    } catch (e) {
-      console.log("Email error → ", e);
-      return false;
-    }
-  };
-
+    return true;
+  } catch (e) {
+    console.log("Email error → ", e);
+    return false;
+  }
+};
   const paymenthandler = async () => {
     try {
       setIsLoading(true);
