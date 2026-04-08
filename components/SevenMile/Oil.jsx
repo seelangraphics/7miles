@@ -30,7 +30,7 @@ export const Oil = () => {
             try {
                 // Add cache busting to prevent caching
                 const timestamp = new Date().getTime();
-                const apiUrl = `${PRODUCTS_API}?t=${timestamp}`;
+                const apiUrl = `${`${PRODUCTS_API}?nocache=${Date.now()}`}?t=${timestamp}`;
                 
                 const response = await fetch(apiUrl, {
                     method: 'GET',

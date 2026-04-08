@@ -25,7 +25,7 @@ const Herbalfacepack = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(PRODUCTS_API);
+        const res = await fetch(`${PRODUCTS_API}?nocache=${Date.now()}`);
         const data = await res.json();
         setProducts(data);
       } catch (err) {

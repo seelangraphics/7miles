@@ -47,7 +47,7 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(PRODUCTS_API);
+            const response = await fetch(`${PRODUCTS_API}?nocache=${Date.now()}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

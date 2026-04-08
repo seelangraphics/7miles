@@ -61,7 +61,7 @@ const Facepack = ({ navigation }) => {
         {!imageError ? (
           <ImageBackground
          source={{
-  uri: `${PRODUCTS_API}/images/Facepack.webp`,
+  uri: `${`${PRODUCTS_API}?nocache=${Date.now()}`}/images/Facepack.webp`,
 }}
             style={styles.backgroundImage}
             resizeMode="cover"

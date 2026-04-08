@@ -35,7 +35,7 @@ export const GoldenDrop = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(PRODUCTS_API);
+      const response = await fetch(`${PRODUCTS_API}?nocache=${Date.now()}`);
       const data = await response.json();
       
       const products = Array.isArray(data) ? data : (data.products || []);

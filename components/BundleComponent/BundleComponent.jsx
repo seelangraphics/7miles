@@ -30,7 +30,7 @@ const BundleComponent = () => {
     const fetchBundleProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(PRODUCTS_API);
+        const response = await fetch(`${PRODUCTS_API}?nocache=${Date.now()}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

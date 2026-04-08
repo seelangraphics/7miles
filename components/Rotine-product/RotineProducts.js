@@ -41,7 +41,7 @@ const Routineproduct = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(PRODUCTS_API);
+        const response = await fetch(`${PRODUCTS_API}?nocache=${Date.now()}`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
