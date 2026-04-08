@@ -33,6 +33,43 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840452424160:android:f2d2ac613340dd1e0d6b85",
+        "android_client_info": {
+          "package_name": "com.sgc.sevenmilesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840452424160-ss3md39fl5651f0p830d2so4p1kr21mn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgc.sevenmilesapp",
+            "certificate_hash": "14df43dd1c4dcfb3cdc9a8ebd1f343acf7a276db"
+          }
+        },
+        {
+          "client_id": "840452424160-367te1oj22houbfdrl5bvu95f6k27sb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2xEqkbmBexMb6bCmg86c4MEQhpsARnOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840452424160-367te1oj22houbfdrl5bvu95f6k27sb6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
