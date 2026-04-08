@@ -18,7 +18,7 @@ import SearchModal from './Search/SearchModal';
 import CartButton from './Search/CartButton';
 
 // Get the URLs from environment variables
-const LOGO_URL = Constants.expoConfig.extra?.LOGO_URL || "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png";
+const LOGO_URL = Constants.expoConfig.extra?.LOGO_URL || "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png";
 const PRODUCTS_API = Constants.expoConfig.extra.PRODUCTS_API;
 
 const TopNavigation = ({ onCategoryPress, onCartPress }) => {

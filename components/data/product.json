@@ -6,7 +6,7 @@
         "regular_price": 395,
         "save": 75,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h1.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h1.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/ANTI-DANDRUFF-SHAMPOO-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/ANTI-DANDRUFF-SHAMPOO-02.webp"
@@ -44,7 +44,7 @@
         "regular_price": 410,
         "save": 90,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h2.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h2.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/ANTI-HAIRFALL-SHAMPOO-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/ANTI-HAIRFALL-SHAMPOO-02.webp"
@@ -82,7 +82,7 @@
         "regular_price": 385,
         "save": 85,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h3.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h3.webp",
         "Trending": "yes",
         "quantity": "100gm",
         "benefits": [
@@ -119,7 +119,7 @@
         "regular_price": 390,
         "save": 90,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h4.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h4.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/ONION-HAIR-MASK-01.webp"
         ],
@@ -158,7 +158,7 @@
         "oil": "yes",
         "save": 29,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h5.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h5.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/SWEET-ALMOND-OIL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/SWEET-ALMOND-OIL-02.webp"
@@ -206,7 +206,7 @@
         "save": 50,
         "oil": "yes",
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h6.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h6.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/BLACK-SEED-OIL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/BLACK-SEED-OIL-02.webp"
@@ -254,7 +254,7 @@
         "save": 57,
         "category": "Hair Care",
         "ediblefoods": "yes",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h7.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h7.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/GINGELLY-OIL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/GINGELLY-OIL-02.webp"
@@ -304,7 +304,7 @@
         "oil": "yes",
         "save": 50,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h8.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h8.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/COCONUT-OIL-01.webp"
         ],
@@ -354,7 +354,7 @@
         "save": 50,
         "oil": "yes",
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h9.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h9.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/castor_oil-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/CASTOR-OIL-02.webp"
@@ -403,7 +403,7 @@
         "regular_price": 325,
         "save": 45,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h10.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h10.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/SHIKAKAI-POWDER-01.webp"
         ],
@@ -447,7 +447,7 @@
         "regular_price": 160,
         "save": 60,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h11.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h11.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/henna_powder-01.webp"
         ],
@@ -492,7 +492,7 @@
         "ediblefoods": "yes",
         "save": 32,
         "category": "Hair Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h12.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h12.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/AMLA-POWDER-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/AMLA-POWDER-02.webp"
@@ -540,7 +540,7 @@
         "save": 30,
         "oil": "yes",
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s1.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s1.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ROSE-WATER-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ROSE-WATER-02.webp"
@@ -586,7 +586,7 @@
         "regular_price": 220,
         "save": 30,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s16.avif",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s16.avif",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ROSE-POWDER-01.webp"
         ],
@@ -630,7 +630,7 @@
         "regular_price": 220,
         "save": 60,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s2.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s2.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-02.webp"
@@ -673,7 +673,7 @@
         "regular_price": 150,
         "save": 40,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s3.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s3.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/CHARCOAL-SOAP-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/CHARCOAL-SOAP-02.webp"
@@ -717,7 +717,7 @@
         "regular_price": 310,
         "save": 60,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s4.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s4.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ORANGE GEL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ORANGE GEL-02.webp",
@@ -763,7 +763,7 @@
         "regular_price": 175,
         "save": 55,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s5.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s5.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ANTI-PIGMENTATAION-CREAM-01.webp"
         ],
@@ -806,7 +806,7 @@
         "regular_price": 210,
         "save": 100,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s6.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s6.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/COTTONSEED-MILK-MIX-01.webp"
         ],
@@ -848,7 +848,7 @@
         "regular_price": 230,
         "save": 80,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s7.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s7.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ANTI-AGING-CREAM-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ANTI-AGING-CREAM-02.webp"
@@ -896,7 +896,7 @@
         "regular_price": 300,
         "save": 70,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s8.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SALICYLIC-FACEWASH-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/SALICYLIC-FACEWASH-02.webp"
@@ -940,7 +940,7 @@
         "regular_price": 120,
         "save": 50,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s9.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s9.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/TURMERIC-POWDER-01.webp"
         ],
@@ -981,7 +981,7 @@
         "regular_price": 175,
         "save": 15,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s10.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s10.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ALOEVERA-GEL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ALOEVERA-GEL-02.webp"
@@ -1020,7 +1020,7 @@
         "regular_price": 210,
         "save": 60,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s11.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s11.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ROSE-POWDER-01.webp"
         ],
@@ -1068,7 +1068,7 @@
         "detailed_description": "Our Kumkumathi routine is a luxurious, 100% natural handmade soap enriched with Kumkumathi oil, saffron, sandalwood, and traditional Ayurvedic herbs. It gently cleanses while nourishing the skin, improving complexion, reducing blemishes, and restoring a youthful glow. Ideal for daily use on face and body.",
         "save": 40,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s12.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-02.webp"
@@ -1093,7 +1093,7 @@
         "regular_price": 150,
         "save": 40,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s13.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s13.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-SOAP-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-SOAP-02.webp",
@@ -1146,7 +1146,7 @@
         "regular_price": 115,
         "save": 35,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s14.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s14.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KASTURI-MANJAL-01.webp"
         ],
@@ -1192,7 +1192,7 @@
         "regular_price": 175,
         "save": 75,
         "category": "Skin Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s15.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"
         ],
@@ -1238,7 +1238,7 @@
         "regular_price": 410,
         "save": 25,
         "category": "Body Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b1.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b1.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/HERBAL-BODY-WASH-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/HERBAL-BODY-WASH-02.webp"
@@ -1279,7 +1279,7 @@
         "regular_price": 510,
         "save": 100,
         "category": "Body Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b2.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b2.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/SHEABUTTER-BODY-WASH-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/SHEABUTTER-BODY-WASH-02.webp"
@@ -1320,7 +1320,7 @@
         "oil": "yes",
         "save": 15,
         "category": "Body Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b3.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b3.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ALOEVERA-GEL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ALOEVERA-GEL-02.webp"
@@ -1363,7 +1363,7 @@
         "regular_price": 130,
         "save": 50,
         "category": "Body Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b4.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b4.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/FLAX-SEED-01.webp"
         ],
@@ -1403,7 +1403,7 @@
         "regular_price": 175,
         "save": 75,
         "category": "Body Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b5.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b5.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/AVARAMPOO-POWDER-01.webp"
         ],
@@ -1443,7 +1443,7 @@
         "regular_price": 150,
         "save": 40,
         "category": "Body Care",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b6.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b6.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Body/ROSE-ALOVERA-SOAP-01.webp"
         ],
@@ -1480,7 +1480,7 @@
         "oil": "yes",
         "save": 50,
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w1.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GROUNDNUT-OIL-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GROUNDNUT-OIL-02.webp"
@@ -1518,7 +1518,7 @@
         "regular_price": 180,
         "save": 60,
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w2.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w2.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/ROSE-GULKAND-02.webp"
@@ -1557,7 +1557,7 @@
         "ediblefoods": "yes",
         "save": 60,
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w3.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w3.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/JAGGERY-01.webp"
         ],
@@ -1596,7 +1596,7 @@
         "ediblefoods": "yes",
         "save": 80,
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w4.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w4.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/HONEY-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/HONEY-02.webp"
@@ -1637,7 +1637,7 @@
         "ediblefoods": "yes",
         "save": 95,
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w5.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w5.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GHEE-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/GHEE-02.webp"
@@ -1677,7 +1677,7 @@
         "regular_price": 180,
         "save": 80,
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w6.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w6.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-CANDY-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-CANDY-02.webp"
@@ -1720,7 +1720,7 @@
         "save": 75,
         "ediblefoods": "yes",
         "category": "Wellness & Edibles",
-        "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w7.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w7.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-MOUTH-FRESHNER-01.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-MOUTH-FRESHNER-02.webp"

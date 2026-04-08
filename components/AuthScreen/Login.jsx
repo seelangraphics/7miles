@@ -259,7 +259,7 @@ const AuthScreen = () => {
                   <View style={styles.iconContainer}>
                     <View style={styles.logoBackground}>
                       <Image
-                        source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png" }}
+                        source={{ uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png" }}
                         style={styles.logoImage}
                         resizeMode="contain"
                       />

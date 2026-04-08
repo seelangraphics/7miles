@@ -17,10 +17,10 @@ const PromoBanner = () => {
 
   // Using remote images from AWS S3
   const bannerImages = [
-    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb1.jpg" },
-    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb2.jpg" },
-    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb1.jpg" },
-    { uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/bb2.jpg" },
+    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb1.jpg" },
+    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb2.jpg" },
+    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb1.jpg" },
+    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb2.jpg" },
   ];
 
 

@@ -8,7 +8,7 @@ export const products = [
         save: 75,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h1.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h1.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/ANTI-DANDRUFF-SHAMPOO-01.webp"),
@@ -49,7 +49,7 @@ export const products = [
         save: 90,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h2.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h2.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/ANTI-HAIRFALL-SHAMPOO-01.webp"),
@@ -90,7 +90,7 @@ export const products = [
         save: 85,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h3.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h3.webp"
         },
         Trending: "yes",
         quantity: "100gm",
@@ -130,7 +130,7 @@ export const products = [
         save: 90,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h4.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h4.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/ONION-HAIR-MASK-01.webp"),
@@ -172,7 +172,7 @@ export const products = [
         save: 29,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h5.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h5.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/SWEET-ALMOND-OIL-01.webp"),
@@ -222,7 +222,7 @@ export const products = [
         save: 50,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h6.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h6.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/BLACK-SEED-OIL-01.webp"),
@@ -272,7 +272,7 @@ export const products = [
         save: 57,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h7.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h7.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/GINGELLY-OIL-01.webp"),
@@ -324,7 +324,7 @@ export const products = [
         save: 50,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h8.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h8.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/COCONUT-OIL-01.webp"),
@@ -377,7 +377,7 @@ export const products = [
         save: 50,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h9.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h9.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/castor_oil-01.webp"),
@@ -429,7 +429,7 @@ export const products = [
         save: 45,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h10.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h10.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/SHIKAKAI-POWDER-01.webp"),
@@ -477,7 +477,7 @@ export const products = [
         save: 60,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h11.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h11.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/henna_powder-01.webp"),
@@ -525,7 +525,7 @@ export const products = [
         save: 32,
         category: "Hair Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/hair/h12.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h12.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Hair/AMLA-POWDER-01.webp"),
@@ -576,7 +576,7 @@ export const products = [
         save: 30,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s1.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s1.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ROSE-WATER-01.webp"),
@@ -625,7 +625,7 @@ export const products = [
         save: 30,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s16.avif"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s16.avif"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ROSE-POWDER-01.webp"),
@@ -673,7 +673,7 @@ export const products = [
         save: 60,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s2.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s2.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/SKIN-BRIGHTENING-SOAP-01.webp"),
@@ -719,7 +719,7 @@ export const products = [
         save: 40,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s3.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s3.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/CHARCOAL-SOAP-01.webp"),
@@ -766,7 +766,7 @@ export const products = [
         save: 60,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s4.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s4.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ORANGE-GEL-01.webp"),
@@ -815,7 +815,7 @@ export const products = [
         save: 55,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s5.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s5.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ANTI-PIGMENTATAION-CREAM-01.webp"),
@@ -861,7 +861,7 @@ export const products = [
         save: 100,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s6.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s6.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/COTTONSEED-MILK-MIX-01.webp"),
@@ -907,7 +907,7 @@ export const products = [
         save: 80,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s7.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s7.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ANTI-AGING-CREAM-01.webp"),
@@ -958,7 +958,7 @@ export const products = [
         save: 70,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s8.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s8.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/SALICYLIC-FACEWASH-01.webp"),
@@ -1005,7 +1005,7 @@ export const products = [
         save: 50,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s9.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s9.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/TURMERIC-POWDER-01.webp"),
@@ -1049,7 +1049,7 @@ export const products = [
         save: 15,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s10.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s10.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ALOEVERA-GEL-01.webp"),
@@ -1091,7 +1091,7 @@ export const products = [
         save: 60,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s11.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s11.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ROSE-POWDER-01.webp"),
@@ -1141,7 +1141,7 @@ export const products = [
         save: 40,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s12.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s12.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-01.webp"),
@@ -1162,7 +1162,7 @@ export const products = [
         save: 40,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s13.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s13.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/KUMKUMATHI-SOAP-01.webp"),
@@ -1218,7 +1218,7 @@ export const products = [
         save: 35,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s14.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s14.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/KASTURI-MANJAL-01.webp"),
@@ -1268,7 +1268,7 @@ export const products = [
         save: 75,
         category: "Skin Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/skin/s15.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s15.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"),
@@ -1319,7 +1319,7 @@ export const products = [
         save: 25,
         category: "Body Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b1.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b1.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/HERBAL-BODY-WASH-01.webp"),
@@ -1363,7 +1363,7 @@ export const products = [
         save: 100,
         category: "Body Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b2.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b2.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/SHEABUTTER-BODY-WASH-01.webp"),
@@ -1406,7 +1406,7 @@ export const products = [
         save: 15,
         category: "Body Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b3.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b3.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Skin/ALOEVERA-GEL-01.webp"),
@@ -1452,7 +1452,7 @@ export const products = [
         save: 50,
         category: "Body Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b4.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b4.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/FLAX-SEED-01.webp"),
@@ -1495,7 +1495,7 @@ export const products = [
         save: 75,
         category: "Body Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b5.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b5.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/AVARAMPOO-POWDER-01.webp"),
@@ -1541,7 +1541,7 @@ export const products = [
         save: 40,
         category: "Body Care",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/body/b6.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b6.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Body/ROSE-ALOVERA-SOAP-01.webp"),
@@ -1582,7 +1582,7 @@ export const products = [
         save: 50,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w1.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w1.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/GROUNDNUT-OIL-01.webp"),
@@ -1622,7 +1622,7 @@ export const products = [
         save: 60,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w2.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w2.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp"),
@@ -1663,7 +1663,7 @@ export const products = [
         save: 60,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w3.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w3.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/JAGGERY-01.webp"),
@@ -1705,7 +1705,7 @@ export const products = [
         save: 80,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w4.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w4.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/HONEY-01.webp"),
@@ -1748,7 +1748,7 @@ export const products = [
         save: 95,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w5.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w5.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/GHEE-01.webp"),
@@ -1791,7 +1791,7 @@ export const products = [
         save: 80,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w6.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w6.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/AMLA-CANDY-01.webp"),
@@ -1835,7 +1835,7 @@ export const products = [
         save: 75,
         category: "Wellness & Edibles",
         image: {
-            uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w7.webp"
+            uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w7.webp"
         },
         sub_images: [
             require("../../assets/ProductDetails/Wellness/AMLA-MOUTH-FRESHNER-01.webp"),

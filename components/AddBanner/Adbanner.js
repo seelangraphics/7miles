@@ -16,7 +16,7 @@ const product = {
   "regular_price": 180,
   "save": 60,
   "category": "Wellness & Edibles",
-  "image": "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/Wellnes/w2.webp",
+  "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w2.webp",
   "sub_images": [
     "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp",
     "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/ROSE-GULKAND-02.webp"
@@ -96,7 +96,7 @@ const Adbanner = () => {
       <View style={styles.videoContainer}>
         <Video
           ref={videoRef}
-          source={{ uri: "https://s3.eu-north-1.amazonaws.com/www.seelangraphics.com/projects/sevenMiles/assets/banners/b.mp4" }}
+          source={{ uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/b.mp4" }}
           style={styles.video}
           resizeMode="cover"
           shouldPlay
