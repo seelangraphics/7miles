@@ -7,11 +7,11 @@ export default {
     "scheme": ["sevenmiles"],
     version: "2.0.0",
     orientation: "portrait",
-    icon: "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png",
+    icon: "./assets/7miles_app_white_icon.png",
     userInterfaceStyle: "light",
 
     splash: {
-      image: "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png",
+      image: "./assets/7miles_app_white_icon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff",
     },
@@ -31,9 +31,9 @@ export default {
       googleServicesFile: "./google-services.json",
       adaptiveIcon: {
         foregroundImage:
-          "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png",
+          "./assets/7miles_app_white_icon.png",
         backgroundImage:
-          "./assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png",
+          "./assets/7miles_app_white_icon.png",
       },
     },
 
