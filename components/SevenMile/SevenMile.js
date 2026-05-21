@@ -13,9 +13,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 // Import your images (make sure paths are correct)
-const img1 = require("../../assets/skin/s3.webp");
-const img2 = require("../../assets/Wellnes/w3.webp");
-const img3 = require("../../assets/body/b3.webp");
+const img1 = require("../../assets/Edible/e2.webp");
+const img2 = require("../../assets/Edible/e3.webp");
+const img3 = require("../../assets/Edible/e1.webp");
 
 const { width } = Dimensions.get('window');
 

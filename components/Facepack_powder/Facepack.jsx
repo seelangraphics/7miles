@@ -128,7 +128,7 @@ const Content = () => {
           <View style={styles.productImageContainer}>
             <View style={styles.imageFrame}>
               <Image
-                source={require('../../assets/Facepack.webp')}
+                source={{ uri: 'https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Facepack.webp' }}
                 style={styles.productImage}
                 resizeMode="contain"
               />

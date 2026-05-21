@@ -24,10 +24,10 @@ import Adbanner from "../AddBanner/Adbanner";
 import FAQSection from "../Faq/Faq";
 import { useCart } from "../context/CartContext";
 import { Ionicons } from "@expo/vector-icons";
-import img1 from "../../assets/Home-catagories/1069.jpg";
-import img2 from "../../assets/Home-catagories/14317.jpg";
-import img3 from "../../assets/Home-catagories/17384.jpg";
-import img4 from "../../assets/Home-catagories/wellness.png";
+import img1 from "../../assets/Home-catagories/C_4.png";
+import img2 from "../../assets/Home-catagories/C_1.png";
+import img3 from "../../assets/Home-catagories/C_2.png";
+import img4 from "../../assets/Home-catagories/C_3.png";
 
 const { width } = Dimensions.get('window');
 

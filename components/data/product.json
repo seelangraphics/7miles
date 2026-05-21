@@ -447,9 +447,9 @@
         "regular_price": 160,
         "save": 60,
         "category": "Hair Care",
-        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h11.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/henna_powder-01.webp",
         "sub_images": [
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Hair/henna_powder-01.webp"
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/h11.webp"
         ],
         "powder": "yes",
         "hairpack": "yes",
@@ -1192,9 +1192,9 @@
         "regular_price": 175,
         "save": 75,
         "category": "Skin Care",
-        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s15.webp",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp",
         "sub_images": [
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/MULTANI-MITTI-POWDER01.webp"
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s15.webp"
         ],
         "powder": "yes",
         "Facepowder": "yes",
