@@ -51,8 +51,12 @@ const Facepack = ({ navigation }) => {
   
   // Fallback gradient background
   const fallbackGradient = ['#FFF9F0', '#FEF7E6'];
-    const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
-  
+  const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+  const FALLBACK_IMAGE_URI = 'https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Facepack.webp';
+
+  const facepackUri = PRODUCTS_API
+    ? `${PRODUCTS_API}/images/Facepack.webp?nocache=${Date.now()}`
+    : FALLBACK_IMAGE_URI;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -60,9 +64,7 @@ const Facepack = ({ navigation }) => {
       <View style={styles.backgroundContainer}>
         {!imageError ? (
           <ImageBackground
-         source={{
-  uri: `${`${PRODUCTS_API}?nocache=${Date.now()}`}/images/Facepack.webp`,
-}}
+            source={{ uri: facepackUri }}
             style={styles.backgroundImage}
             resizeMode="cover"
             onError={() => setImageError(true)}
@@ -78,13 +80,17 @@ const Facepack = ({ navigation }) => {
       
       {/* Main Content Overlay */}
       <View style={styles.contentContainer}>
-        <Content navigation={navigation} />
+        <Content
+          navigation={navigation}
+          facepackUri={facepackUri}
+          onImageError={() => setImageError(true)}
+        />
       </View>
     </SafeAreaView>
   );
 };
 
-const Content = () => {
+const Content = ({ facepackUri, onImageError }) => {
     const categories = [
       { 
         id: 'skin', 
@@ -128,9 +134,10 @@ const Content = () => {
           <View style={styles.productImageContainer}>
             <View style={styles.imageFrame}>
               <Image
-                source={{ uri: 'https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Facepack.webp' }}
+                source={{ uri: facepackUri }}
                 style={styles.productImage}
                 resizeMode="contain"
+                onError={onImageError}
               />
             </View>
           </View>

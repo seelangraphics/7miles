@@ -7,6 +7,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:840452424160:android:ccf1fedf49bb4a780d6b85",
+        "android_client_info": {
+          "package_name": "com.sgc.sevenmileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840452424160-1qfqh0olee1ktc91fp5vdkn09e206dsh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgc.sevenmileapp",
+            "certificate_hash": "14df43dd1c4dcfb3cdc9a8ebd1f343acf7a276db"
+          }
+        },
+        {
+          "client_id": "840452424160-367te1oj22houbfdrl5bvu95f6k27sb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2xEqkbmBexMb6bCmg86c4MEQhpsARnOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840452424160-367te1oj22houbfdrl5bvu95f6k27sb6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:840452424160:android:b766cec4c3d543380d6b85",
         "android_client_info": {
           "package_name": "com.sgc.sevenmiles"
@@ -74,4 +111,3 @@
   ],
   "configuration_version": "1"
 }
-

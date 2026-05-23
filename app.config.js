@@ -18,7 +18,7 @@ export default {
 
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.sgc.sevenmilesapp",
+      bundleIdentifier: "com.sgc.sevenmileapp",
       googleServicesFile: "./GoogleService-Info.plist",
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
@@ -26,9 +26,21 @@ export default {
     },
 
     android: {
-      package: "com.sgc.sevenmilesapp",
-      versionCode: 4,
+      package: "com.sgc.sevenmileapp",
+      versionCode: 3,
       googleServicesFile: "./google-services.json",
+      blockedPermissions: [
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_MEDIA_IMAGES",
+    "android.permission.READ_MEDIA_VIDEO",
+    "android.permission.READ_MEDIA_AUDIO",
+    "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+    "android.permission.RECORD_AUDIO",
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.MODIFY_AUDIO_SETTINGS",
+    "android.permission.READ_PHONE_STATE"
+  ],
       adaptiveIcon: {
         foregroundImage:
           "./assets/7miles_app_white_icon.png",
@@ -83,4 +95,3 @@ export default {
     },
   },
 };
-
