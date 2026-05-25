@@ -85,6 +85,7 @@ export default {
 
     extra: {
       PRODUCTS_API: process.env.PRODUCTS_API,
+      PRODUCTS_IMAGE_API: process.env.PRODUCTS_IMAGE_API,
       RAZORPAY_API_KEY: process.env.RAZORPAY_API_KEY,
       PAYMENT_API_KEY: process.env.PAYMENT_API_KEY,
       eas: {

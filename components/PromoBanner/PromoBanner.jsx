@@ -1,9 +1,9 @@
 // components/PromoBanner.js
 import React, { useState, useEffect } from "react";
-import img1 from "../../assets/banners/bb1.png"
-import img2 from "../../assets/banners/bb2.png"
-import img3 from "../../assets/banners/bb3.png"
-import img4 from "../../assets/banners/bb4.png"
+import img1 from "../../assets/banners/bb1.webp"
+import img2 from "../../assets/banners/bb2.webp"
+import img3 from "../../assets/banners/bb3.webp"
+import img4 from "../../assets/banners/bb4.webp"
 import {
   View,
   Text,
@@ -13,21 +13,29 @@ import {
   Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import Constants from "expo-constants";
 
 const { width } = Dimensions.get("window");
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 
 const PromoBanner = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [failedImages, setFailedImages] = useState({});
 
-  // Using remote images from AWS S3
- const bannerImages = [
-    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb1.png" },
-    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb2.png" },
-    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb3.png" },
-    { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/bb4.png" },
+  const localBannerImages = [img1, img2, img3,img4];
+  const bannerImages = [
+    `${PRODUCTS_IMAGE_API}banners/bb1.webp`,
+    `${PRODUCTS_IMAGE_API}banners/bb2.webp`,
+    `${PRODUCTS_IMAGE_API}banners/bb3.webp`,
+    `${PRODUCTS_IMAGE_API}banners/bb4.webp`,
   ];
+  const currentBannerImage = failedImages[currentImageIndex] || !PRODUCTS_IMAGE_API
+    ? localBannerImages[currentImageIndex]
+    : { uri: bannerImages[currentImageIndex] };
+
+
   const currentBannerSource = Image.resolveAssetSource(
-    bannerImages[currentImageIndex]
+    localBannerImages[currentImageIndex]
   );
   const bannerAspectRatio =
     currentBannerSource?.width && currentBannerSource?.height
@@ -59,9 +67,12 @@ const PromoBanner = () => {
         >
         {/* Background Image */}
         <Image
-          source={bannerImages[currentImageIndex]}
+          source={currentBannerImage}
           style={styles.backgroundImage}
           resizeMode="contain"
+          onError={() =>
+            setFailedImages((prev) => ({ ...prev, [currentImageIndex]: true }))
+          }
         />
 
         <LinearGradient

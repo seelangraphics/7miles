@@ -1,160 +1,197 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
     StyleSheet,
-    SafeAreaView,
-    StatusBar,
     Image,
     TouchableOpacity,
     Dimensions,
     Animated,
-    FlatList
+    FlatList,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants';
 
-const { width, height } = Dimensions.get('window');
+import Charcoal from '../../assets/glow/Charcoal.webp';
+import HerbalFace from '../../assets/glow/Herbal_face.webp';
+import RoseGulkand from '../../assets/glow/Rose_Gulkand.webp';
 
-// Product data
+const { width } = Dimensions.get('window');
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
+
+const CARD_WIDTH = width - 40;
+const CARD_HEIGHT = width > 768 ? 480 : 430;
+const AUTOPLAY_DELAY = 4200;
+
 export const products = [
     {
-        title: "Rose Gulkand",
-        tagline: "Tasty and Natural",
-        description: "Made with sun-soaked Damask roses and natural sweeteners, our Gulkand is your daily dose of calm digestion and cooling relief.",
-        cta: "Shop Now",
-        image: { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/glow/G1.webp" },
-        screen: "WellnessProducts", // or whatever screen you want to navigate to
+        title: 'Rose Gulkand',
+        tagline: 'Cooling Wellness',
+        description:
+            'Made with sun-soaked Damask roses and natural sweeteners for a soothing, digestive-friendly daily ritual.',
+        image: {
+            local: RoseGulkand,
+            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Rose_Gulkand.webp` } : RoseGulkand,
+        },
+        eyebrow: 'Best Seller',
+
     },
     {
-        title: "Herbal Face Packs",
-        tagline: "Glow the Natural Way",
-        description: "Pure, herbal face pack powders to nourish, cleanse, and enhance your skin—no chemicals, just results.",
-        cta: "Shop Now",
-        image: { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/glow/G2.webp" },
-        screen: "herbalfacepack", // This will navigate to Herbalfacepack screen
+        title: 'Herbal Face Packs',
+        tagline: 'Glow the Natural Way',
+        description:
+            'Pure herbal powders that cleanse, calm, and brighten your skin without harsh chemicals or heavy fillers.',
+        image: {
+            local: HerbalFace,
+            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Herbal_face.webp` } : HerbalFace,
+        },
+        eyebrow: 'Skin Ritual',
+
     },
     {
-        title: "Charcoal Soap",
-        tagline: "Detox Deep",
-        description: "Activated Charcoal Soap that gently removes dirt, oil, and toxins, leaving your skin fresh and rejuvenated.",
-        cta: "Shop Now",
-        image: { uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/glow/G3.webp" },
-        screen: "SkinProducts", // or whatever screen you want to navigate to
+        title: 'Charcoal Soap',
+        tagline: 'Deep Detox Care',
+        description:
+            'A refreshing cleanse that lifts away dirt, oil, and buildup while leaving skin smooth and reset.',
+        image: {
+            local: Charcoal,
+            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Charcoal.webp` } : Charcoal,
+        },
+        eyebrow: 'Fresh Pick',
+
     },
 ];
 
 const ProductSlider = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [failedImages, setFailedImages] = useState({});
     const flatListRef = useRef(null);
     const scrollX = useRef(new Animated.Value(0)).current;
     const autoPlayRef = useRef(null);
-    const navigation = useNavigation();
+    const currentIndexRef = useRef(0);
 
-    // Auto slide functionality
-    useEffect(() => {
+    const stopAutoplay = useCallback(() => {
+        if (autoPlayRef.current) {
+            clearInterval(autoPlayRef.current);
+            autoPlayRef.current = null;
+        }
+    }, []);
+
+    const scrollToIndex = useCallback((index) => {
+        flatListRef.current?.scrollToOffset({
+            offset: index * width,
+            animated: true,
+        });
+    }, []);
+
+    const startAutoplay = useCallback(() => {
+        stopAutoplay();
         autoPlayRef.current = setInterval(() => {
-            if (currentIndex < products.length - 1) {
-                flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
-            } else {
-                flatListRef.current.scrollToIndex({ index: 0 });
-            }
-        }, 4000); // Change slide every 4 seconds
+            const nextIndex = (currentIndexRef.current + 1) % products.length;
+            scrollToIndex(nextIndex);
+        }, AUTOPLAY_DELAY);
+    }, [scrollToIndex, stopAutoplay]);
 
-        return () => clearInterval(autoPlayRef.current);
-    }, [currentIndex]);
+    useEffect(() => {
+        startAutoplay();
+        return stopAutoplay;
+    }, [startAutoplay, stopAutoplay]);
 
     const onScroll = Animated.event(
         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
         { useNativeDriver: false }
     );
 
-    const onMomentumScrollEnd = (event) => {
-        const contentOffset = event.nativeEvent.contentOffset;
-        const viewSize = event.nativeEvent.layoutMeasurement;
-        const pageNum = Math.floor(contentOffset.x / viewSize.width);
-        setCurrentIndex(pageNum);
-    };
+    const onMomentumScrollEnd = useCallback((event) => {
+        const nextIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+        currentIndexRef.current = nextIndex;
+        setCurrentIndex(nextIndex);
+    }, []);
 
-    const handleManualScroll = (index) => {
-        clearInterval(autoPlayRef.current);
-        setCurrentIndex(index);
-        flatListRef.current.scrollToIndex({ index });
-        // Restart auto play after manual interaction
-        setTimeout(() => {
-            autoPlayRef.current = setInterval(() => {
-                if (currentIndex < products.length - 1) {
-                    flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
-                } else {
-                    flatListRef.current.scrollToIndex({ index: 0 });
-                }
-            }, 4000);
-        }, 5000);
-    };
+    const handleManualScroll = useCallback(
+        (index) => {
+            currentIndexRef.current = index;
+            setCurrentIndex(index);
+            scrollToIndex(index);
+            startAutoplay();
+        },
+        [scrollToIndex, startAutoplay]
+    );
 
-    const handleShopNow = (screenName) => {
-        if (screenName === 'herbalfacepack') {
-            navigation.navigate('herbalfacepack');
-        } else {
-            // Handle other screens or navigate to a products list with filter
-            navigation.navigate('Products', { category: screenName });
-        }
-    };
+    const renderItem = useCallback(
+        ({ item, index }) => (
+            (() => {
+                const imageSource = failedImages[item.title] || !PRODUCTS_IMAGE_API
+                    ? item.image.local
+                    : item.image.remote;
 
-    const renderItem = ({ item, index }) => {
-        return (
-            <View style={styles.slide}>
-                {/* Image Section - Now on top */}
-                <View style={styles.imageContainer}>
-                    <Image
-                        source={item.image}
-                        style={styles.productImage}
-                        resizeMode="cover"
-                    />
-                    <View style={styles.imageOverlay} />
-                </View>
+                return (
+                    <View style={styles.slide}>
+                        <View style={styles.cardShell}>
+                            <Image
+                                source={imageSource}
+                                style={styles.productImage}
+                                resizeMode="cover"
+                                onError={() =>
+                                    setFailedImages((prev) => ({ ...prev, [item.title]: true }))
+                                }
+                            />
 
-                {/* Content Section - Overlay on image */}
-                <View style={styles.contentContainer}>
-                    <View style={styles.textContent}>
-                        <Text style={styles.tagline}>{item.tagline}</Text>
-                        <Text style={styles.title}>{item.title}</Text>
+                            <LinearGradient
+                                colors={['rgba(10,10,10,0.04)', 'rgba(10,10,10,0.14)', 'rgba(26,18,14,0.54)']}
+                                style={styles.imageShade}
+                            />
 
-                        <View style={styles.divider} />
+                            {/* <LinearGradient colors={item.accent} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.accentGlow} /> */}
 
-                        <Text style={styles.description}>{item.description}</Text>
+                            <View style={styles.topMetaRow}>
+                                <View style={styles.eyebrowPill}>
+                                    <Text style={styles.eyebrowText}>{item.eyebrow}</Text>
+                                </View>
+                                <View style={styles.slideBadge}>
+                                    <Text style={styles.slideBadgeText}>0{index + 1}</Text>
+                                </View>
+                            </View>
 
-                        {/* <TouchableOpacity
-                            style={styles.ctaButton}
-                            onPress={() => handleShopNow(item.screen)}
-                        >
-                            <Text style={styles.ctaText}>{item.cta}</Text>
-                        </TouchableOpacity> */}
+                            <View style={styles.contentContainer}>
+                                <Text style={styles.tagline}>{item.tagline}</Text>
+                                <Text style={styles.title}>{item.title}</Text>
+                                <View style={styles.accentLine} />
+                                <Text style={styles.description}>{item.description}</Text>
+
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
-        );
-    };
+                );
+            })()
+        ),
+        [failedImages]
+    );
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#000000" />
+        <View style={styles.container}>
+            <LinearGradient colors={['#050505', '#111111', '#000000']} style={styles.backgroundWash} />
 
-            {/* Header */}
             <View style={styles.header}>
+                <Text style={styles.sectionKicker}>Glow Edit</Text>
                 <Text style={styles.headerTitle}>Glow Naturally with 7Miles</Text>
-                <Text style={styles.headerSubtitle}>Premium Natural Products</Text>
+
+                <Text style={styles.headerSubtitle}>
+                    Premium Natural Products
+                </Text>
             </View>
 
-            {/* Slider */}
             <View style={styles.sliderContainer}>
                 <FlatList
                     ref={flatListRef}
                     data={products}
                     renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item) => item.title}
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
+                    onScrollBeginDrag={stopAutoplay}
+                    onScrollEndDrag={startAutoplay}
                     onScroll={onScroll}
                     onMomentumScrollEnd={onMomentumScrollEnd}
                     scrollEventThrottle={16}
@@ -163,162 +200,221 @@ const ProductSlider = () => {
                     snapToAlignment="center"
                 />
 
-                {/* Slide Counter */}
-                <View style={styles.counterContainer}>
-                    <Text style={styles.counterText}>
-                        {currentIndex + 1} / {products.length}
-                    </Text>
+                <View style={styles.bottomBar}>
+                    <View style={styles.pagination}>
+                        {products.map((_, index) => {
+                            const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
+                            const dotWidth = scrollX.interpolate({
+                                inputRange,
+                                outputRange: [10, 28, 10],
+                                extrapolate: 'clamp',
+                            });
+                            const opacity = scrollX.interpolate({
+                                inputRange,
+                                outputRange: [0.35, 1, 0.35],
+                                extrapolate: 'clamp',
+                            });
+
+                            return (
+                                <TouchableOpacity
+                                    key={products[index].title}
+                                    activeOpacity={0.8}
+                                    onPress={() => handleManualScroll(index)}
+                                >
+                                    <Animated.View style={[styles.dot, { width: dotWidth, opacity }]} />
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+
+                    {/* <View style={styles.counterContainer}>
+                        <Text style={styles.counterText}>
+                            {String(currentIndex + 1).padStart(2, '0')} / {String(products.length).padStart(2, '0')}
+                        </Text>
+                    </View> */}
                 </View>
             </View>
-        </SafeAreaView>
+        </View>
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#000000',
+        paddingTop: 24,
+        paddingBottom: 28,
+        position: 'relative',
+    },
+    backgroundWash: {
+        ...StyleSheet.absoluteFillObject,
     },
     header: {
-        paddingHorizontal: 24,
-        paddingTop: 20,
-        paddingBottom: 10,
-        alignItems: 'center',
-        backgroundColor: '#000000',
+        paddingHorizontal: 20,
+        marginBottom: 18,
+    },
+    sectionKicker: {
+        fontSize: 12,
+        letterSpacing: 2,
+        textTransform: 'uppercase',
+        color: '#D4A017',
+        fontWeight: '800',
+        marginBottom: 8,
     },
     headerTitle: {
-        fontSize: 28,
+        fontSize: width > 768 ? 34 : 28,
+        lineHeight: width > 768 ? 40 : 34,
+        color: '#FFFFFF',
         fontWeight: '800',
-        color: '#ffffff',
-        textAlign: 'center',
-        letterSpacing: 1,
-        marginBottom: 4,
+        marginBottom: 8,
+        maxWidth: 560,
     },
     headerSubtitle: {
-        fontSize: 14,
-        color: 'rgba(255,255,255,0.7)',
-        textAlign: 'center',
-        fontWeight: '500',
+        fontSize: 15,
+        lineHeight: 23,
+        color: 'rgba(255,255,255,0.72)',
+        maxWidth: 640,
     },
     sliderContainer: {
-        flex: 1,
         position: 'relative',
     },
     slide: {
-        width: width,
-        height: height * 0.78,
-        position: 'relative',
+        width,
+        alignItems: 'center',
     },
-    imageContainer: {
-        width: '100%',
-        height: '100%',
-        position: 'relative',
+    cardShell: {
+        width: CARD_WIDTH,
+        height: CARD_HEIGHT,
+        borderRadius: 28,
+        overflow: 'hidden',
+        backgroundColor: '#101010',
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 14 },
+        shadowOpacity: 0.28,
+        shadowRadius: 22,
+        elevation: 10,
     },
     productImage: {
         width: '100%',
         height: '100%',
     },
-    imageOverlay: {
+    imageShade: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0,0,0,0.3)',
+    },
+
+    topMetaRow: {
+        position: 'absolute',
+        top: 18,
+        left: 18,
+        right: 18,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    eyebrowPill: {
+        backgroundColor: 'rgba(0,0,0,0.72)',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.16)',
+    },
+    eyebrowText: {
+        fontSize: 11,
+        color: '#FFD34D',
+        fontWeight: '800',
+        letterSpacing: 1,
+        textTransform: 'uppercase',
+    },
+    slideBadge: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: 'rgba(26,18,14,0.75)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.25)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    slideBadgeText: {
+        color: '#FFF8F0',
+        fontWeight: '800',
+        fontSize: 13,
     },
     contentContainer: {
         position: 'absolute',
-        bottom: 0,
         left: 0,
         right: 0,
-        padding: 24,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-    },
-    textContent: {
-        maxWidth: '90%',
-    },
-    title: {
-        fontSize: 32,
-        fontWeight: '800',
-        color: '#ffffff',
-        marginBottom: 12,
-        lineHeight: 36,
-        letterSpacing: 0.5,
+        bottom: 0,
+        paddingHorizontal: 22,
+        paddingTop: 34,
+        paddingBottom: 18,
+        backgroundColor: 'rgba(0,0,0,0.52)',
     },
     tagline: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#FFD700',
+        fontSize: 13,
+        textTransform: 'uppercase',
+        letterSpacing: 2,
+        color: '#FFD34D',
+        fontWeight: '800',
         marginBottom: 8,
-        fontStyle: 'italic',
-        letterSpacing: 1,
     },
-    divider: {
-        height: 3,
-        width: 60,
-        backgroundColor: '#FFD700',
-        marginBottom: 16,
-        borderRadius: 2,
+    title: {
+        fontSize: width > 768 ? 34 : 28,
+        lineHeight: width > 768 ? 38 : 32,
+        color: '#FFF9F1',
+        fontWeight: '800',
+        marginBottom: 10,
+        maxWidth: '90%',
+    },
+    accentLine: {
+        width: 62,
+        height: 4,
+        borderRadius: 999,
+        backgroundColor: '#FFD34D',
+        marginBottom: 14,
     },
     description: {
-        fontSize: 16,
-        color: 'rgba(255,255,255,0.9)',
-        lineHeight: 22,
-        marginBottom: 24,
-        fontWeight: '400',
+        fontSize: 14,
+        lineHeight: 21,
+        color: 'rgba(255,249,241,0.9)',
+        marginBottom: 10,
+        maxWidth: '88%',
     },
-    ctaButton: {
-        backgroundColor: '#FFD700',
-        paddingHorizontal: 32,
-        paddingVertical: 14,
-        borderRadius: 12,
-        alignSelf: 'flex-start',
-        shadowColor: '#FFD700',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 6,
+    footerHint: {
+        color: 'rgba(255,255,255,0.68)',
+        fontSize: 12,
+        fontWeight: '600',
     },
-    ctaText: {
-        fontSize: 16,
-        fontWeight: '700',
-        color: '#000000',
-        letterSpacing: 0.5,
-    },
-    dotsContainer: {
+    bottomBar: {
+        marginTop: 18,
+        paddingHorizontal: 20,
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute',
-        bottom: 140,
-        left: 0,
-        right: 0,
+        justifyContent: 'space-between',
+    },
+    pagination: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
     dot: {
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: '#FFD700',
-        marginHorizontal: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        elevation: 3,
+        height: 10,
+        borderRadius: 999,
+        backgroundColor: '#FFD34D',
+        marginRight: 8,
     },
     counterContainer: {
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 12,
+        backgroundColor: 'rgba(0,0,0,0.75)',
+        borderRadius: 999,
+        paddingHorizontal: 14,
+        paddingVertical: 8,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
+        borderColor: 'rgba(255,255,255,0.18)',
     },
     counterText: {
         fontSize: 12,
-        fontWeight: '600',
-        color: '#ffffff',
+        color: '#FFFFFF',
+        fontWeight: '800',
+        letterSpacing: 1,
     },
 });
 

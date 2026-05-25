@@ -16,12 +16,13 @@ import Constants from "expo-constants";
 import { useCart } from "../context/CartContext";
 import TopBar from "../Topbar/Topbar";
 import FilterModal from "./Filter";
-import img1 from "../../assets/Home-catagories/1069.jpg";
-import img2 from "../../assets/Home-catagories/14317.jpg";
-import img3 from "../../assets/Home-catagories/17384.jpg";
-import img4 from "../../assets/Home-catagories/wellness.png";
+import img1 from "../../assets/Home-catagories/C_4.png";
+import img2 from "../../assets/Home-catagories/C_1.png";
+import img3 from "../../assets/Home-catagories/C_2.png";
+import img4 from "../../assets/Home-catagories/C_3.png";
 
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 const CARD_WIDTH = 160;
 const CARD_HEIGHT = 300;
 
@@ -45,6 +46,7 @@ const CategoriesScreen = () => {
   const [selectedSort, setSelectedSort] = useState("Best Selling");
   const [activeFilters, setActiveFilters] = useState({});
   const [debugInfo, setDebugInfo] = useState("");
+  const [failedCategoryImages, setFailedCategoryImages] = useState({});
 
   const initialCategory = route.params?.selectedCategory || "";
   
@@ -216,11 +218,26 @@ const CategoriesScreen = () => {
   }, [categoryProducts, activeFilters, selectedSort]);
 
   const categoryImages = {
-    "Hair Care": img1,
-    "Skin Care": img2,
-    "Body Care": img3,
-    "Wellness & Edibles": img4,
-    default: img1,
+    "Hair Care": {
+      local: img1,
+      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : img1,
+    },
+    "Skin Care": {
+      local: img2,
+      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_1.png` } : img2,
+    },
+    "Body Care": {
+      local: img3,
+      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_2.png` } : img3,
+    },
+    "Wellness & Edibles": {
+      local: img4,
+      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_3.png` } : img4,
+    },
+    default: {
+      local: img1,
+      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : img1,
+    },
   };
 
   const handleApplyFilters = (filters) => {
@@ -384,13 +401,26 @@ const CategoriesScreen = () => {
                 }}
               >
                 <View style={styles.categoryImageContainer}>
+                  {(() => {
+                    const categoryImageSet = categoryImages[category] || categoryImages.default;
+                    const categoryImageSource =
+                      failedCategoryImages[category] || !PRODUCTS_IMAGE_API
+                        ? categoryImageSet.local
+                        : categoryImageSet.remote;
+
+                    return (
                   <Image
-                    source={categoryImages[category] || categoryImages.default}
+                    source={categoryImageSource}
                     style={[
                       styles.categoryImage,
                       selectedCategory === category && styles.activeCategoryImage,
                     ]}
+                    onError={() =>
+                      setFailedCategoryImages((prev) => ({ ...prev, [category]: true }))
+                    }
                   />
+                    );
+                  })()}
                   {selectedCategory === category && (
                     <View style={styles.activeIndicator} />
                   )}

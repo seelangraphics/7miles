@@ -24,42 +24,63 @@ import Adbanner from "../AddBanner/Adbanner";
 import FAQSection from "../Faq/Faq";
 import { useCart } from "../context/CartContext";
 import { Ionicons } from "@expo/vector-icons";
+import Constants from "expo-constants";
 import img1 from "../../assets/Home-catagories/C_4.png";
 import img2 from "../../assets/Home-catagories/C_1.png";
 import img3 from "../../assets/Home-catagories/C_2.png";
 import img4 from "../../assets/Home-catagories/C_3.png";
 
 const { width } = Dimensions.get('window');
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
+const homeCategoryImages = {
+  hair: {
+    local: img1,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : img1,
+  },
+  skin: {
+    local: img2,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_1.png` } : img2,
+  },
+  body: {
+    local: img3,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_2.png` } : img3,
+  },
+  wellness: {
+    local: img4,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_3.png` } : img4,
+  },
+};
 
 // Simple & Creative Category Component
 const CategoryQuickNav = ({ navigation }) => {
+  const [failedImages, setFailedImages] = useState({});
   const categories = [
     { 
       id: 'hair', 
       name: 'Hair Care', 
       key: 'Hair Care',
-      image: img1,
+      image: homeCategoryImages.hair,
       color: '#d2c1e2',
     },
     { 
       id: 'skin', 
       name: 'Skin Care', 
       key: 'Skin Care',
-      image: img2,
+      image: homeCategoryImages.skin,
       color: '#d2c1e2',
     },
     { 
       id: 'body', 
       name: 'Body Care', 
       key: 'Body Care',
-      image: img3,
+      image: homeCategoryImages.body,
       color: '#d2c1e2',
     },
     { 
       id: 'wellness', 
       name: 'Wellness', 
       key: 'Wellness & Edibles',
-      image: img4,
+      image: homeCategoryImages.wellness,
       color: '#d2c1e2',
     },
   ];
@@ -89,11 +110,22 @@ const CategoryQuickNav = ({ navigation }) => {
           >
             {/* Image with colored border */}
             <View style={[categoryNavStyles.imageWrapper, { borderColor: category.color + '30' }]}>
+              {(() => {
+                const imageSource = failedImages[category.id] || !PRODUCTS_IMAGE_API
+                  ? category.image.local
+                  : category.image.remote;
+
+                return (
               <Image
-                source={category.image}
+                source={imageSource}
                 style={categoryNavStyles.image}
                 resizeMode="cover"
+                onError={() =>
+                  setFailedImages((prev) => ({ ...prev, [category.id]: true }))
+                }
               />
+                );
+              })()}
               {/* Color accent corner */}
               <View style={[categoryNavStyles.colorAccent, { backgroundColor: category.color }]} />
             </View>
@@ -196,11 +228,12 @@ const categoryNavStyles = StyleSheet.create({
 
 // Alternative even simpler design (choose one):
 const SimpleCategoryNav = ({ navigation }) => {
+  const [failedImages, setFailedImages] = useState({});
   const categories = [
-    { id: 'hair', name: 'Hair', key: 'Hair Care', image: img1 },
-    { id: 'skin', name: 'Skin', key: 'Skin Care', image: img2 },
-    { id: 'body', name: 'Body', key: 'Body Care', image: img3 },
-    { id: 'wellness', name: 'Wellness', key: 'Wellness & Edibles', image: img4 },
+    { id: 'hair', name: 'Hair', key: 'Hair Care', image: homeCategoryImages.hair },
+    { id: 'skin', name: 'Skin', key: 'Skin Care', image: homeCategoryImages.skin },
+    { id: 'body', name: 'Body', key: 'Body Care', image: homeCategoryImages.body },
+    { id: 'wellness', name: 'Wellness', key: 'Wellness & Edibles', image: homeCategoryImages.wellness },
   ];
 
   return (
@@ -221,11 +254,22 @@ const SimpleCategoryNav = ({ navigation }) => {
             activeOpacity={0.8}
           >
             <View style={simpleStyles.imageCircle}>
+              {(() => {
+                const imageSource = failedImages[category.id] || !PRODUCTS_IMAGE_API
+                  ? category.image.local
+                  : category.image.remote;
+
+                return (
               <Image
-                source={category.image}
+                source={imageSource}
                 style={simpleStyles.circleImage}
                 resizeMode="cover"
+                onError={() =>
+                  setFailedImages((prev) => ({ ...prev, [category.id]: true }))
+                }
               />
+                );
+              })()}
             </View>
             <Text style={simpleStyles.categoryLabel}>{category.name}</Text>
           </TouchableOpacity>

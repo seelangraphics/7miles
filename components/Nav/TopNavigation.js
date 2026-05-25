@@ -17,9 +17,9 @@ import { useNavigation } from '@react-navigation/native';
 import SearchModal from './Search/SearchModal';
 import CartButton from './Search/CartButton';
 
-// Get the URLs from environment variables
-const LOGO_URL = Constants.expoConfig.extra?.LOGO_URL || "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png";
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 const PRODUCTS_API = Constants.expoConfig.extra.PRODUCTS_API;
+const localLogo = require('../../assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png');
 
 const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     const [searchVisible, setSearchVisible] = useState(false);
@@ -29,9 +29,13 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [logoFailed, setLogoFailed] = useState(false);
 
     const navigation = useNavigation();
     const { getCartItemsCount, wishlistItems, isInWishlist } = useCart(); // Add isInWishlist
+    const logoSource = logoFailed || !PRODUCTS_IMAGE_API
+        ? localLogo
+        : { uri: `${PRODUCTS_IMAGE_API}Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png` };
 
     // Get wishlist count
     const wishlistCount = useMemo(() => {
@@ -122,9 +126,10 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
                 {/* Logo */}
                 <View style={styles.logoContainer}>
                     <Image
-                        source={{ uri: LOGO_URL }}
+                        source={logoSource}
                         style={styles.logo}
                         resizeMode="contain"
+                        onError={() => setLogoFailed(true)}
                     />
                 </View>
 

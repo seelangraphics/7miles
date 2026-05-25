@@ -1,8 +1,22 @@
 // components/HeroSection.js
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import Constants from 'expo-constants';
+
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
+const localHeroImageOne = require('../../assets/Herosection/SS2.avif');
+const localHeroImageTwo = require('../../assets/Herosection/SS4.avif');
 
 const HeroSection = () => {
+    const [heroImageOneFailed, setHeroImageOneFailed] = useState(false);
+    const [heroImageTwoFailed, setHeroImageTwoFailed] = useState(false);
+    const heroImageOne = heroImageOneFailed || !PRODUCTS_IMAGE_API
+        ? localHeroImageOne
+        : { uri: `${PRODUCTS_IMAGE_API}Herosection/SS2.avif` };
+    const heroImageTwo = heroImageTwoFailed || !PRODUCTS_IMAGE_API
+        ? localHeroImageTwo
+        : { uri: `${PRODUCTS_IMAGE_API}Herosection/SS4.avif` };
+
     return (
         <View style={styles.container}>
             {/* Timeline Container */}
@@ -11,9 +25,10 @@ const HeroSection = () => {
                 <View style={styles.timelineItem}>
                     <View style={[styles.circle, styles.ancientCircle]}>
                         <Image
-                            source={{ uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Herosection/SS2.avif" }}
+                            source={heroImageOne}
                             style={styles.circleImage}
                             resizeMode="cover"
+                            onError={() => setHeroImageOneFailed(true)}
                         />
                     </View>
                     <View style={styles.textContent}>
@@ -31,9 +46,10 @@ const HeroSection = () => {
                 <View style={styles.timelineItem}>
                     <View style={[styles.circle, styles.modernCircle]}>
                         <Image
-                            source={{ uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Herosection/SS4.avif" }}
+                            source={heroImageTwo}
                             style={styles.circleImage}
                             resizeMode="cover"
+                            onError={() => setHeroImageTwoFailed(true)}
                         />
                     </View>
                     <View style={styles.textContent}>

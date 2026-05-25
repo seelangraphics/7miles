@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Toast from "react-native-toast-message";
+import Constants from "expo-constants";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import {
   createUserWithEmailAndPassword,
@@ -49,6 +50,7 @@ const AuthScreen = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 
   useEffect(() => {
     setName("");
@@ -259,7 +261,7 @@ const AuthScreen = () => {
                   <View style={styles.iconContainer}>
                     <View style={styles.logoBackground}>
                       <Image
-                        source={{ uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png" }}
+                        source={{ uri:  `${PRODUCTS_IMAGE_API}Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png` }}
                         style={styles.logoImage}
                         resizeMode="contain"
                       />

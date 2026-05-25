@@ -4,8 +4,16 @@ import { Video } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import Constants from 'expo-constants';
 
 const { width } = Dimensions.get('window');
+const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
+const localBannerVideo = require('../../assets/banners/b.mp4');
+const localProductImage = require('../../assets/Wellnes/w2.webp');
+const localSubImages = [
+  require('../../assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp'),
+  require('../../assets/ProductDetails/Wellness/ROSE-GULKAND-02.webp'),
+];
 
 // Your actual product data
 const product = {
@@ -16,10 +24,16 @@ const product = {
   "regular_price": 180,
   "save": 60,
   "category": "Wellness & Edibles",
-  "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w2.webp",
+  "image": PRODUCTS_IMAGE_API
+    ? `${PRODUCTS_IMAGE_API}Wellnes/w2.webp`
+    : localProductImage,
   "sub_images": [
-    "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp",
-    "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/ROSE-GULKAND-02.webp"
+    PRODUCTS_IMAGE_API
+      ? `${PRODUCTS_IMAGE_API}ProductDetails/Wellness/ROSE-GULKAND-01.webp`
+      : localSubImages[0],
+    PRODUCTS_IMAGE_API
+      ? `${PRODUCTS_IMAGE_API}ProductDetails/Wellness/ROSE-GULKAND-02.webp`
+      : localSubImages[1]
   ],
   "quantity": "250gm",
   "short_benefit": "Improves digestion and cools the body",
@@ -51,7 +65,15 @@ const product = {
 const Adbanner = () => {
   const videoRef = useRef(null);
   const [status, setStatus] = useState({});
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [productImageFailed, setProductImageFailed] = useState(false);
   const navigation = useNavigation();
+  const videoSource = videoFailed || !PRODUCTS_IMAGE_API
+    ? localBannerVideo
+    : { uri: `${PRODUCTS_IMAGE_API}banners/b.mp4` };
+  const productImageSource = productImageFailed || !PRODUCTS_IMAGE_API
+    ? localProductImage
+    : { uri: `${PRODUCTS_IMAGE_API}Wellnes/w2.webp` };
 
   const handleProductPress = () => {
     // Prepare product object with all required fields
@@ -60,7 +82,7 @@ const Adbanner = () => {
       name: product.name,
       title: product.name,
       quantity: product.quantity,
-      image: { uri: product.image },
+      image: productImageSource,
       sale_price: product.sale_price,
       regular_price: product.regular_price,
       category: product.category,
@@ -96,12 +118,13 @@ const Adbanner = () => {
       <View style={styles.videoContainer}>
         <Video
           ref={videoRef}
-          source={{ uri: "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/banners/b.mp4" }}
+          source={videoSource}
           style={styles.video}
           resizeMode="cover"
           shouldPlay
           isLooping
           isMuted
+          onError={() => setVideoFailed(true)}
           onPlaybackStatusUpdate={status => setStatus(() => status)}
         />
         <LinearGradient
