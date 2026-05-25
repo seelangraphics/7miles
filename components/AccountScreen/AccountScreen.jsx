@@ -20,7 +20,7 @@ import Constants from 'expo-constants';
 const Account = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const LOGO_URL = Constants.expoConfig.extra?.LOGO_URL || "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png";
+  // const LOGO_URL = Constants.expoConfig.extra?.LOGO_URL || "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png";
   const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 
 
