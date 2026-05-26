@@ -1071,7 +1071,11 @@
         "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-01.webp",
         "sub_images": [
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/s12.webp",
-            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-02.webp"
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/KUMKUMATHI-NIGHT-ROUTINE-02.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Kumkumathi_Night_Routine_Skin/s25.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Kumkumathi_Night_Routine_Skin/s29.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Kumkumathi_Night_Routine_Skin/s28.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Kumkumathi_Night_Routine_Skin/s23.webp"
         ],
         "nightroutine": "yes",
         "quantity": "50ml",
@@ -1325,7 +1329,7 @@
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/body/b3.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Skin/ALOEVERA-GEL-02.webp"
         ],
-        "Newproducts": "yes",
+        "Newproducts": "No",
         "nightroutine": "yes",
         "quantity": "100gm",
         "short_benefit": "Soothes and hydrates dry skin",
@@ -1682,7 +1686,7 @@
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w6.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-CANDY-02.webp"
         ],
-        "Newproducts": "yes",
+        "Newproducts": "No",
         "ediblefoods": "yes",
         "quantity": "200gm",
         "short_benefit": "Improves immunity and digestion",
@@ -1725,7 +1729,7 @@
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Wellnes/w7.webp",
             "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/ProductDetails/Wellness/AMLA-MOUTH-FRESHNER-02.webp"
         ],
-        "Newproducts": "yes",
+        "Newproducts": "No",
         "quantity": "200gm",
         "short_benefit": "Freshens breath and aids digestion",
         "benefits": [
@@ -1792,6 +1796,458 @@
             "Digestive health",
             "Heart health",
             "Immunity support"
+        ]
+    },
+    {
+        "id": 43,
+        "name": "GLOSSY LIP BALM BEET ROOT",
+        "sale_price": 210,
+        "regular_price": 250,
+        "save": 40,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/BeetRoot_LipBalm_skin/s17.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/BeetRoot_LipBalm_skin/s18.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/BeetRoot_LipBalm_skin/s19.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/BeetRoot_LipBalm_skin/s20.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/BeetRoot_LipBalm_skin/s21.webp"
+        ],
+        "Newproducts": "No",
+        "quantity": "10gm",
+        "short_benefit": "Hydrates lips and adds a natural rosy tint",
+        "benefits": [
+            "Deeply nourishes dry and chapped lips",
+            "Adds a glossy beetroot-inspired natural tint",
+            "Helps soften rough lips with long-lasting moisture",
+            "Protects lips from dryness caused by sun and wind",
+            "Lightweight formula ideal for everyday use"
+        ],
+        "description": "Tinted lip balm for soft, glossy, naturally pink lips.",
+        "detailed_description": "Our Glossy Lip Balm Beet Root is a nourishing lip care essential enriched with beetroot-inspired color, moisturizing butters, and skin-loving oils. It helps hydrate, smooth, and protect your lips while adding a fresh glossy finish and a soft natural tint for daily wear.",
+        "key_ingredients": [
+            "Beetroot Extract",
+            "Shea Butter",
+            "Natural Oils"
+        ],
+        "free_from": [
+            "Parabens",
+            "Mineral Oil",
+            "Artificial Harsh Chemicals"
+        ],
+        "suitable_for": [
+            "Daily Lip Care",
+            "Dry Lips",
+            "Tinted Gloss Finish"
+        ],
+        "skin_type": [
+            "All Skin Types"
+        ]
+    },
+    {
+        "id": 44,
+        "name": "MARINE DEW AQUA CELL RENEWAL",
+        "sale_price": 590,
+        "regular_price": 620,
+        "save": 30,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/MarineDew_AquaCell_Renewal_skin/s34.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/MarineDew_AquaCell_Renewal_skin/s32.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/MarineDew_AquaCell_Renewal_skin/s33.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/MarineDew_AquaCell_Renewal_skin/s31.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/MarineDew_AquaCell_Renewal_skin/s35.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "50gm",
+        "short_benefit": "Deeply hydrates and renews tired skin",
+        "benefits": [
+            "Boosts deep skin hydration for a plump fresh look",
+            "Helps improve skin texture and smoothness",
+            "Supports skin barrier renewal and moisture retention",
+            "Revives dull, tired-looking skin with a dewy glow",
+            "Lightweight finish suitable for daily skincare"
+        ],
+        "description": "Hydration renewal cream for soft, supple, radiant skin.",
+        "detailed_description": "Marine Dew Aqua Cell Renewal is an intensive hydrating skincare formula crafted to replenish moisture, strengthen the skin barrier, and restore a healthy dew-like glow. Ideal for dehydrated, dull, and stressed skin, it helps your complexion feel smoother, fresher, and more renewed with regular use.",
+        "key_ingredients": [
+            "Marine Hydration Complex",
+            "Humectants",
+            "Botanical Moisture Boosters"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Artificial Harsh Fragrances"
+        ],
+        "suitable_for": [
+            "Daily Moisturizer",
+            "Hydration Repair",
+            "Barrier Support"
+        ],
+        "skin_type": [
+            "All Skin Types",
+            "Dry Skin",
+            "Dehydrated Skin",
+            "Dull Skin"
+        ]
+    },
+    {
+        "id": 45,
+        "name": "SPIRULINA & MORINGA SHAMPOO",
+        "sale_price": 480,
+        "regular_price": 500,
+        "save": 20,
+        "category": "Hair Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Moringa_Shampoo_hair/h19.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Moringa_Shampoo_hair/h20.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Moringa_Shampoo_hair/h21.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Moringa_Shampoo_hair/h22.webp"
+        ],
+        "Newproducts": "No",
+        "quantity": "200ml",
+        "short_benefit": "Cleanses scalp and strengthens weak hair",
+        "benefits": [
+            "Gently cleanses scalp without stripping natural oils",
+            "Nourishes roots with spirulina and moringa-rich nutrients",
+            "Helps reduce hair fall and breakage",
+            "Improves hair softness, shine, and manageability",
+            "Supports healthier scalp and stronger strands"
+        ],
+        "description": "Nutrient-rich shampoo for stronger, healthier-looking hair.",
+        "detailed_description": "Our Spirulina & Moringa Shampoo is a fortifying hair cleanser packed with nutrient-dense botanicals that help refresh the scalp, strengthen weak strands, and improve overall hair health. Designed for regular use, it supports softer, shinier, and more resilient hair from root to tip.",
+        "key_ingredients": [
+            "Spirulina",
+            "Moringa Extract",
+            "Mild Cleansing Base"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Silicones"
+        ],
+        "hair_type": [
+            "All Hair Types",
+            "Weak Hair",
+            "Hair Fall Prone Hair"
+        ]
+    },
+    {
+        "id": 46,
+        "name": "PROTEIN SHAMPOO",
+        "sale_price": 560,
+        "regular_price": 600,
+        "save": 40,
+        "category": "Hair Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Protein_Shampoo_hair/h14.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Protein_Shampoo_hair/h15.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Protein_Shampoo_hair/h16.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Protein_Shampoo_hair/h17.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/Protein_Shampoo_hair/h18.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "200ml",
+        "short_benefit": "Strengthens damaged hair and reduces breakage",
+        "benefits": [
+            "Strengthens weak strands with protein-rich nourishment",
+            "Helps repair rough, damaged, and brittle hair",
+            "Reduces breakage and improves hair resilience",
+            "Smooths frizz and improves overall texture",
+            "Leaves hair soft, healthy-looking, and manageable"
+        ],
+        "description": "Repair shampoo that strengthens and smooths damaged hair.",
+        "detailed_description": "Protein Shampoo is a strengthening hair care formula designed to help repair fragile strands, improve elasticity, and restore smoothness to damaged hair. Enriched with protein-based actives and nourishing ingredients, it supports healthier, fuller-looking hair with regular use.",
+        "key_ingredients": [
+            "Hydrolyzed Proteins",
+            "Botanical Extracts",
+            "Conditioning Agents"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Harsh Chemicals"
+        ],
+        "hair_type": [
+            "All Hair Types",
+            "Damaged Hair",
+            "Dry Hair",
+            "Frizzy Hair"
+        ]
+    },
+    {
+        "id": 47,
+        "name": "ROSEMARY HAIR GROWTH SCALP SERUM",
+        "sale_price": 770,
+        "regular_price": 800,
+        "save": 30,
+        "category": "Hair Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/RoseMary_serum_skin/s41.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/RoseMary_serum_skin/s42.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/RoseMary_serum_skin/s43.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/hair/RoseMary_serum_skin/s44.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "50ml",
+        "short_benefit": "Stimulates scalp and supports healthy hair growth",
+        "benefits": [
+            "Helps energize the scalp and support healthy roots",
+            "Reduces hair fall caused by weak follicles",
+            "Improves scalp circulation for healthier hair growth",
+            "Helps soothe dry, flaky, or irritated scalp",
+            "Lightweight non-sticky serum for regular scalp care"
+        ],
+        "description": "Rosemary scalp serum for stronger roots and fuller hair.",
+        "detailed_description": "Rosemary Hair Growth Scalp Serum is a lightweight scalp treatment formulated to nourish roots, refresh the scalp, and encourage stronger-looking hair growth. Powered by rosemary-inspired care and botanical actives, it helps improve scalp health while supporting thicker, healthier strands over time.",
+        "key_ingredients": [
+            "Rosemary Extract",
+            "Scalp Nourishing Botanicals",
+            "Lightweight Serum Base"
+        ],
+        "free_from": [
+            "Parabens",
+            "Mineral Oil",
+            "Harsh Chemicals"
+        ],
+        "hair_type": [
+            "All Hair Types",
+            "Hair Fall Prone Hair",
+            "Weak Root Hair"
+        ]
+    },
+    {
+        "id": 48,
+        "name": "SKIN BRIGHTENING CREAM",
+        "sale_price": 550,
+        "regular_price": 600,
+        "save": 50,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Skin_Brightening_Cream/s53.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Skin_Brightening_Cream/s54.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Skin_Brightening_Cream/s55.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Skin_Brightening_Cream/s56.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "50gm",
+        "short_benefit": "Brightens dull skin and evens tone",
+        "benefits": [
+            "Helps improve overall skin brightness and clarity",
+            "Supports a more even-looking skin tone",
+            "Softens rough texture and smooths the skin surface",
+            "Adds hydration while reducing dullness",
+            "Suitable for everyday brightening care"
+        ],
+        "description": "Daily brightening cream for clear and radiant skin.",
+        "detailed_description": "Skin Brightening Cream is a daily-use skincare formula created to hydrate, brighten, and restore a healthy glow to dull or uneven-looking skin. With regular use, it helps improve softness, smoothness, and overall complexion radiance while keeping skin comfortably moisturized.",
+        "key_ingredients": [
+            "Brightening Botanicals",
+            "Moisturizing Agents",
+            "Antioxidants"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Artificial Harsh Fragrances"
+        ],
+        "suitable_for": [
+            "Daily Brightening Care",
+            "Tone Correction",
+            "Glow Support"
+        ],
+        "skin_type": [
+            "All Skin Types",
+            "Dull Skin",
+            "Uneven Skin Tone"
+        ]
+    },
+    {
+        "id": 49,
+        "name": "ROSE MOISTURIZER",
+        "sale_price": 320,
+        "regular_price": 380,
+        "save": 60,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Rose_Moisturizing_Cream_skin/s49.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Rose_Moisturizing_Cream_skin/s50.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Rose_Moisturizing_Cream_skin/s51.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Rose_Moisturizing_Cream_skin/s52.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "50gm",
+        "short_benefit": "Moisturizes skin and leaves it soft and fresh",
+        "benefits": [
+            "Provides lasting hydration for dry and normal skin",
+            "Softens skin and improves smooth texture",
+            "Helps calm mild redness and dryness",
+            "Supports a supple, fresh, healthy glow",
+            "Rose-inspired care leaves skin feeling refreshed"
+        ],
+        "description": "Rose-based moisturizer for soft, smooth, hydrated skin.",
+        "detailed_description": "Rose Moisturizer is a comforting daily cream designed to keep skin soft, hydrated, and refreshed. Enriched with rose-inspired skincare benefits and nourishing moisturizers, it helps maintain smooth texture and a naturally healthy glow without feeling heavy on the skin.",
+        "key_ingredients": [
+            "Rose Extract",
+            "Hydrating Moisturizers",
+            "Botanical Soothers"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Harsh Chemicals"
+        ],
+        "suitable_for": [
+            "Daily Moisturizer",
+            "Glow Support",
+            "Dryness Relief"
+        ],
+        "skin_type": [
+            "All Skin Types",
+            "Dry Skin",
+            "Normal Skin",
+            "Sensitive Skin"
+        ]
+    },
+    {
+        "id": 50,
+        "name": "POMEGRANATE SCRUB",
+        "sale_price": 230,
+        "regular_price": 250,
+        "save": 20,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Pomegranate_Scrub_skin/s36.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Pomegranate_Scrub_skin/s37.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Pomegranate_Scrub_skin/s38.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Pomegranate_Scrub_skin/s39.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Pomegranate_Scrub_skin/s40.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "100gm",
+        "short_benefit": "Exfoliates dead skin and reveals brighter skin",
+        "benefits": [
+            "Gently exfoliates dead skin cells and surface buildup",
+            "Helps brighten dull skin and improve texture",
+            "Supports smoother, fresher-looking skin",
+            "Helps unclog pores and reduce rough patches",
+            "Leaves skin clean, soft, and polished"
+        ],
+        "description": "Fruit-based facial scrub for smooth and radiant skin.",
+        "detailed_description": "Pomegranate Scrub is a refreshing exfoliating skincare product that helps polish away dead skin cells, improve texture, and restore natural radiance. Its gentle scrub action leaves the skin feeling smooth, clear, and revitalized, making it a great addition to a weekly glow routine.",
+        "key_ingredients": [
+            "Pomegranate Extract",
+            "Gentle Exfoliating Granules",
+            "Skin Conditioning Agents"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Harsh Chemicals"
+        ],
+        "suitable_for": [
+            "Weekly Exfoliation",
+            "Texture Refining",
+            "Glow Support"
+        ],
+        "skin_type": [
+            "All Skin Types",
+            "Dull Skin",
+            "Combination Skin"
+        ]
+    },
+    {
+        "id": 51,
+        "name": "ROSEMARY WATER",
+        "sale_price": 210,
+        "regular_price": 250,
+        "save": 40,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/RoseMary_water_skin/s45.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/RoseMary_water_skin/s46.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/RoseMary_water_skin/s47.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/RoseMary_water_skin/s48.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "100ml",
+        "short_benefit": "Refreshes skin and tones scalp and face",
+        "benefits": [
+            "Refreshes and tones skin for a balanced feel",
+            "Helps calm oily or tired-looking skin",
+            "Can be used on scalp to freshen roots",
+            "Supports a clean, light, non-sticky skincare step",
+            "Ideal for daily misting and toner use"
+        ],
+        "description": "Refreshing rosemary water for face and scalp care.",
+        "detailed_description": "Rosemary Water is a lightweight refreshing mist designed to tone skin, revive the scalp, and provide a clean botanical feel throughout the day. Its multipurpose formula makes it ideal for face misting, post-cleansing toning, and simple scalp refresh routines.",
+        "key_ingredients": [
+            "Rosemary Extract",
+            "Purified Water",
+            "Botanical Toners"
+        ],
+        "free_from": [
+            "Alcohol",
+            "Parabens",
+            "Artificial Harsh Fragrances"
+        ],
+        "suitable_for": [
+            "Face Toner",
+            "Scalp Refresh",
+            "Daily Mist"
+        ],
+        "skin_type": [
+            "All Skin Types",
+            "Oily Skin",
+            "Combination Skin"
+        ]
+    },
+    {
+        "id": 52,
+        "name": "VITAMIN C EVEN TONE & BRIGHTNESS SERUM",
+        "sale_price": 420,
+        "regular_price": 480,
+        "save": 60,
+        "category": "Skin Care",
+        "image": "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/Vitamin%20C_Serum_skin/s57.webp",
+        "sub_images": [
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/VitaminC_Serum_skin/s58.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/VitaminC_Serum_skin/s59.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/VitaminC_Serum_skin/s60.webp",
+            "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/skin/VitaminC_Serum_skin/s61.webp"
+        ],
+        "Newproducts": "yes",
+        "quantity": "30ml",
+        "short_benefit": "Brightens skin and improves even tone",
+        "benefits": [
+            "Helps brighten dull skin and improve radiance",
+            "Supports a more even-looking skin tone",
+            "Helps reduce the appearance of marks and dull patches",
+            "Provides antioxidant support against daily stressors",
+            "Lightweight serum that layers easily into daily routines"
+        ],
+        "description": "Vitamin C serum for brighter and more even-looking skin.",
+        "detailed_description": "Vitamin C Even Tone & Brightness Serum is a lightweight glow-boosting formula created to help revive dull skin, improve the appearance of uneven tone, and enhance natural radiance. With regular use, it helps skin look fresher, smoother, and visibly more luminous.",
+        "key_ingredients": [
+            "Vitamin C",
+            "Antioxidants",
+            "Hydrating Serum Base"
+        ],
+        "free_from": [
+            "Parabens",
+            "Sulfates",
+            "Artificial Harsh Fragrances"
+        ],
+        "suitable_for": [
+            "Brightening Routine",
+            "Tone Correction",
+            "Daily Serum Care"
+        ],
+        "skin_type": [
+            "All Skin Types",
+            "Dull Skin",
+            "Uneven Skin Tone",
+            "Pigmented Skin"
         ]
     }
 ]

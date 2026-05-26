@@ -4,17 +4,15 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import Constants from 'expo-constants';
 
 const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
-const localHeroImageOne = require('../../assets/Herosection/SS2.avif');
-const localHeroImageTwo = require('../../assets/Herosection/SS4.avif');
 
 const HeroSection = () => {
     const [heroImageOneFailed, setHeroImageOneFailed] = useState(false);
     const [heroImageTwoFailed, setHeroImageTwoFailed] = useState(false);
     const heroImageOne = heroImageOneFailed || !PRODUCTS_IMAGE_API
-        ? localHeroImageOne
+        ? null
         : { uri: `${PRODUCTS_IMAGE_API}Herosection/SS2.avif` };
     const heroImageTwo = heroImageTwoFailed || !PRODUCTS_IMAGE_API
-        ? localHeroImageTwo
+        ? null
         : { uri: `${PRODUCTS_IMAGE_API}Herosection/SS4.avif` };
 
     return (
@@ -24,12 +22,14 @@ const HeroSection = () => {
                 {/* Ancient Section */}
                 <View style={styles.timelineItem}>
                     <View style={[styles.circle, styles.ancientCircle]}>
-                        <Image
-                            source={heroImageOne}
-                            style={styles.circleImage}
-                            resizeMode="cover"
-                            onError={() => setHeroImageOneFailed(true)}
-                        />
+                        {heroImageOne ? (
+                            <Image
+                                source={heroImageOne}
+                                style={styles.circleImage}
+                                resizeMode="cover"
+                                onError={() => setHeroImageOneFailed(true)}
+                            />
+                        ) : null}
                     </View>
                     <View style={styles.textContent}>
                         <Text style={styles.ancientText}>Ancient Ayurveda</Text>
@@ -45,12 +45,14 @@ const HeroSection = () => {
                 {/* Modern Section */}
                 <View style={styles.timelineItem}>
                     <View style={[styles.circle, styles.modernCircle]}>
-                        <Image
-                            source={heroImageTwo}
-                            style={styles.circleImage}
-                            resizeMode="cover"
-                            onError={() => setHeroImageTwoFailed(true)}
-                        />
+                        {heroImageTwo ? (
+                            <Image
+                                source={heroImageTwo}
+                                style={styles.circleImage}
+                                resizeMode="cover"
+                                onError={() => setHeroImageTwoFailed(true)}
+                            />
+                        ) : null}
                     </View>
                     <View style={styles.textContent}>
                         <Text style={styles.modernText}>Modern Self-Care</Text>

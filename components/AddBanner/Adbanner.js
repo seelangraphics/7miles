@@ -8,12 +8,6 @@ import Constants from 'expo-constants';
 
 const { width } = Dimensions.get('window');
 const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
-const localBannerVideo = require('../../assets/banners/b.mp4');
-const localProductImage = require('../../assets/Wellnes/w2.webp');
-const localSubImages = [
-  require('../../assets/ProductDetails/Wellness/ROSE-GULKAND-01.webp'),
-  require('../../assets/ProductDetails/Wellness/ROSE-GULKAND-02.webp'),
-];
 
 // Your actual product data
 const product = {
@@ -26,14 +20,14 @@ const product = {
   "category": "Wellness & Edibles",
   "image": PRODUCTS_IMAGE_API
     ? `${PRODUCTS_IMAGE_API}Wellnes/w2.webp`
-    : localProductImage,
+    : null,
   "sub_images": [
     PRODUCTS_IMAGE_API
       ? `${PRODUCTS_IMAGE_API}ProductDetails/Wellness/ROSE-GULKAND-01.webp`
-      : localSubImages[0],
+      : null,
     PRODUCTS_IMAGE_API
       ? `${PRODUCTS_IMAGE_API}ProductDetails/Wellness/ROSE-GULKAND-02.webp`
-      : localSubImages[1]
+      : null
   ],
   "quantity": "250gm",
   "short_benefit": "Improves digestion and cools the body",
@@ -69,10 +63,10 @@ const Adbanner = () => {
   const [productImageFailed, setProductImageFailed] = useState(false);
   const navigation = useNavigation();
   const videoSource = videoFailed || !PRODUCTS_IMAGE_API
-    ? localBannerVideo
+    ? null
     : { uri: `${PRODUCTS_IMAGE_API}banners/b.mp4` };
   const productImageSource = productImageFailed || !PRODUCTS_IMAGE_API
-    ? localProductImage
+    ? null
     : { uri: `${PRODUCTS_IMAGE_API}Wellnes/w2.webp` };
 
   const handleProductPress = () => {
@@ -116,17 +110,19 @@ const Adbanner = () => {
     <SafeAreaView style={styles.container}>
       {/* Video Section */}
       <View style={styles.videoContainer}>
-        <Video
-          ref={videoRef}
-          source={videoSource}
-          style={styles.video}
-          resizeMode="cover"
-          shouldPlay
-          isLooping
-          isMuted
-          onError={() => setVideoFailed(true)}
-          onPlaybackStatusUpdate={status => setStatus(() => status)}
-        />
+        {videoSource ? (
+          <Video
+            ref={videoRef}
+            source={videoSource}
+            style={styles.video}
+            resizeMode="cover"
+            shouldPlay
+            isLooping
+            isMuted
+            onError={() => setVideoFailed(true)}
+            onPlaybackStatusUpdate={status => setStatus(() => status)}
+          />
+        ) : null}
         <LinearGradient
           colors={['rgba(0,0,0,0.5)', 'transparent']}
           style={styles.videoOverlay}

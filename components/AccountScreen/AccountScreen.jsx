@@ -22,6 +22,7 @@ const Account = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   // const LOGO_URL = Constants.expoConfig.extra?.LOGO_URL || "https://s3.ap-south-1.amazonaws.com/www.7miles.co.in/assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png";
   const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
+  const appVersion = Constants.expoConfig?.version || "1.0.0";
 
 
   useEffect(() => {
@@ -290,7 +291,7 @@ const Account = ({ navigation }) => {
 
       {/* App Info */}
       <View style={styles.appInfoCard}>
-                  <View style={styles.appLogo}>
+        <View style={styles.appLogo}>
                     <Image
                        source={{ uri:  `${PRODUCTS_IMAGE_API}Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png` }}
                         style={styles.logo}
@@ -298,7 +299,7 @@ const Account = ({ navigation }) => {
                     />
                 </View>
         {/* <Text style={styles.appName}>7miles</Text> */}
-        <Text style={styles.appVersion}>Version 1.0</Text>
+        <Text style={styles.appVersion}>Version {appVersion}</Text>
         <Text style={styles.appTagline}>Premium Shopping Experience</Text>
       </View>
 

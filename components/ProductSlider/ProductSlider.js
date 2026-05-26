@@ -12,10 +12,6 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 
-import Charcoal from '../../assets/glow/Charcoal.webp';
-import HerbalFace from '../../assets/glow/Herbal_face.webp';
-import RoseGulkand from '../../assets/glow/Rose_Gulkand.webp';
-
 const { width } = Dimensions.get('window');
 const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 
@@ -30,8 +26,7 @@ export const products = [
         description:
             'Made with sun-soaked Damask roses and natural sweeteners for a soothing, digestive-friendly daily ritual.',
         image: {
-            local: RoseGulkand,
-            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Rose_Gulkand.webp` } : RoseGulkand,
+            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Rose_Gulkand.webp` } : null,
         },
         eyebrow: 'Best Seller',
 
@@ -42,8 +37,7 @@ export const products = [
         description:
             'Pure herbal powders that cleanse, calm, and brighten your skin without harsh chemicals or heavy fillers.',
         image: {
-            local: HerbalFace,
-            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Herbal_face.webp` } : HerbalFace,
+            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Herbal_face.webp` } : null,
         },
         eyebrow: 'Skin Ritual',
 
@@ -54,8 +48,7 @@ export const products = [
         description:
             'A refreshing cleanse that lifts away dirt, oil, and buildup while leaving skin smooth and reset.',
         image: {
-            local: Charcoal,
-            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Charcoal.webp` } : Charcoal,
+            remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}glow/Charcoal.webp` } : null,
         },
         eyebrow: 'Fresh Pick',
 
@@ -121,21 +114,23 @@ const ProductSlider = () => {
     const renderItem = useCallback(
         ({ item, index }) => (
             (() => {
-                const imageSource = failedImages[item.title] || !PRODUCTS_IMAGE_API
-                    ? item.image.local
-                    : item.image.remote;
+                const imageSource = failedImages[item.title] ? null : item.image.remote;
 
                 return (
                     <View style={styles.slide}>
                         <View style={styles.cardShell}>
-                            <Image
-                                source={imageSource}
-                                style={styles.productImage}
-                                resizeMode="cover"
-                                onError={() =>
-                                    setFailedImages((prev) => ({ ...prev, [item.title]: true }))
-                                }
-                            />
+                            {imageSource ? (
+                                <Image
+                                    source={imageSource}
+                                    style={styles.productImage}
+                                    resizeMode="cover"
+                                    onError={() =>
+                                        setFailedImages((prev) => ({ ...prev, [item.title]: true }))
+                                    }
+                                />
+                            ) : (
+                                <View style={styles.productImage} />
+                            )}
 
                             <LinearGradient
                                 colors={['rgba(10,10,10,0.04)', 'rgba(10,10,10,0.14)', 'rgba(26,18,14,0.54)']}

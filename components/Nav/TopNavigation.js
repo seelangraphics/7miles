@@ -19,7 +19,6 @@ import CartButton from './Search/CartButton';
 
 const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 const PRODUCTS_API = Constants.expoConfig.extra.PRODUCTS_API;
-const localLogo = require('../../assets/Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png');
 
 const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     const [searchVisible, setSearchVisible] = useState(false);
@@ -34,7 +33,7 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
     const navigation = useNavigation();
     const { getCartItemsCount, wishlistItems, isInWishlist } = useCart(); // Add isInWishlist
     const logoSource = logoFailed || !PRODUCTS_IMAGE_API
-        ? localLogo
+        ? null
         : { uri: `${PRODUCTS_IMAGE_API}Nav/7_miles_final_logo_PRINT_FILE-Photoroom.png` };
 
     // Get wishlist count
@@ -125,12 +124,14 @@ const TopNavigation = ({ onCategoryPress, onCartPress }) => {
             <View style={styles.topBar}>
                 {/* Logo */}
                 <View style={styles.logoContainer}>
-                    <Image
-                        source={logoSource}
-                        style={styles.logo}
-                        resizeMode="contain"
-                        onError={() => setLogoFailed(true)}
-                    />
+                    {logoSource ? (
+                        <Image
+                            source={logoSource}
+                            style={styles.logo}
+                            resizeMode="contain"
+                            onError={() => setLogoFailed(true)}
+                        />
+                    ) : null}
                 </View>
 
                 {/* Action Icons */}

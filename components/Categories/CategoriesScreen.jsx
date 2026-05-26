@@ -16,10 +16,6 @@ import Constants from "expo-constants";
 import { useCart } from "../context/CartContext";
 import TopBar from "../Topbar/Topbar";
 import FilterModal from "./Filter";
-import img1 from "../../assets/Home-catagories/C_4.png";
-import img2 from "../../assets/Home-catagories/C_1.png";
-import img3 from "../../assets/Home-catagories/C_2.png";
-import img4 from "../../assets/Home-catagories/C_3.png";
 
 const PRODUCTS_API = Constants.expoConfig.extra?.PRODUCTS_API;
 const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
@@ -219,24 +215,29 @@ const CategoriesScreen = () => {
 
   const categoryImages = {
     "Hair Care": {
-      local: img1,
-      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : img1,
+      remote: PRODUCTS_IMAGE_API
+        ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` }
+        : null,
     },
     "Skin Care": {
-      local: img2,
-      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_1.png` } : img2,
+      remote: PRODUCTS_IMAGE_API
+        ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_1.png` }
+        : null,
     },
     "Body Care": {
-      local: img3,
-      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_2.png` } : img3,
+      remote: PRODUCTS_IMAGE_API
+        ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_2.png` }
+        : null,
     },
     "Wellness & Edibles": {
-      local: img4,
-      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_3.png` } : img4,
+      remote: PRODUCTS_IMAGE_API
+        ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_3.png` }
+        : null,
     },
     default: {
-      local: img1,
-      remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : img1,
+      remote: PRODUCTS_IMAGE_API
+        ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` }
+        : null,
     },
   };
 
@@ -404,9 +405,11 @@ const CategoriesScreen = () => {
                   {(() => {
                     const categoryImageSet = categoryImages[category] || categoryImages.default;
                     const categoryImageSource =
-                      failedCategoryImages[category] || !PRODUCTS_IMAGE_API
-                        ? categoryImageSet.local
-                        : categoryImageSet.remote;
+                      failedCategoryImages[category] ? null : categoryImageSet.remote;
+
+                    if (!categoryImageSource) {
+                      return null;
+                    }
 
                     return (
                   <Image

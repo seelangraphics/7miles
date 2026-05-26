@@ -1,12 +1,7 @@
 // components/PromoBanner.js
 import React, { useState, useEffect } from "react";
-import img1 from "../../assets/banners/bb1.webp"
-import img2 from "../../assets/banners/bb2.webp"
-import img3 from "../../assets/banners/bb3.webp"
-import img4 from "../../assets/banners/bb4.webp"
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -22,25 +17,17 @@ const PromoBanner = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [failedImages, setFailedImages] = useState({});
 
-  const localBannerImages = [img1, img2, img3,img4];
   const bannerImages = [
     `${PRODUCTS_IMAGE_API}banners/bb1.webp`,
     `${PRODUCTS_IMAGE_API}banners/bb2.webp`,
     `${PRODUCTS_IMAGE_API}banners/bb3.webp`,
     `${PRODUCTS_IMAGE_API}banners/bb4.webp`,
   ];
-  const currentBannerImage = failedImages[currentImageIndex] || !PRODUCTS_IMAGE_API
-    ? localBannerImages[currentImageIndex]
-    : { uri: bannerImages[currentImageIndex] };
-
-
-  const currentBannerSource = Image.resolveAssetSource(
-    localBannerImages[currentImageIndex]
-  );
-  const bannerAspectRatio =
-    currentBannerSource?.width && currentBannerSource?.height
-      ? currentBannerSource.width / currentBannerSource.height
-      : 16 / 9;
+  const currentBannerImage =
+    failedImages[currentImageIndex] || !PRODUCTS_IMAGE_API
+      ? null
+      : { uri: bannerImages[currentImageIndex] };
+  const bannerAspectRatio = 16 / 9;
 
 
   // Auto-change banner every 5 seconds
@@ -66,14 +53,16 @@ const PromoBanner = () => {
           style={[styles.banner, { aspectRatio: bannerAspectRatio }]}
         >
         {/* Background Image */}
-        <Image
-          source={currentBannerImage}
-          style={styles.backgroundImage}
-          resizeMode="contain"
-          onError={() =>
-            setFailedImages((prev) => ({ ...prev, [currentImageIndex]: true }))
-          }
-        />
+        {currentBannerImage ? (
+          <Image
+            source={currentBannerImage}
+            style={styles.backgroundImage}
+            resizeMode="contain"
+            onError={() =>
+              setFailedImages((prev) => ({ ...prev, [currentImageIndex]: true }))
+            }
+          />
+        ) : null}
 
         <LinearGradient
           colors={["rgba(46, 28, 17, 0.06)", "rgba(46, 28, 17, 0.22)"]}

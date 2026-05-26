@@ -25,29 +25,21 @@ import FAQSection from "../Faq/Faq";
 import { useCart } from "../context/CartContext";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import img1 from "../../assets/Home-catagories/C_4.png";
-import img2 from "../../assets/Home-catagories/C_1.png";
-import img3 from "../../assets/Home-catagories/C_2.png";
-import img4 from "../../assets/Home-catagories/C_3.png";
 
 const { width } = Dimensions.get('window');
 const PRODUCTS_IMAGE_API = Constants.expoConfig.extra?.PRODUCTS_IMAGE_API;
 const homeCategoryImages = {
   hair: {
-    local: img1,
-    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : img1,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_4.png` } : null,
   },
   skin: {
-    local: img2,
-    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_1.png` } : img2,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_1.png` } : null,
   },
   body: {
-    local: img3,
-    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_2.png` } : img3,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_2.png` } : null,
   },
   wellness: {
-    local: img4,
-    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_3.png` } : img4,
+    remote: PRODUCTS_IMAGE_API ? { uri: `${PRODUCTS_IMAGE_API}Home-catagories/C_3.png` } : null,
   },
 };
 
@@ -111,9 +103,11 @@ const CategoryQuickNav = ({ navigation }) => {
             {/* Image with colored border */}
             <View style={[categoryNavStyles.imageWrapper, { borderColor: category.color + '30' }]}>
               {(() => {
-                const imageSource = failedImages[category.id] || !PRODUCTS_IMAGE_API
-                  ? category.image.local
-                  : category.image.remote;
+                const imageSource = failedImages[category.id] ? null : category.image.remote;
+
+                if (!imageSource) {
+                  return null;
+                }
 
                 return (
               <Image
@@ -255,9 +249,11 @@ const SimpleCategoryNav = ({ navigation }) => {
           >
             <View style={simpleStyles.imageCircle}>
               {(() => {
-                const imageSource = failedImages[category.id] || !PRODUCTS_IMAGE_API
-                  ? category.image.local
-                  : category.image.remote;
+                const imageSource = failedImages[category.id] ? null : category.image.remote;
+
+                if (!imageSource) {
+                  return null;
+                }
 
                 return (
               <Image
